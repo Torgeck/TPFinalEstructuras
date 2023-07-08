@@ -1,5 +1,7 @@
 package grafos;
 
+import java.util.Objects;
+
 public class NodoVert {
 
     private Object elem;
@@ -46,5 +48,18 @@ public class NodoVert {
 
     public void setPrimerAdy(NodoAdy primerAdy) {
         this.primerAdy = primerAdy;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        NodoVert nodoVert = (NodoVert) o;
+        return Objects.equals(elem, nodoVert.elem);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(elem);
     }
 }

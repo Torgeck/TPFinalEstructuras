@@ -37,7 +37,7 @@ public class Grafo {
         }
         return aux;
     }
-
+    // TODO Fijarse que tiene que ser un digrafo y que se pueden tener multiples arcos desde y hacia un nodo
     private boolean eliminarVertice(Object vertice) {
         // Metodo que elimina un vertice de la estructura y todos los arcos que lo contengan como vertice
         boolean exito;
@@ -129,7 +129,7 @@ public class Grafo {
             if (nodoOrigen != null && nodoDestino != null) {
                 // Setea el nuevo arco haciedo uso del constructor de la clase NodoAdy
                 nodoOrigen.setPrimerAdy(new NodoAdy(nodoDestino, nodoOrigen.getPrimerAdy(), etiqueta));
-                nodoDestino.setPrimerAdy(new NodoAdy(nodoOrigen, nodoDestino.getPrimerAdy(), etiqueta));
+                // nodoDestino.setPrimerAdy(new NodoAdy(nodoOrigen, nodoDestino.getPrimerAdy(), etiqueta));
                 exito = true;
             }
         }
@@ -148,10 +148,6 @@ public class Grafo {
             if (nodoOrigen != null && nodoDestino != null) {
                 // Busco el arco en el nodo origen si existe lo elimino
                 exito = eliminarArcoConNodos(nodoOrigen, nodoDestino);
-
-                // Si existe el arco elimino el otro
-                if(exito)
-                    eliminarArcoConNodos(nodoDestino, nodoOrigen);
             }
         }
         return exito;
@@ -235,11 +231,12 @@ public class Grafo {
         return camino;
     }
     // TODO terminar la funcion y hacerla con el algoritmo de dijkstra 
-    private void caminoMasCortoAux(NodoVert nodo, NodoVert destino, Lista camino, Lista vis) {
+    private Map<NodoVert, Integer> caminoMasCortoAux(NodoVert nodo, NodoVert destino, Lista camino, Lista visitados) {
         //Metodo que encuentra el camino mas corto y llena una lista con este recursivamente
         boolean flag = false;
         NodoAdy arco = nodo.getPrimerAdy();
-        vis.insertar(nodo.getElem(), vis.longitud() + 1);
+
+        visitados.insertar(nodo.getElem(), visitados.longitud() + 1);
         //Para cada arco del vertice nodo
         while(arco != null){
             
