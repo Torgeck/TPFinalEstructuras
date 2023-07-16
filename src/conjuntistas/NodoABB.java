@@ -1,5 +1,7 @@
 package conjuntistas;
 
+import Estructuras.NodoPrioridad;
+
 public class NodoABB {
 
     private Comparable elem;

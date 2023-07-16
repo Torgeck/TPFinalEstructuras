@@ -96,13 +96,10 @@ public class Lista {
         Nodo aux = this.cabecera;
 
         while(aux != null){
-
             if(aux.getElemento().equals(elemento)){
                 posicion = i;
                 aux = null;
-            }
-
-            else{
+            } else {
                 aux = aux.getEnlace();
                 i++;
             }
@@ -111,19 +108,14 @@ public class Lista {
     }
 
     public boolean esVacia() {
-        boolean vacia = false;
-
-        if(this.cabecera == null)
-            vacia = true;
-
-        return vacia;
+        return this.cabecera == null;
     }
 
     public void vaciar() {
         this.cabecera = null;
         this.longitud = 0;
     }
-
+    @Override
     public Lista clone() {
         Lista clon = new Lista();
 

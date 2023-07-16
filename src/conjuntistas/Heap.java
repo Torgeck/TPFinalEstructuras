@@ -1,6 +1,5 @@
 package conjuntistas;
 
-@SuppressWarnings("unchecked")
 public class Heap {
 
     private static final int TAMANIO = 20;

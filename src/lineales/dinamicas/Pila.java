@@ -71,21 +71,21 @@ public class Pila {
     }
 
     public String toString() {
-        String salida = "";
+        StringBuilder salida = new StringBuilder();
         Nodo aux;
 
         if(this.tope != null){
             aux = this.tope;
 
             while (aux != null) {
-                    salida = aux.getElemento().toString() + salida;         //Muestra del primer elemento hasta el tope como pide el testing pila
+                    salida.insert(0, aux.getElemento().toString());         //Muestra del primer elemento hasta el tope como pide el testing pila
                     aux = aux.getEnlace();
                 if(aux != null)
-                    salida = "," + salida;
-                }
-
+                    salida.insert(0, ",");
             }
-        return salida;
+
+        }
+        return salida.toString();
     }
 
 

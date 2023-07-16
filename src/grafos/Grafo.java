@@ -1,10 +1,13 @@
 package grafos;
 
+import Estructuras.ColaPrioridad;
+import Estructuras.Par;
 import lineales.dinamicas.Cola;
 import lineales.dinamicas.Lista;
-
+import java.util.HashMap;
 import java.util.Map;
 
+// TODO testear clase
 public class Grafo {
 
     private NodoVert inicio;
@@ -71,22 +74,30 @@ public class Grafo {
                 anterior.setSigVertice(nodo.getSigVertice());
 
             // Borro los arcos de los nodos que apuntan al nodo a eliminar
-            eliminarArcos(nodo.getPrimerAdy(),nodo);
-            nodo.setPrimerAdy(null);
+            eliminarArcos(nodo);
+            nodo.setPrimerAdy(null);    // TESTEAR si es necesario
             exito = true;
         }
         return exito;
     }
 
-    private void eliminarArcos(NodoAdy arco, NodoVert nodoAEliminar) {
-        // Metodo que elimina arcos de un grafo unidireccional con su lista de adyacencia
+    private void eliminarArcos(NodoVert nodoAEliminar) {
+        // Metodo que elimina arcos de un grafo direccional
+        NodoVert nodo = this.inicio;
+        NodoAdy arco = nodo.getPrimerAdy();
 
-        // Mientras tenga arcos
-        while(arco != null){
-            eliminarArcoConNodos(arco.getVertice(), nodoAEliminar);
-            arco = arco.getSigAdyacente();
+        // Mientras el nodo no sea vacio
+        while(nodo != null){
+            // Checkeo los arcos de nodo y veo si se dirigen al nodoAEliminar
+            while(arco != null) {
+                // Si el arco tiene al nodo a eliminar como vertice lo mando a eliminar
+                if(arco.getVertice() == nodoAEliminar){
+                    eliminarArcoConNodos(arco.getVertice(), nodoAEliminar);
+                }
+                arco = arco.getSigAdyacente();
+            }
+            nodo = nodo.getSigVertice();
         }
-
     }
 
     private boolean eliminarArcoConNodos(NodoVert origen, NodoVert destino) {
@@ -218,31 +229,80 @@ public class Grafo {
         return exito;
     }
 
-    public Lista caminoMasCorto(Object origen, Object destino) {
-        //Metodo que devuelve una lista con el camino mas corto si es que existen los nodos en el grafo
-        Lista camino = new Lista();
-        NodoVert nodoOrigen = ubicarVertice(origen), nodoDestino = ubicarVertice(destino);
+    public Par caminoMasCorto(Object origen, Object destino) {
+        //Metodo que devuelve un par con la distancia y el camino mas corto si es que existen los nodos en el grafo
+        // Estructuras que usa el algoritmo
+        Map<NodoVert, Integer> distancia = new HashMap<>();
+        Map<NodoVert, NodoVert> padre = new HashMap<>();
+        ColaPrioridad colaNodos = new ColaPrioridad();
+        Lista visitados = new Lista();
+        // Variables que usa el algoritmo
+        Par distanciaYCamino = new Par();
+        NodoVert nodoActual = this.inicio, nodoOrigen = this.ubicarVertice(origen), nodoDestino = this.ubicarVertice(destino), vecino;
+        NodoAdy arcoActual;
+        boolean encontrado = false;
+        int distanciaTentativa;
 
-        //Si los vertices existen en el grafo
-        if (nodoOrigen != null && nodoDestino != null) {
-            Lista vis = new Lista();
-            caminoMasCortoAux(nodoOrigen, nodoDestino, camino, vis);
+        // Si existen los nodos empiezo a buscar caminos caso contrario retorno un par vacio
+        if(nodoOrigen != null && nodoDestino != null) {
+            // Inicializo las distancias de todos los nodos
+            while (nodoActual != null) {
+                distancia.put(nodoActual, Integer.MAX_VALUE);
+                padre.put(nodoActual, null);
+                nodoActual = nodoActual.getSigVertice();
+            }
+
+            // Actualizo la distancia del nodo origen a 0 en el hashmap distancias y lo agrego a la cola de prioridad
+            distancia.replace(nodoOrigen, 0);
+            colaNodos.poner(nodoOrigen,0);
+
+            // Mientras no este vacia la cola de nodos
+            while(!colaNodos.esVacia() || !encontrado){
+                // Saco el elemento con la prioridad mas alta de la cola
+                nodoActual = (NodoVert) colaNodos.obtenerFrente();
+                colaNodos.sacar();
+                // Visito los nodos vecinos y los pongo en la lista de visitados
+                visitados.insertar(nodoActual, visitados.longitud() + 1);
+
+                // Se encotro el nodo destino
+                if(nodoActual.equals(nodoDestino)){
+                    encontrado = true;
+                }else {
+                    // Se recorren todos los nodos adyacentes del nodo actual
+                    arcoActual = nodoActual.getPrimerAdy();
+                    while (arcoActual != null){
+
+                        // Variable para no hacer tantos llamados
+                        vecino = arcoActual.getVertice();
+                        // Si el nodo no se visito
+                        if(visitados.localizar(vecino) < 0){
+                            distanciaTentativa = distancia.get(nodoActual) + (int) arcoActual.getEtiqueta();
+
+                            // Si la distancia tentativa es menor que la que tiene el vecino entonces la actualizo
+                            if(distanciaTentativa < distancia.get(vecino)){
+                                distancia.put(vecino,distanciaTentativa);
+                                padre.put(vecino,nodoActual);
+                                colaNodos.poner(vecino,distanciaTentativa);
+                            }
+                        }
+                        arcoActual = arcoActual.getSigAdyacente();
+                    }
+                }
+            }
+            // Si se encontro entonces armo y devuelvo un par con lista del camino y distancia del mismo
+            if(encontrado){
+                Lista camino = new Lista();
+                nodoActual = nodoDestino;
+                while(nodoActual != null){
+                    camino.insertar(nodoActual,1);
+                    nodoActual = padre.get(nodoActual);
+                }
+                // Seteo el par (int, Lista)
+                distanciaYCamino.setA(distancia.get(nodoDestino));
+                distanciaYCamino.setB(camino);
+            }
         }
-        return camino;
-    }
-    // TODO terminar la funcion y hacerla con el algoritmo de dijkstra 
-    private Map<NodoVert, Integer> caminoMasCortoAux(NodoVert nodo, NodoVert destino, Lista camino, Lista visitados) {
-        //Metodo que encuentra el camino mas corto y llena una lista con este recursivamente
-        boolean flag = false;
-        NodoAdy arco = nodo.getPrimerAdy();
-
-        visitados.insertar(nodo.getElem(), visitados.longitud() + 1);
-        //Para cada arco del vertice nodo
-        while(arco != null){
-            
-            arco = arco.getSigAdyacente();
-        }
-
+        return distanciaYCamino;
     }
 
     public boolean vacio() {
