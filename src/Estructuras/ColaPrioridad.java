@@ -1,6 +1,5 @@
 package Estructuras;
 
-import lineales.dinamicas.Cola;
 public class ColaPrioridad {
 
     private NodoPrioridad frente;
@@ -86,8 +85,8 @@ public class ColaPrioridad {
         this.fin = null;
     }
 
-    public Cola clone(){
-        Cola clon = new Cola();
+    public ColaPrioridad clone(){
+        ColaPrioridad clon = new ColaPrioridad();
         NodoPrioridad aux1 = this.frente;
 
         //Creo y seteo el frente de Cola clon
@@ -98,7 +97,7 @@ public class ColaPrioridad {
         return clon;
     }
 
-    private void clonRecursivo(Cola clon, NodoPrioridad punteroOG, NodoPrioridad nodoClon) {
+    private void clonRecursivo(ColaPrioridad clon, NodoPrioridad punteroOG, NodoPrioridad nodoClon) {
 
         //Condicion si llego al final de la cola
         if(punteroOG.getEnlace() == null) {
