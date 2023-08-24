@@ -2,7 +2,7 @@ import java.util.Scanner;
 
 public class EDATViajes {
 
-    // Menu
+    
     public static void menu(){
         System.out.println("""
                 Ingrese un numero correspondiente a la operacion que quiere realizar
