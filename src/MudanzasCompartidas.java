@@ -1,21 +1,45 @@
 import java.util.Scanner;
 
-public class EDATViajes {
+public class MudanzasCompartidas {
 
-    
+    // Menu principal
     public static void menu(){
         System.out.println("""
                 Ingrese un numero correspondiente a la operacion que quiere realizar
-                1 - ABM de aeropuertos
-                2 - ABM de clientes
-                3 - ABM de vuelos
-                4 - ABM de pasajes
-                5 - Consultas sobre clientes
-                6 - Consultas sobre vuelos
-                7 - Consultas sobre tiempos de viaje
-                8 - Candidatos promocion clientes fieles
-                9 - Mostrar sistema
+                0 - Carga inicial
+                1 - ABM
+                2 - Consultas
+                3 - Verificar viaje
+                4 - Mostrar sistema
+                5 - Salir
+                """);
+    }
+
+    // Submenu ABM
+    public static void abmMenu(){
+        System.out.println(""" 
+                1 - ABM Ciudades
+                2 - ABM Red de rutas
+                3 - ABM Clientes
+                4 - ABM Pedidos
                 0 - Salir
+                """); 
+    }
+
+    // Submenu Consultas
+    public static void consultasMenu(){
+        System.out.println(""" 
+                ===== CLIENTE =====
+                1 - Mostrar toda la informacion de un cliente dada la clave
+                ===== CIUDAD =====
+                2 - Mostrar informacion de una ciudad dada la clave
+                3 - Listar ciudades dado un prefijo
+                ===== VIAJE =====
+                [ Siendo A,B,C ciudades ]
+                4 - Obtener camino de A a B que pase por menos ciudades
+                5 - Obtener camino de A a B con menor distancia en Kms
+                6 - Obtener todos los caminos posibles de A a B que pasen por C
+                7 - Verificar si es posible llegar de A a B en como maximo 'X' Kms
                 """);
     }
 
@@ -26,31 +50,25 @@ public class EDATViajes {
     }
 
     // Consultas sobre clientes
-    public static void consultasClientes(){
-        System.out.println("""
-                1 - Verificar y mostrar info de contacto de un cliente
-                2 - Mostrar las ciudades que ha visitado un cliente
-                3 - Salir
-                """);
+    public static void consultasCliente(){
+        // Muestra toda la info de los clientes
     }
 
-    // Consulta sobre vuelos
-    public static void consultaVuelos(){
-        System.out.println("""
-                1 - Mostrar toda la informacion de un vuelo
-                2 - Mostrar rango de codigos existentes segun 2 codigos ingresados
-                3 - Salir""");
+    public static void consultaCiudad(){
+        // Muestra toda la info de una ciudad dada la clave
+        Scanner codigoPostal = new Scanner(System.in);
+
+        System.out.println("Ingrese el codigo postal de la ciudad");
+        // ciudades.obtenerInfo(codigoPostal.nextInt());
+
     }
 
-    // Consultas sobre tiempos de viaje
-    public static void consultaTiempoViaje(){
-        System.out.println("""
-                == Segun 2 aeropuertos dados A y B:
-                1 - Mostrar si es posible que el cliente que parte del origen A llegue en como maximo X vuelos al destino B
-                2 - Obtener el menor camino que llegue de A a B en menor tiempo de vuelos
-                3 - Obtener el camino que llegue de A a B pasando por la minima cantidad de vuelos
-                4 - Obtener el camino mas rapido de A a B y que pase por el aeropuerto C
-                5 - Salir""");
+    public static void listarCiudades(){
+        // Muestra un listado de las ciudades con un prefijo dado por usuario
+        Scanner prefijo = new Scanner(System.in);
+
+        System.out.println("Ingrese un prefijo numerico que no exceda 4 caracteres");
+        // ciudades.listarRango(prefijo.nextInt())
     }
 
     public void iniciarMenu() {
