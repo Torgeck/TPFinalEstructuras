@@ -1,4 +1,4 @@
-package lineales.dinamicas;
+package Estructuras;
 
 public class Cola {
 

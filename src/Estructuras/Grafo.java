@@ -1,9 +1,5 @@
-package grafos;
+package Estructuras;
 
-import Estructuras.ColaPrioridad;
-import Estructuras.Par;
-import lineales.dinamicas.Cola;
-import lineales.dinamicas.Lista;
 import java.util.HashMap;
 import java.util.Map;
 

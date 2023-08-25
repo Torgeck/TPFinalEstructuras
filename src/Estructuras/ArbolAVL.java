@@ -1,7 +1,5 @@
 package Estructuras;
 
-import lineales.dinamicas.Lista;
-
 public class ArbolAVL {
     // Atributo
     private NodoAVL raiz;

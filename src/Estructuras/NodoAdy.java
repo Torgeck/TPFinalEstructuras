@@ -1,10 +1,10 @@
-package grafos;
+package Estructuras;
 
 public class NodoAdy {
 
+    private Object etiqueta;
     private NodoVert vertice;
     private NodoAdy sigAdyacente;
-    private Object etiqueta;
 
     public NodoAdy(NodoVert vertice, NodoAdy sigAdyacente, Object etiqueta) {
         this.vertice = vertice;
