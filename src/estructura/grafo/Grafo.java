@@ -1,7 +1,12 @@
-package Estructuras;
+package estructura.grafo;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import estructura.lineales.Cola;
+import estructura.lineales.ColaPrioridad;
+import estructura.lineales.Lista;
+import estructura.lineales.Par;
 
 // TODO testear clase
 public class Grafo {
@@ -13,7 +18,8 @@ public class Grafo {
     }
 
     public boolean insertarVertice(Object vertice) {
-        // Metodo que inserta un vertice en el grafo controlando que no se repita en el mismo
+        // Metodo que inserta un vertice en el grafo controlando que no se repita en el
+        // mismo
         boolean exito = false;
 
         // Busco si existe el vertice en el grafo
@@ -36,9 +42,12 @@ public class Grafo {
         }
         return aux;
     }
-    // TODO Fijarse que tiene que ser un digrafo y que se pueden tener multiples arcos desde y hacia un nodo
-    private boolean eliminarVertice(Object vertice) {
-        // Metodo que elimina un vertice de la estructura y todos los arcos que lo contengan como vertice
+
+    // TODO Fijarse que tiene que ser un digrafo y que se pueden tener multiples
+    // arcos desde y hacia un nodo
+    public boolean eliminarVertice(Object vertice) {
+        // Metodo que elimina un vertice de la estructura y todos los arcos que lo
+        // contengan como vertice
         boolean exito;
 
         // Caso que el grafo este vacio
@@ -71,7 +80,6 @@ public class Grafo {
 
             // Borro los arcos de los nodos que apuntan al nodo a eliminar
             eliminarArcos(nodo);
-            nodo.setPrimerAdy(null);    // TESTEAR si es necesario
             exito = true;
         }
         return exito;
@@ -79,25 +87,21 @@ public class Grafo {
 
     private void eliminarArcos(NodoVert nodoAEliminar) {
         // Metodo que elimina arcos de un grafo direccional
-        NodoVert nodo = this.inicio;
-        NodoAdy arco = nodo.getPrimerAdy();
+        NodoVert nodo;
+        NodoAdy arco = nodoAEliminar.getPrimerAdy();
 
-        // Mientras el nodo no sea vacio
-        while(nodo != null){
-            // Checkeo los arcos de nodo y veo si se dirigen al nodoAEliminar
-            while(arco != null) {
-                // Si el arco tiene al nodo a eliminar como vertice lo mando a eliminar
-                if(arco.getVertice() == nodoAEliminar){
-                    eliminarArcoConNodos(arco.getVertice(), nodoAEliminar);
-                }
-                arco = arco.getSigAdyacente();
-            }
-            nodo = nodo.getSigVertice();
+        // Mientras el nodo a eliminar tenga arcos
+        while (arco != null) {
+            // Como es un grafo entonces se que ambos nodos tienen los mismos arcos por ende
+            // puedo eliminar arcos usando los arcos del nodo a eliminar
+            eliminarArcoConNodos(arco.getVertice(), nodoAEliminar);
+            arco = arco.getSigAdyacente();
         }
     }
 
     private boolean eliminarArcoConNodos(NodoVert origen, NodoVert destino) {
-        // Metodo que analiza los diferentes casos de eliminar un arco y devuelve un boolean
+        // Metodo que analiza los diferentes casos de eliminar un arco y devuelve un
+        // boolean
         boolean exito = true;
         NodoAdy arcoBuscado = origen.getPrimerAdy(), anterior;
 
@@ -113,7 +117,8 @@ public class Grafo {
                 arcoBuscado = arcoBuscado.getSigAdyacente();
             }
 
-            // Si es encontrado seteo al nodoAdy anterior con el posterior del nodoAdy a eliminar
+            // Si es encontrado seteo al nodoAdy anterior con el posterior del nodoAdy a
+            // eliminar
             if (arcoBuscado != null) {
                 anterior.setSigAdyacente(arcoBuscado.getSigAdyacente());
             }
@@ -125,7 +130,8 @@ public class Grafo {
     }
 
     public boolean insertarArco(Object origen, Object destino, Object etiqueta) {
-        // Metodo que agrega un arco en la estructura solo si ambos nodos existen en la misma
+        // Metodo que agrega un arco en la estructura solo si ambos nodos existen en la
+        // misma
         boolean exito = false;
 
         // Si el grafo no está vacio busco en la estructura ambos nodos
@@ -136,7 +142,7 @@ public class Grafo {
             if (nodoOrigen != null && nodoDestino != null) {
                 // Setea el nuevo arco haciedo uso del constructor de la clase NodoAdy
                 nodoOrigen.setPrimerAdy(new NodoAdy(nodoDestino, nodoOrigen.getPrimerAdy(), etiqueta));
-                // nodoDestino.setPrimerAdy(new NodoAdy(nodoOrigen, nodoDestino.getPrimerAdy(), etiqueta));
+                nodoDestino.setPrimerAdy(new NodoAdy(nodoOrigen, nodoDestino.getPrimerAdy(), etiqueta));
                 exito = true;
             }
         }
@@ -144,7 +150,8 @@ public class Grafo {
     }
 
     public boolean eliminarArco(Object origen, Object destino) {
-        // Metodo que elimina solo si este existe entre origen y destino pasados por parametros
+        // Metodo que elimina solo si este existe entre origen y destino pasados por
+        // parametros
         boolean exito = false;
 
         // Si el grafo no está vacio busco en la estructura ambos nodos
@@ -155,23 +162,25 @@ public class Grafo {
             if (nodoOrigen != null && nodoDestino != null) {
                 // Busco el arco en el nodo origen si existe lo elimino
                 exito = eliminarArcoConNodos(nodoOrigen, nodoDestino);
+                eliminarArcoConNodos(nodoDestino, nodoOrigen);
             }
         }
         return exito;
     }
 
     public boolean existeVertice(Object buscado) {
-        //Metodo que recorre los vertices para ver si existe en el grafo
+        // Metodo que recorre los vertices para ver si existe en el grafo
         return ubicarVertice(buscado) != null;
     }
 
     public boolean existeArco(Object origen, Object destino) {
-        // Metodo que recorre la estructura para verificar si existe un arco entre los vertices pasados por parametro
+        // Metodo que recorre la estructura para verificar si existe un arco entre los
+        // vertices pasados por parametro
         boolean exito = false;
         NodoVert nodoOrigen = ubicarVertice(origen), nodoDestino = ubicarVertice(destino);
         // Sí existen amnbos nodos en el grafo
         if (nodoOrigen != null && nodoDestino != null) {
-            //Analizo cada arco del nodo origen
+            // Analizo cada arco del nodo origen
             NodoAdy aux = nodoOrigen.getPrimerAdy();
 
             while (aux != null) {
@@ -189,11 +198,12 @@ public class Grafo {
     }
 
     public boolean existeCamino(Object origen, Object destino) {
-        //Metodo que recorre la estructura y verifica que exista un camino entre los nodos pasados por parametro
+        // Metodo que recorre la estructura y verifica que exista un camino entre los
+        // nodos pasados por parametro
         boolean exito = false;
         NodoVert nodoOrigen = ubicarVertice(origen), nodoDestino = ubicarVertice(destino);
 
-        //Si existen ambos vertices busca si existe camino entre ambos 
+        // Si existen ambos vertices busca si existe camino entre ambos
         if (nodoOrigen != null && nodoDestino != null) {
             Lista visitados = new Lista();
             exito = existeCaminoAux(nodoOrigen, destino, visitados);
@@ -205,11 +215,11 @@ public class Grafo {
         boolean exito = false;
 
         if (nodo != null) {
-            //Si vertice nodo es el destino entonces hay camino
+            // Si vertice nodo es el destino entonces hay camino
             if (nodo.getElem().equals(destino))
                 exito = true;
             else {
-                //Si no es el destino verifica si hay camino entre nodo y destino
+                // Si no es el destino verifica si hay camino entre nodo y destino
                 visitados.insertar(nodo.getElem(), visitados.longitud() + 1);
                 NodoAdy ady = nodo.getPrimerAdy();
 
@@ -226,21 +236,24 @@ public class Grafo {
     }
 
     public Par caminoMasCorto(Object origen, Object destino) {
-        //Metodo que devuelve un par con la distancia y el camino mas corto si es que existen los nodos en el grafo
+        // Metodo que devuelve un par con la distancia y el camino mas corto si es que
+        // existen los nodos en el grafo
         // Estructuras que usa el algoritmo
         Map<NodoVert, Integer> distancia = new HashMap<>();
         Map<NodoVert, NodoVert> padre = new HashMap<>();
         ColaPrioridad colaNodos = new ColaPrioridad();
         Lista visitados = new Lista();
         // Variables que usa el algoritmo
-        Par distanciaYCamino = new Par();
-        NodoVert nodoActual = this.inicio, nodoOrigen = this.ubicarVertice(origen), nodoDestino = this.ubicarVertice(destino), vecino;
+        Par distanciaYCamino = new Par("", "");
+        NodoVert nodoActual = this.inicio, nodoOrigen = this.ubicarVertice(origen),
+                nodoDestino = this.ubicarVertice(destino), vecino;
         NodoAdy arcoActual;
         boolean encontrado = false;
         int distanciaTentativa;
 
-        // Si existen los nodos empiezo a buscar caminos caso contrario retorno un par vacio
-        if(nodoOrigen != null && nodoDestino != null) {
+        // Si existen los nodos empiezo a buscar caminos caso contrario retorno un par
+        // vacio
+        if (nodoOrigen != null && nodoDestino != null) {
             // Inicializo las distancias de todos los nodos
             while (nodoActual != null) {
                 distancia.put(nodoActual, Integer.MAX_VALUE);
@@ -248,12 +261,13 @@ public class Grafo {
                 nodoActual = nodoActual.getSigVertice();
             }
 
-            // Actualizo la distancia del nodo origen a 0 en el hashmap distancias y lo agrego a la cola de prioridad
+            // Actualizo la distancia del nodo origen a 0 en el hashmap distancias y lo
+            // agrego a la cola de prioridad
             distancia.replace(nodoOrigen, 0);
-            colaNodos.poner(nodoOrigen,0);
+            colaNodos.poner(nodoOrigen, 0);
 
             // Mientras no este vacia la cola de nodos
-            while(!colaNodos.esVacia() || !encontrado){
+            while (!colaNodos.esVacia() || !encontrado) {
                 // Saco el elemento con la prioridad mas alta de la cola
                 nodoActual = (NodoVert) colaNodos.obtenerFrente();
                 colaNodos.sacar();
@@ -261,36 +275,38 @@ public class Grafo {
                 visitados.insertar(nodoActual, visitados.longitud() + 1);
 
                 // Se encotro el nodo destino
-                if(nodoActual.equals(nodoDestino)){
+                if (nodoActual.equals(nodoDestino)) {
                     encontrado = true;
-                }else {
+                } else {
                     // Se recorren todos los nodos adyacentes del nodo actual
                     arcoActual = nodoActual.getPrimerAdy();
-                    while (arcoActual != null){
+                    while (arcoActual != null) {
 
                         // Variable para no hacer tantos llamados
                         vecino = arcoActual.getVertice();
                         // Si el nodo no se visito
-                        if(visitados.localizar(vecino) < 0){
+                        if (visitados.localizar(vecino) < 0) {
                             distanciaTentativa = distancia.get(nodoActual) + (int) arcoActual.getEtiqueta();
 
-                            // Si la distancia tentativa es menor que la que tiene el vecino entonces la actualizo
-                            if(distanciaTentativa < distancia.get(vecino)){
-                                distancia.put(vecino,distanciaTentativa);
-                                padre.put(vecino,nodoActual);
-                                colaNodos.poner(vecino,distanciaTentativa);
+                            // Si la distancia tentativa es menor que la que tiene el vecino entonces la
+                            // actualizo
+                            if (distanciaTentativa < distancia.get(vecino)) {
+                                distancia.put(vecino, distanciaTentativa);
+                                padre.put(vecino, nodoActual);
+                                colaNodos.poner(vecino, distanciaTentativa);
                             }
                         }
                         arcoActual = arcoActual.getSigAdyacente();
                     }
                 }
             }
-            // Si se encontro entonces armo y devuelvo un par con lista del camino y distancia del mismo
-            if(encontrado){
+            // Si se encontro entonces armo y devuelvo un par con lista del camino y
+            // distancia del mismo
+            if (encontrado) {
                 Lista camino = new Lista();
                 nodoActual = nodoDestino;
-                while(nodoActual != null){
-                    camino.insertar(nodoActual,1);
+                while (nodoActual != null) {
+                    camino.insertar(nodoActual, 1);
                     nodoActual = padre.get(nodoActual);
                 }
                 // Seteo el par (int, Lista)
@@ -302,23 +318,24 @@ public class Grafo {
     }
 
     public boolean vacio() {
-        //Metodo que retorna true si el grafo esta vacio y false caso contrario
+        // Metodo que retorna true si el grafo esta vacio y false caso contrario
         return this.inicio == null;
     }
 
     public void vaciar() {
-        //Metodo que vacia la estructura de grafo usando el garbage collector de java
+        // Metodo que vacia la estructura de grafo usando el garbage collector de java
         this.inicio = null;
     }
 
     public Lista listarEnProfundidad() {
-        //Devuelve una lista con los vertices del grafo visitados segun el recorrido en profundidad
+        // Devuelve una lista con los vertices del grafo visitados segun el recorrido en
+        // profundidad
         Lista visitados = new Lista();
 
-        //Comienza a recorrer del vertice que esta en el inicio
+        // Comienza a recorrer del vertice que esta en el inicio
         NodoVert aux = this.inicio;
         while (aux != null) {
-            //Si el vertice no esta en la lista avanza en profundidad
+            // Si el vertice no esta en la lista avanza en profundidad
             if (visitados.localizar(aux.getElem()) < 0)
                 listarEnProfundidadAux(aux, visitados);
 
@@ -328,14 +345,14 @@ public class Grafo {
     }
 
     private void listarEnProfundidadAux(NodoVert nodo, Lista visitados) {
-        //Metodo que recorre recursivamente el grafo en profundidad
+        // Metodo que recorre recursivamente el grafo en profundidad
 
         if (nodo != null) {
-            //Marca al vertice nodo como visitado
+            // Marca al vertice nodo como visitado
             visitados.insertar(nodo.getElem(), visitados.longitud() + 1);
             NodoAdy ady = nodo.getPrimerAdy();
 
-            //Visita en profundidad los adyacentes de nodo aun no visitados
+            // Visita en profundidad los adyacentes de nodo aun no visitados
             while (ady != null) {
                 if (visitados.localizar(ady.getVertice().getElem()) < 0)
                     listarEnProfundidadAux(ady.getVertice(), visitados);
@@ -345,12 +362,13 @@ public class Grafo {
     }
 
     public Lista listarEnAnchura() {
-        //Metodo que devuelve una lista con los vertices del grafo visitados segun el recorrido de anchura
+        // Metodo que devuelve una lista con los vertices del grafo visitados segun el
+        // recorrido de anchura
         Lista visitados = new Lista();
         NodoVert aux = this.inicio;
 
         while (aux != null) {
-            //Si no esta en visitados reccorro en anchura
+            // Si no esta en visitados reccorro en anchura
             if (visitados.localizar(aux.getElem()) < 0)
                 listarEnAnchuraAux(aux, visitados);
 
@@ -360,31 +378,35 @@ public class Grafo {
     }
 
     private void listarEnAnchuraAux(NodoVert nodo, Lista visitados) {
-        //Metodo que recorre recursivamente el grafo en anchura
+        // Metodo que recorre recursivamente el grafo en anchura
         Cola cola = new Cola();
         NodoVert aux;
         NodoAdy ady;
+
         cola.poner(nodo);
 
-        //Mientras la cola no este vacia
+        // Mientras la cola no este vacia
         while (!cola.esVacia()) {
             aux = (NodoVert) cola.obtenerFrente();
             cola.sacar();
-            visitados.insertar(aux.getElem(), visitados.longitud() + 1);
+            // Si ya se visito el nodo entonces no lo aniado a la lista
+            if (visitados.localizar(aux.getElem()) < 0) {
+                visitados.insertar(aux.getElem(), visitados.longitud() + 1);
+            }
             ady = aux.getPrimerAdy();
-            //Para cada vertice adyacente de aux
+            // Para cada vertice adyacente de aux
             while (ady != null) {
-                //Si no esta en la lista lo añado a la cola
+                // Si no esta en la lista lo añado a la cola
                 if (visitados.localizar(ady.getVertice().getElem()) < 0)
                     cola.poner(ady.getVertice());
-                //Avanzo al proximo adyacente
+                // Avanzo al proximo adyacente
                 ady = ady.getSigAdyacente();
             }
         }
     }
 
     public Grafo clone() {
-        //Metodo que clona la estructura de grafo y la retorna
+        // Metodo que clona la estructura de grafo y la retorna
         Grafo clon = new Grafo();
 
         if (this.inicio != null) {
@@ -395,20 +417,20 @@ public class Grafo {
     }
 
     private void cloneAux(NodoVert nodoClon, NodoVert nodoOG) {
-        //Metodo que crea y asigna los valores de nodos a los nodos de clon
+        // Metodo que crea y asigna los valores de nodos a los nodos de clon
         Lista vis = new Lista();
         NodoVert aux;
         NodoAdy ady;
 
         vis.insertar(nodoOG.getElem(), 1);
 
-        //Mientras la cola no este vacia
+        // Mientras la cola no este vacia
         while (nodoOG != null) {
-            //Veo cada arco del nodoOG
+            // Veo cada arco del nodoOG
             ady = nodoOG.getPrimerAdy();
             aux = nodoOG;
             while (ady != null) {
-                //Si no se encuentra en el clon lo creo
+                // Si no se encuentra en el clon lo creo
                 if (vis.localizar(ady.getVertice().getElem()) < 0) {
                     vis.insertar(ady.getVertice().getElem(), 1);
                     nodoClon.setSigVertice(new NodoVert(ady.getVertice().getElem()));
@@ -416,5 +438,31 @@ public class Grafo {
                 }
             }
         }
+    }
+
+    public String toString() {
+        StringBuilder salida = new StringBuilder();
+        NodoVert aux = this.inicio;
+        NodoAdy arc;
+
+        // Mientras el siguiente nodo no sea vacio
+        while (aux != null) {
+            salida.append("[ ");
+            salida.append(aux.getElem().toString());
+            salida.append(" ] => {");
+
+            arc = aux.getPrimerAdy();
+            // Mientras tenga arcos
+            while (arc != null) {
+                salida.append(
+                        " ( " + arc.getEtiqueta().toString() + " : " + arc.getVertice().getElem().toString() + " )");
+                arc = arc.getSigAdyacente();
+            }
+
+            salida.append(" }\n");
+            aux = aux.getSigVertice();
+        }
+
+        return salida.toString();
     }
 }

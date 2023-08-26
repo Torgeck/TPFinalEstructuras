@@ -1,4 +1,4 @@
-package Estructuras;
+package estructura.lineales;
 
 public class NodoPrioridad implements Comparable{
 

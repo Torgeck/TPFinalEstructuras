@@ -1,4 +1,4 @@
-package Estructuras;
+package estructura.grafo;
 
 import java.util.Objects;
 
@@ -51,9 +51,16 @@ public class NodoVert {
     }
 
     @Override
+    public String toString() {
+        return elem.toString();
+    }
+
+    @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         NodoVert nodoVert = (NodoVert) o;
         return Objects.equals(elem, nodoVert.elem);
     }

@@ -1,4 +1,4 @@
-package Estructuras;
+package estructura.lineales;
 
 public class Par {
 
@@ -9,6 +9,7 @@ public class Par {
         this.a = a;
         this.b = b;
     }
+
     public Par() {
         this.a = null;
         this.b = null;
@@ -30,5 +31,8 @@ public class Par {
         this.b = b;
     }
 
+    public String toString() {
+        return "[ " + a.toString() + " | " + b.toString() + " ]";
+    }
 
 }

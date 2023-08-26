@@ -1,4 +1,4 @@
-package Estructuras;
+package estructura.arbolAVL;
 
 public class NodoAVL {
 
