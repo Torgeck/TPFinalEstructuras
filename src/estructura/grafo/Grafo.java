@@ -8,7 +8,6 @@ import estructura.lineales.ColaPrioridad;
 import estructura.lineales.Lista;
 import estructura.lineales.Par;
 
-// TODO testear clase
 public class Grafo {
 
     private NodoVert inicio;
