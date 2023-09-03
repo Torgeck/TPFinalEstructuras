@@ -10,28 +10,28 @@ public class Lista {
         longitud = 0;
     }
 
-    public int longitud(){
+    public int longitud() {
         return this.longitud;
     }
 
     public boolean insertar(Object elemento, int posicion) {
         boolean exito = false;
 
-        //Caso donde se quiera insertar nodo en una posiicon que no exista
-        if(posicion >= 1 && posicion <= this.longitud + 1 ) {
+        // Caso donde se quiera insertar nodo en una posiicon que no exista
+        if (posicion >= 1 && posicion <= this.longitud + 1) {
             exito = true;
 
-            //Caso donde se quiera meter nuevo nodo al principio de la lista
-            if(posicion == 1)
+            // Caso donde se quiera meter nuevo nodo al principio de la lista
+            if (posicion == 1)
                 this.cabecera = new Nodo(elemento, this.cabecera);
 
-            else{
+            else {
 
                 Nodo aux = this.cabecera;
                 int i = 1;
 
-                //Avanza hasta el nodo de la posicion -1
-                while (i < posicion - 1){
+                // Avanza hasta el nodo de la posicion -1
+                while (i < posicion - 1) {
                     aux = aux.getEnlace();
                     i++;
                 }
@@ -48,25 +48,24 @@ public class Lista {
     public boolean eliminar(int posicion) {
         boolean exito = false;
 
-        if(posicion >=1 && posicion <= this.longitud){
-            //Si se elimina el primer elemento
-            if(posicion == 1){
+        if (posicion >= 1 && posicion <= this.longitud) {
+            // Si se elimina el primer elemento
+            if (posicion == 1) {
                 cabecera = this.cabecera.getEnlace();
-            }
-            else {
+            } else {
                 int i = 1;
                 Nodo auxDelantero = this.cabecera;
 
-                //Recorro lista
+                // Recorro lista
                 while (i < posicion - 1) {
                     auxDelantero = auxDelantero.getEnlace();
                     i++;
                 }
-                //Setea el enlace del nodo en la posicion anterior a la posicion +1
+                // Setea el enlace del nodo en la posicion anterior a la posicion +1
                 auxDelantero.setEnlace(auxDelantero.getEnlace().getEnlace());
 
             }
-            //Resto un elemento a la longitud total
+            // Resto un elemento a la longitud total
             this.longitud--;
             exito = true;
         }
@@ -76,13 +75,13 @@ public class Lista {
     public Object recuperar(int posicion) {
         Object elemento = null;
 
-        //Excepcion por si la posicion ingresada por parametro no exite en la lista
-        if(posicion >= 1 && posicion <= this.longitud){
+        // Excepcion por si la posicion ingresada por parametro no exite en la lista
+        if (posicion >= 1 && posicion <= this.longitud) {
             int i = 1;
             Nodo aux = this.cabecera;
 
-            //Recorro la lista
-            while(i < posicion){
+            // Recorro la lista
+            while (i < posicion) {
                 aux = aux.getEnlace();
                 i++;
             }
@@ -91,12 +90,12 @@ public class Lista {
         return elemento;
     }
 
-    public int localizar(Object elemento){
+    public int localizar(Object elemento) {
         int posicion = -1, i = 1;
         Nodo aux = this.cabecera;
 
-        while(aux != null){
-            if(aux.getElemento().equals(elemento)){
+        while (aux != null) {
+            if (aux.getElemento().equals(elemento)) {
                 posicion = i;
                 aux = null;
             } else {
@@ -115,19 +114,20 @@ public class Lista {
         this.cabecera = null;
         this.longitud = 0;
     }
+
     @Override
     public Lista clone() {
         Lista clon = new Lista();
 
-        if(this.cabecera != null) {
+        if (this.cabecera != null) {
 
-            //Creo un nuevo nodo identico al nodo de la cabecera del OG
+            // Creo un nuevo nodo identico al nodo de la cabecera del OG
             clon.cabecera = new Nodo(this.cabecera.getElemento(), null);
 
-            //Seteo la misma longitud
+            // Seteo la misma longitud
             clon.longitud = this.longitud;
 
-            //Paso nodos ya avanzados
+            // Paso nodos ya avanzados
             cloneRecursivo(clon.cabecera, this.cabecera);
         }
 
@@ -136,42 +136,43 @@ public class Lista {
 
     private void cloneRecursivo(Nodo nodoClon, Nodo nodoOG) {
 
-        if(nodoOG.getEnlace() == null)
+        if (nodoOG.getEnlace() == null)
             nodoClon.setEnlace(null);
 
-        else{
-            //creo y asigno nuevo nodo al nodo clon
-            nodoClon.setEnlace(new Nodo(nodoOG.getEnlace().getElemento(),null));
-            //avanzo punteros y hago llamado recursivo
-            cloneRecursivo(nodoClon.getEnlace(),nodoOG.getEnlace());
+        else {
+            // creo y asigno nuevo nodo al nodo clon
+            nodoClon.setEnlace(new Nodo(nodoOG.getEnlace().getElemento(), null));
+            // avanzo punteros y hago llamado recursivo
+            cloneRecursivo(nodoClon.getEnlace(), nodoOG.getEnlace());
         }
     }
 
+    // TODO usar StringBuffer
     public String toString() {
         String salida = "[";
         Nodo aux = this.cabecera;
 
-        if(!this.esVacia()){
-            while(aux != null){
+        if (!this.esVacia()) {
+            while (aux != null) {
                 salida += aux.getElemento();
-                //Muevo puntero
+                // Muevo puntero
                 aux = aux.getEnlace();
-                //Agrego comas entre elementos
-                if(aux != null)
+                // Agrego comas entre elementos
+                if (aux != null)
                     salida += ",";
             }
         }
         return salida + "]";
     }
 
-    public Lista invertir(){
+    public Lista invertir() {
         Lista invertida = new Lista();
 
-        if(this.cabecera != null) {
+        if (this.cabecera != null) {
 
             invertirRecursivo(invertida, this.cabecera);
 
-            //Seteo la misma longitud en ambas listas
+            // Seteo la misma longitud en ambas listas
             invertida.longitud = this.longitud;
         }
 
@@ -180,73 +181,72 @@ public class Lista {
 
     private void invertirRecursivo(Lista invertida, Nodo nodoOG) {
 
-        //Va desplazando la cabezera a medida que itera
-        invertida.cabecera = new Nodo(nodoOG.getElemento(),invertida.cabecera);
+        // Va desplazando la cabezera a medida que itera
+        invertida.cabecera = new Nodo(nodoOG.getElemento(), invertida.cabecera);
 
-        //Hace llamada recursiva hasta llegar al final de la lista original
+        // Hace llamada recursiva hasta llegar al final de la lista original
         if (nodoOG.getEnlace() != null) {
-            //Avanzo el puntero
+            // Avanzo el puntero
             invertirRecursivo(invertida, nodoOG.getEnlace());
         }
     }
-/*
+    /*
+     * 
+     * public Lista eliminarApariciones(Object elemento) {
+     * Lista lista = new Lista();
+     * Nodo puntero = this.cabecera, auxLista = lista.cabecera;
+     * 
+     * while(puntero != null) {
+     * 
+     * if(elemento != puntero.getElemento()) {
+     * 
+     * //Caso en que sea el primer elemento insertado en la lista
+     * if (lista.cabecera == null) {
+     * lista.cabecera = new Nodo(puntero.getElemento(), null);
+     * auxLista = lista.cabecera;
+     * }
+     * 
+     * else{
+     * auxLista.setEnlace(new Nodo(puntero.getElemento(), null));
+     * auxLista = auxLista.getEnlace();
+     * }
+     * //Aumento longitud de la cadena
+     * lista.longitud++;
+     * }
+     * //Se saltea el elemento que hay que eliminar
+     * puntero = puntero.getEnlace();
+     * }
+     * return lista;
+     * }
+     */
 
-    public Lista eliminarApariciones(Object elemento) {
-        Lista lista = new Lista();
-        Nodo puntero = this.cabecera, auxLista = lista.cabecera;
+    public void eliminarApariciones(Object elemento) {
 
-        while(puntero != null) {
-
-            if(elemento != puntero.getElemento()) {
-
-                //Caso en que sea el primer elemento insertado en la lista
-                if (lista.cabecera == null) {
-                    lista.cabecera = new Nodo(puntero.getElemento(), null);
-                    auxLista = lista.cabecera;
-                }
-
-                else{
-                    auxLista.setEnlace(new Nodo(puntero.getElemento(), null));
-                    auxLista = auxLista.getEnlace();
-                }
-                //Aumento longitud de la cadena
-                lista.longitud++;
-            }
-            //Se saltea el elemento que hay que eliminar
-            puntero = puntero.getEnlace();
-        }
-        return lista;
-    }
-*/
-
-    public void eliminarApariciones(Object elemento){
-
-        if(this.cabecera != null){
+        if (this.cabecera != null) {
             Nodo delantero = this.cabecera.getEnlace();
 
-            if(this.cabecera.getElemento().equals(elemento)){
+            if (this.cabecera.getElemento().equals(elemento)) {
 
-                while(delantero.getElemento().equals(elemento))
+                while (delantero.getElemento().equals(elemento))
                     delantero = delantero.getEnlace();
 
                 this.cabecera = delantero;
                 delantero = delantero.getEnlace();
             }
 
-            eliminarAparicionesRec(this.cabecera,delantero,elemento);
+            eliminarAparicionesRec(this.cabecera, delantero, elemento);
         }
     }
 
     private void eliminarAparicionesRec(Nodo anterior, Nodo actual, Object elemento) {
 
-        if(actual != null){
+        if (actual != null) {
 
-            if(actual.getElemento().equals(elemento)){
+            if (actual.getElemento().equals(elemento)) {
                 anterior.setEnlace(actual.getEnlace());
-                eliminarAparicionesRec(anterior,actual.getEnlace(),elemento);
-            }
-            else
-                eliminarAparicionesRec(anterior.getEnlace(),actual.getEnlace(),elemento);
+                eliminarAparicionesRec(anterior, actual.getEnlace(), elemento);
+            } else
+                eliminarAparicionesRec(anterior.getEnlace(), actual.getEnlace(), elemento);
         }
     }
 }

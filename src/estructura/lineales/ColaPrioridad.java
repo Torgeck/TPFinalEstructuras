@@ -10,19 +10,19 @@ public class ColaPrioridad {
         this.fin = null;
     }
 
-    public boolean poner(Object elemento,int prioridad) {
-        NodoPrioridad nuevoNodo = new NodoPrioridad(prioridad,elemento);
+    public boolean poner(Object elemento, int prioridad) {
+        NodoPrioridad nuevoNodo = new NodoPrioridad(prioridad, elemento);
 
-        //Caso especial cola vacia
+        // Caso especial cola vacia
         if (this.frente == null) {
             this.frente = nuevoNodo;
             this.fin = nuevoNodo;
         } else {
             // Caso especial que el elemento a insertar tenga menor prioridad que el frente
-            if(this.frente.compareTo(nuevoNodo) > 0){
+            if (this.frente.compareTo(nuevoNodo) > 0) {
                 nuevoNodo.setEnlace(this.frente);
                 this.frente = nuevoNodo;
-            }else{
+            } else {
                 // Busco el lugar donde insertar el nuevo nodo
                 ponerAux(nuevoNodo, this.frente.getEnlace(), this.frente);
             }
@@ -30,21 +30,23 @@ public class ColaPrioridad {
         return true;
     }
 
-    private void ponerAux(NodoPrioridad nuevoNodo, NodoPrioridad nodoActual, NodoPrioridad nodoAnterior){
-        // Metodo que analiza si el nodo tiene la prioridad mas baja que el nodo actual y lo inserta en su lugar
-        NodoPrioridad aux;
+    private void ponerAux(NodoPrioridad nuevoNodo, NodoPrioridad nodoActual, NodoPrioridad nodoAnterior) {
+        // Metodo que analiza si el nodo tiene la prioridad mas baja que el nodo actual
+        // y lo inserta en su lugar
 
-        // Si se llego al final de la cola lo enlazo al nodo anterior y seteo el nuevo fin
-        if(nodoActual == null){
+        // Si se llego al final de la cola lo enlazo al nodo anterior y seteo el nuevo
+        // fin
+        if (nodoActual == null) {
             nodoAnterior.setEnlace(nuevoNodo);
             this.fin = nuevoNodo;
         }
         // Si el nodo actual tiene menor prioridad entonces lo inserto
-        else if(nuevoNodo.compareTo(nodoActual) < 0 ){
+        else if (nuevoNodo.compareTo(nodoActual) < 0) {
             nodoAnterior.setEnlace(nuevoNodo);
             nuevoNodo.setEnlace(nodoActual);
-        }else{
-            // Si no recorro recursivamente hasta encontrar nodo con mayor prioridad o final de cola
+        } else {
+            // Si no recorro recursivamente hasta encontrar nodo con mayor prioridad o final
+            // de cola
             ponerAux(nuevoNodo, nodoActual.getEnlace(), nodoActual);
         }
     }
@@ -52,14 +54,14 @@ public class ColaPrioridad {
     public boolean sacar() {
         boolean exito = false;
 
-        //Si la cola no esta vacia procede
-        if(this.frente != null){
-            //Setea el frente al nodo enlazado del que sale
+        // Si la cola no esta vacia procede
+        if (this.frente != null) {
+            // Setea el frente al nodo enlazado del que sale
             this.frente = this.frente.getEnlace();
             exito = true;
-            //En caso de que quede la cola vacia setea el fin
-            if(this.frente == null)
-                this.fin  = null;
+            // En caso de que quede la cola vacia setea el fin
+            if (this.frente == null)
+                this.fin = null;
         }
 
         return exito;
@@ -68,7 +70,7 @@ public class ColaPrioridad {
     public Object obtenerFrente() {
         Object elemento = null;
 
-        if(!esVacia())
+        if (!esVacia())
             elemento = this.frente.getElemento();
 
         return elemento;
@@ -79,51 +81,51 @@ public class ColaPrioridad {
         return this.frente == null && this.fin == null;
     }
 
-    public void vaciar(){
-        //El garbage collector de java se lleva todos los nodos que no son apuntados
+    public void vaciar() {
+        // El garbage collector de java se lleva todos los nodos que no son apuntados
         this.frente = null;
         this.fin = null;
     }
 
-    public ColaPrioridad clone(){
+    public ColaPrioridad clone() {
         ColaPrioridad clon = new ColaPrioridad();
         NodoPrioridad aux1 = this.frente;
 
-        //Creo y seteo el frente de Cola clon
-        clon.frente = new NodoPrioridad(aux1.getPrioridad(),aux1.getElemento());
+        // Creo y seteo el frente de Cola clon
+        clon.frente = new NodoPrioridad(aux1.getPrioridad(), aux1.getElemento());
 
-        clonRecursivo(clon,aux1,clon.frente);
+        clonRecursivo(clon, aux1, clon.frente);
 
         return clon;
     }
 
     private void clonRecursivo(ColaPrioridad clon, NodoPrioridad punteroOG, NodoPrioridad nodoClon) {
 
-        //Condicion si llego al final de la cola
-        if(punteroOG.getEnlace() == null) {
-            //Pone el ultimo elemento y setea el fin
+        // Condicion si llego al final de la cola
+        if (punteroOG.getEnlace() == null) {
+            // Pone el ultimo elemento y setea el fin
             clon.fin = nodoClon;
-        }
-        else {
-            //Enlazo nodo del clon al nodo anterior
-            nodoClon.setEnlace(new NodoPrioridad(punteroOG.getEnlace().getPrioridad(),punteroOG.getEnlace().getElemento()));
-            //Llamo de nuevo al metodo recursivo aumentando las posiciones de los punteros
-            clonRecursivo(clon,punteroOG.getEnlace(),nodoClon.getEnlace());
+        } else {
+            // Enlazo nodo del clon al nodo anterior
+            nodoClon.setEnlace(
+                    new NodoPrioridad(punteroOG.getEnlace().getPrioridad(), punteroOG.getEnlace().getElemento()));
+            // Llamo de nuevo al metodo recursivo aumentando las posiciones de los punteros
+            clonRecursivo(clon, punteroOG.getEnlace(), nodoClon.getEnlace());
         }
     }
 
-    public String toString (){
+    public String toString() {
         StringBuilder salida = new StringBuilder("[");
         NodoPrioridad puntero = this.frente;
 
-        if(!this.esVacia()){
-            while(puntero != null){
+        if (!this.esVacia()) {
+            while (puntero != null) {
                 salida.append(puntero.getElemento());
-                //Me muevo al siguiente nodo
+                // Me muevo al siguiente nodo
                 puntero = puntero.getEnlace();
 
-                //Agrego comas entre elementos
-                if(puntero != null)
+                // Agrego comas entre elementos
+                if (puntero != null)
                     salida.append(",");
             }
         }

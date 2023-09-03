@@ -74,6 +74,41 @@ public class TestGrafo {
                 System.out.println("El camino mas corto entre E y Z tiene que dar [] con 0u, y da: "
                                 + a.caminoMasCorto('E', 'Z').toString() + barra);
 
+                // Encuentro el camino con menos nodos entre dos nodos
+                System.out.println(barra + "El camino mas corto entre A y B tiene que dar [A, B] con 0, y da: "
+                                + a.menorCaminoCantidadNodos('A', 'B').toString());
+                System.out.println("El camino mas corto entre A y J tiene que dar [A, B, G, J] con 2, y da: "
+                                + a.menorCaminoCantidadNodos('A', 'J').toString());
+                System.out.println("El camino mas corto entre A y I tiene que dar [A, C, H, I] con 2, y da: "
+                                + a.menorCaminoCantidadNodos('A', 'I').toString());
+                System.out.println("El camino mas corto entre E y Z tiene que dar [] con 0u, y da: "
+                                + a.menorCaminoCantidadNodos('E', 'Z').toString() + barra);
+
+                // Verifico si es posible llegar de nodoOrigen a nodoDestino en X unidades
+                System.out.println(
+                                barra + "Verificar si es posible el camino de A y B con 5u tiene que dar true , y da: "
+                                                + a.verificarCaminoMenorDistacia('A', 'B', 5));
+                System.out.println("Verificar si es posible el camino de A y J con 40u tiene que dar true , y da: "
+                                + a.verificarCaminoMenorDistacia('A', 'J', 40));
+                System.out.println("Verificar si es posible el camino de J y A con 20u tiene que dar false , y da: "
+                                + a.verificarCaminoMenorDistacia('J', 'A', 20));
+                System.out.println("Verificar si es posible el camino de K y C con 25u tiene que dar false , y da: "
+                                + a.verificarCaminoMenorDistacia('K', 'C', 25));
+                System.out.println("Verificar si es posible el camino de A y A con 0U tiene que dar true , y da: "
+                                + a.verificarCaminoMenorDistacia('A', 'A', 0));
+                System.out.println("Verificar si es posible el camino de A y Z con 5u tiene que dar false , y da: "
+                                + a.verificarCaminoMenorDistacia('E', 'Z', 5) + barra);
+
+                // Obtener todos los caminos posibles de A-B que pasen por C
+                System.out.println(barra + "Todos los caminos posibles de A->E->H son: "
+                                + a.listarCaminosPosibles('A', 'H', 'E'));
+                System.out.println("Todos los caminos posibles de A->E->A son: "
+                                + a.listarCaminosPosibles('A', 'A', 'E'));
+                System.out.println("Todos los caminos posibles de K->B->I son: "
+                                + a.listarCaminosPosibles('K', 'I', 'B'));
+                System.out.println("Todos los caminos posibles de B->D->G son: "
+                                + a.listarCaminosPosibles('B', 'G', 'D') + barra);
+
                 // Existe camino
                 System.out.println(
                                 barra + "Existe camino entre A y F? tiene que dar true: " + a.existeCamino('A', 'F'));
