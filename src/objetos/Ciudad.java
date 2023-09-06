@@ -26,11 +26,11 @@ public class Ciudad {
         return this.codigoPostal;
     }
 
-    public String getNombreCiudad() {
+    public String getNombre() {
         return this.nombreCiudad;
     }
 
-    public void setNombreCiudad(String nombreCiudad) {
+    public void setNombre(String nombreCiudad) {
         this.nombreCiudad = nombreCiudad;
     }
 

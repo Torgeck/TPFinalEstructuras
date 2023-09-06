@@ -481,7 +481,7 @@ public class Grafo {
         this.inicio = null;
     }
 
-    public Lista listarCaminosPosibles(Object origen, Object destino, Object intermedio) {
+    public Lista listarCaminosPosibles(Object origen, Object intermedio, Object destino) {
         // Metodo que obtiene todos los caminos posibles de origen a destino que pasen
         // por intermedio, el HM estaSiendoVisitado sirve para no entrar en bucles
         NodoVert nodoOrigen = ubicarVertice(origen), nodoDestino = ubicarVertice(destino),
