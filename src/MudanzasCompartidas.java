@@ -63,11 +63,15 @@ public class MudanzasCompartidas {
                 """);
     }
 
-    // Operaciones ABM
-    // Aeropuertos, clientes, vuelos, pasajes
+    //* Operaciones ABM
+    // Ciudades, clientes, solicitudes
     public static void operacionABM(String objeto) {
         System.out.printf("1 - Dar alta un %s\n2 - Dar baja un %s\n3 - Modificar un %s\n4 - Salir\n%n", objeto, objeto,
                 objeto);
+    }
+
+    public static void darAltaCiudad(){
+        
     }
 
     // * Consultas sobre clientes
