@@ -30,6 +30,10 @@ public class Cliente {
     }
 
     // Getters/Setters
+    public String getClave() {
+        return this.tipoDoc + this.numeroDoc;
+    }
+
     public String getTipoDoc() {
         return this.tipoDoc;
     }

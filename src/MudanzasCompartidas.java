@@ -1,3 +1,4 @@
+import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -12,12 +13,13 @@ public class MudanzasCompartidas {
 
     final static int longitudCodigoPostal = 4;
     private static ArbolAVL ciudades;
-    private ArbolAVL solicitudesViajes;
+    private static ArbolAVL solicitudesViajes;
     private static Grafo mapaRutas;
-    private HashMap<Integer, Cliente> clientes;
+    private static HashMap<String, Cliente> clientes;
 
     // Mensajes de error
     private static String errorInput = "ERROR clave ingresada erronea o no existente";
+    private static String errorExistencia = "ERROR ya existe en el sistema";
 
     // Menu principal
     public static void menu() {
@@ -63,15 +65,288 @@ public class MudanzasCompartidas {
                 """);
     }
 
-    //* Operaciones ABM
+    // * Operaciones ABM
     // Ciudades, clientes, solicitudes
     public static void operacionABM(String objeto) {
         System.out.printf("1 - Dar alta un %s\n2 - Dar baja un %s\n3 - Modificar un %s\n4 - Salir\n%n", objeto, objeto,
                 objeto);
     }
 
-    public static void darAltaCiudad(){
-        
+    // TODO Ver si es conveniente sacar el switch por un HM
+    // * CIUDADES
+    public static void darAltaCiudad() {
+        // Metodo que pide datos al usuario para dar de alta una ciudad
+        Scanner inputUsuario = new Scanner(System.in);
+        Ciudad ciudadUsuario;
+        boolean seguir = true;
+        int codigoPostal;
+
+        while (seguir) {
+            System.out.println("Ingrese el codigo postal de la ciudad");
+            codigoPostal = convertirCodigoPostal(inputUsuario.nextLine(), inputUsuario);
+
+            if (ciudades.obtenerElemento(codigoPostal) == null) {
+                System.out.println(
+                        "Ingrese nombre de la ciudad y provincia separadas por -. \nEj: Ciudad-Provincia");
+                ciudadUsuario = crearCiudad(inputUsuario.nextLine(), codigoPostal, inputUsuario);
+
+                ciudades.insertar(codigoPostal, ciudadUsuario);
+                solicitudesViajes.insertar(codigoPostal, new Lista());
+                mapaRutas.insertarVertice(codigoPostal);
+
+            } else {
+                System.out.println(errorExistencia);
+            }
+            seguir = !deseaSalir(inputUsuario);
+        }
+        inputUsuario.close();
+    }
+
+    public static Ciudad crearCiudad(String datosCiudad, int codigoPostal, Scanner inputUsuario) {
+        // Metodo que verifica el input del usuario y crea una ciudad
+        String[] arrInput = datosCiudad.split("-");
+
+        while (arrInput.length != 2) {
+            System.out.println("Ingrese nuevamente nombre de la ciudad y provincias separadas por -");
+            arrInput = inputUsuario.nextLine().split("-");
+        }
+
+        return new Ciudad(codigoPostal, arrInput[0], arrInput[1]);
+    }
+
+    public static void darBajaCiudad() {
+        // Metodo que da de baja una ciudad en el sistema si es que existe
+        Scanner inputUsuario = new Scanner(System.in);
+        int codigoPostal;
+        boolean seguir = true;
+
+        while (seguir) {
+            System.out.println("Ingrese el codigo postal de la ciudad que desea eliminar");
+            codigoPostal = convertirCodigoPostal(inputUsuario.nextLine(), inputUsuario);
+
+            if (ciudades.obtenerElemento(codigoPostal) != null) {
+
+                ciudades.eliminar(codigoPostal);
+                solicitudesViajes.eliminar(codigoPostal);
+                mapaRutas.eliminarVertice(codigoPostal);
+            } else {
+                System.out.println(errorExistencia);
+            }
+
+            seguir = !deseaSalir(inputUsuario);
+        }
+        inputUsuario.close();
+    }
+
+    public static void modificarCiudad() {
+        // Metodo que modifica una ciudad en el sistema si es que existe
+        Scanner inputUsuario = new Scanner(System.in);
+        Ciudad ciudad;
+        boolean seguir = true;
+        int codigoPostal, opcion;
+
+        while (seguir) {
+            // Pregunta que ciudad quiere modificar
+            System.out.println("Ingrese el codigo postal de la ciudad a modificar");
+            codigoPostal = convertirCodigoPostal(inputUsuario.nextLine(), inputUsuario);
+            ciudad = (Ciudad) ciudades.obtenerElemento(codigoPostal);
+
+            if (ciudad != null) {
+                System.out.println("""
+                            Que desea modificar?\n
+                        1 - Nombre de la ciudad\n
+                        2 - Provincia de la ciudad""");
+
+                opcion = inputUsuario.nextInt();
+                inputUsuario.nextLine();
+                switch (opcion) {
+                    case 1:
+                        System.out.println("Ingrese nuevo nombre para la ciudad");
+                        ciudad.setNombre(inputUsuario.nextLine());
+                        System.out.println("Se cambio el nombre de la ciudad a: " + ciudad.getNombre());
+                        break;
+                    case 2:
+                        System.out.println("Ingrese la nueva provincia para la ciudad");
+                        ciudad.setProvincia(inputUsuario.nextLine());
+                        System.out.println("Se cambio la provincia a: " + ciudad.getProvincia());
+                        break;
+                    default:
+                        System.out.println("Opcion ingresada incorrecta");
+                }
+
+            } else {
+                System.out.println(errorExistencia);
+            }
+
+            seguir = !deseaSalir(inputUsuario);
+        }
+        inputUsuario.close();
+    }
+
+    // * CLIENTES
+
+    public static void darAltaCliente() {
+        // Metodo que da de alta un cliente si es que no existe en el sistema
+        Scanner inputUsuario = new Scanner(System.in);
+        Cliente cliente;
+        String[] claveCliente;
+        boolean seguir = true;
+
+        while (seguir) {
+            System.out.println("Ingrese el tipo y numero de documento del cliente separada por -. Ej TIPO-11111111");
+            claveCliente = verificarClaveCliente(inputUsuario.nextLine().split("-"), inputUsuario);
+            // Validar clave
+
+            if (clientes.get(claveCliente[0].concat(claveCliente[1])) == null) {
+                System.out.println("Ingrese nombre, apellido, telefono y email del cliente separados por -");
+                cliente = crearCliente(inputUsuario.nextLine().split("-"), claveCliente, inputUsuario);
+
+                // Lo agrego al sistema
+                clientes.put(cliente.getClave(), cliente);
+            } else {
+                System.out.println(errorExistencia);
+            }
+
+            seguir = !deseaSalir(inputUsuario);
+        }
+        inputUsuario.close();
+    }
+
+    public static String[] verificarClaveCliente(String[] clave, Scanner inputUsuario) {
+        // Metodo que verifica si al clave ingresada es valida
+        int num = -1;
+
+        while (clave.length != 2) {
+            System.out.println("Ingresar nuevamente tipo y numero de documento separado por -");
+            clave = inputUsuario.nextLine().split("-");
+        }
+
+        try {
+            num = Integer.parseInt(clave[1]);
+        } catch (NumberFormatException e) {
+            System.out.println(errorInput);
+            System.out.println("Ingresar nuevamente numero de documento");
+            clave[1] = inputUsuario.nextLine();
+        }
+
+        if (num == -1) {
+            clave = verificarClaveCliente(clave, inputUsuario);
+        }
+
+        return clave;
+    }
+
+    public static Cliente crearCliente(String[] datosCliente, String[] clave, Scanner inputUsuario) {
+        // Metodo que crea y retorna un cliente en base a los datos pasados por
+        // parametro y pide al usuario que reingrese info si es que falta
+        int telefono = -1;
+
+        while (datosCliente.length != 4) {
+            System.out.println("Ingrese nombre, apellido, telefono y email del cliente separados por -");
+            datosCliente = inputUsuario.nextLine().split("-");
+        }
+
+        while (telefono == -1) {
+            try {
+                telefono = Integer.parseInt(datosCliente[2]);
+            } catch (NumberFormatException e) {
+                System.out.println("Formato de telefono erroneo. Ingresar nuevamente telefono");
+                datosCliente[2] = inputUsuario.nextLine();
+            }
+        }
+
+        return new Cliente(clave[0], Integer.parseInt(clave[1]), datosCliente[0], datosCliente[1],
+                telefono, datosCliente[3]);
+    }
+
+    public static void modificarCliente() {
+        // Metodo que pide al usuario que quiere modificar del cliente y lo modifica
+        Scanner inputUsuario = new Scanner(System.in);
+        Cliente cliente;
+        int opcion;
+        boolean seguir = true;
+
+        while (seguir) {
+            System.out.println("Ingrese tipo y numero de documento del cliente a modificar");
+            cliente = clientes.get(inputUsuario.nextLine());
+
+            if (cliente != null) {
+                System.out.println("""
+                            Ingrese la opcion correspondiente al atributo a modificar
+                            1 - Nombre
+                            2 - Apellido
+                            3 - Telefono
+                            4 - Email
+                        """);
+
+                opcion = inputUsuario.nextInt();
+                inputUsuario.nextLine();
+
+                switch (opcion) {
+                    case 1:
+                        System.out.println("Ingrese nuevo nombre para el cliente");
+                        cliente.setNombre(inputUsuario.nextLine());
+                        System.out.println("Se cambio el nombre del cliente a: " + cliente.getNombre());
+                        break;
+                    case 2:
+                        System.out.println("Ingrese nuevo apellido para el cliente");
+                        cliente.setApellido(inputUsuario.nextLine());
+                        System.out.println("Se cambio el apellido a: " + cliente.getApellido());
+                        break;
+                    case 3:
+                        System.out.println("Ingrese nuevo telefono para el cliente");
+                        cliente.setTelefono(inputUsuario.nextInt());
+                        inputUsuario.nextLine();
+                        System.out.println("Se cambio el telefono a: " + cliente.getTelefono());
+                        break;
+                    case 4:
+                        System.out.println("Ingrese nuevo email para el cliente");
+                        cliente.setEmail(inputUsuario.nextLine());
+                        System.out.println("Se cambio el email a: " + cliente.getEmail());
+                    default:
+                        System.out.println("Opcion ingresada incorrecta");
+                }
+
+            } else {
+                System.out.println("No existe cliente con la clave ingresada");
+            }
+
+            seguir = !deseaSalir(inputUsuario);
+        }
+    }
+
+    public static void eliminarCliente() {
+        // Metodo que pide al usuario que cliente desea eliminar del sistema
+        Scanner inputUsuario = new Scanner(System.in);
+        String clave;
+        boolean seguir = true;
+
+        while (seguir) {
+            System.out.println("Ingrese el tipo y numero de documento del cliente a eliminar. Ej: DNI11111111");
+            clave = inputUsuario.nextLine();
+            // Si el cliente esta en el sistema
+            if (clientes.get(clave) != null) {
+                clientes.remove(clave);
+            } else {
+                System.out.println(errorInput);
+            }
+
+            seguir = !deseaSalir(inputUsuario);
+        }
+    }
+
+    // * Rutas
+    public static void darAltaRuta() {
+        // Metodo que da de alta una ruta si es que no existe en el sistema
+    }
+
+    public static void darBajaRuta() {
+        // Metodo que da de baja una ruta si es que existe en el sistema
+    }
+
+    public static void modificarRuta() {
+        // Metodo que modifica una ruta especificada por el usuario si es que existe en
+        // el sistema
     }
 
     // * Consultas sobre clientes
@@ -197,6 +472,28 @@ public class MudanzasCompartidas {
 
     public static boolean verificarCodigo(int codigo) {
         return obtenerLongitudInt(codigo) == 4;
+    }
+
+    public static int convertirCodigoPostal(String codigoPostal, Scanner inputUsuario) {
+        /*
+         * Metodo que toma un string del usuario, verifica que sea un int y lo retorna
+         * caso contrario se llama recursivamente hasta que el input ingresado por el
+         * usuario sea de tipo int y contenga 4 digitos
+         */
+        int codigoInt = -1;
+
+        try {
+            codigoInt = Integer.parseInt(codigoPostal);
+        } catch (NumberFormatException e) {
+            System.out.println(errorInput);
+        }
+
+        if (codigoInt < 0 || !verificarCodigo(codigoInt)) {
+            System.out.println("Ingrese nuevamente el codigo postal de 4 digitos");
+            codigoInt = convertirCodigoPostal(inputUsuario.nextLine(), inputUsuario);
+        }
+
+        return codigoInt;
     }
 
     public static int[] toIntArray(String[] arrString, Scanner input) {
@@ -336,18 +633,18 @@ public class MudanzasCompartidas {
             System.out.println("Ingrese la cantidad de kilometros");
             kilometros = inputUsuario.nextInt();
 
-            //! O simplemete usar los codigos postales y me evito los nulos y crear tantos objetos
+            // ! O simplemete usar los codigos postales y me evito los nulos y crear tantos
+            // objetos
             origen = (Ciudad) ciudades.obtenerElemento(codigoPostalInt[0]);
             destino = (Ciudad) ciudades.obtenerElemento(codigoPostalInt[1]);
 
-            if(origen != null && destino != null){
+            if (origen != null && destino != null) {
                 System.out.format("Es posible viajar de %s a %s en %d kms : %b %n",
-                    origen.getNombre(),
-                    destino.getNombre(),
-                    kilometros,
-                    mapaRutas.verificarCaminoMenorDistacia(codigoPostalInt[0], codigoPostalInt[1], kilometros));
-            }
-            else{ 
+                        origen.getNombre(),
+                        destino.getNombre(),
+                        kilometros,
+                        mapaRutas.verificarCaminoMenorDistacia(codigoPostalInt[0], codigoPostalInt[1], kilometros));
+            } else {
                 System.out.println("No existe codigo postal ingresado en el sistema");
             }
             seguir = !deseaSalir(inputUsuario);
@@ -355,7 +652,7 @@ public class MudanzasCompartidas {
         inputUsuario.close();
     }
 
-    //* Verificar viaje 
+    // * Verificar viaje
 
     public void iniciarMenu() {
         boolean seguir = true;

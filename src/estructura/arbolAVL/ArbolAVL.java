@@ -12,7 +12,7 @@ public class ArbolAVL {
     }
 
     // Metodos
-    public boolean insertar(Object elemento, Comparable key) {
+    public boolean insertar(Comparable key, Object elemento) {
         // Inserta un elemento en el arbol AVL, retorna un boolean dependiendo si
         // inserto o no el elemento
         boolean exito = true;
