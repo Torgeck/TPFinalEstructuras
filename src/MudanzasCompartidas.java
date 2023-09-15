@@ -65,6 +65,13 @@ public class MudanzasCompartidas {
                 """);
     }
 
+    // Submenu de VerificarViajes
+    public static void verificarVIajes() {
+        System.out.println("""
+
+                """);
+    }
+
     // * Operaciones ABM
     // Ciudades, clientes, solicitudes
     public static void operacionABM(String objeto) {
@@ -337,17 +344,85 @@ public class MudanzasCompartidas {
 
     // * Rutas
     public static void darAltaRuta() {
-        // Metodo que da de alta una ruta si es que no existe en el sistema
+        // Metodo que da de alta una ruta
+        Scanner inputUsuario = new Scanner(System.in);
+        int[] ciudad;
+        int cantCiudades = 2;
+        double cantKms;
+        boolean seguir = true;
+
+        while (seguir) {
+            System.out.println("Ingrese los codigos postales de las ciudades separados por -. Ej 1111-2222");
+            ciudad = toIntArray(inputUsuario.nextLine().split("-"), cantCiudades, inputUsuario);
+            System.out.println("Ingrese la cantidad de kilometros de la ruta");
+
+            // TODO implementar un metodo para identificar numeros
+            cantKms = inputUsuario.nextDouble();
+            inputUsuario.nextLine();
+
+            // TODO loggear todas las inserciones y eliminaciones en el sistema
+            System.out.println("Se dio de alta la ruta: " + mapaRutas.insertarArco(ciudad[0], ciudad[1], cantKms));
+
+            seguir = !deseaSalir(inputUsuario);
+        }
     }
 
     public static void darBajaRuta() {
         // Metodo que da de baja una ruta si es que existe en el sistema
+        Scanner inputUsuario = new Scanner(System.in);
+        int[] ciudad;
+        int cantCiudades = 2;
+        double cantKms;
+        boolean seguir = true;
+
+        while (seguir) {
+            System.out.println("Ingrese los codigos postales de las ciudades separados por -. Ej 1111-2222");
+            ciudad = toIntArray(inputUsuario.nextLine().split("-"), cantCiudades, inputUsuario);
+            System.out.println("Ingrese la cantidad de kilometros de la ruta");
+
+            // TODO implementar un metodo para identificar numeros
+            cantKms = inputUsuario.nextDouble();
+            inputUsuario.nextLine();
+
+            // TODO loggear todas las inserciones y eliminaciones en el sistema
+            System.out.println("Se dio de baja la ruta: " + mapaRutas.eliminarArco(ciudad[0], ciudad[1], cantKms));
+            seguir = !deseaSalir(inputUsuario);
+        }
+        inputUsuario.close();
     }
 
     public static void modificarRuta() {
         // Metodo que modifica una ruta especificada por el usuario si es que existe en
         // el sistema
+        Scanner inputUsuario = new Scanner(System.in);
+        int[] ciudad;
+        int cantCiudades = 2;
+        double cantKms, nuevoKms;
+        boolean seguir = true;
+
+        while (seguir) {
+            System.out.println("Ingrese los codigos postales de las ciudades separados por -. Ej 1111-2222");
+            ciudad = toIntArray(inputUsuario.nextLine().split("-"), cantCiudades, inputUsuario);
+            System.out.println("Ingrese la cantidad de kilometros de la ruta");
+
+            // TODO implementar un metodo para identificar numeros
+            cantKms = inputUsuario.nextDouble();
+            inputUsuario.nextLine();
+
+            if (mapaRutas.eliminarArco(ciudad[0], ciudad[1], cantKms)) {
+                System.out.println("Ingrese la nueva cantidad de kilometros de la ruta");
+                nuevoKms = inputUsuario.nextDouble();
+                inputUsuario.nextLine();
+                System.out.println("Se modifico la distancia de la ruta: "
+                        + mapaRutas.insertarArco(ciudad[0], ciudad[1], nuevoKms));
+            }
+
+            // TODO loggear todas las inserciones y eliminaciones en el sistema
+            seguir = !deseaSalir(inputUsuario);
+        }
     }
+
+    // * PEDIDOS CONSULTAR A PROFE
 
     // * Consultas sobre clientes
     public static void consultasCliente(HashMap<Comparable, Object> clientes) {
@@ -448,6 +523,10 @@ public class MudanzasCompartidas {
         return (int) Math.ceil(Math.log10(numero + 1));
     }
 
+    public static boolean verificarCodigo(int codigo) {
+        return obtenerLongitudInt(codigo) == 4;
+    }
+
     public static int obtenerLimiteMax(int numero, int digitosFaltantes) {
         return numero + (9 * obtenerMax(digitosFaltantes));
     }
@@ -457,21 +536,6 @@ public class MudanzasCompartidas {
         // es Si
         System.out.println("Desea salir? S/N");
         return input.nextLine().toUpperCase().equals("S");
-    }
-
-    public static boolean verificarCodigosPostales(int[] codigos) {
-
-        boolean respuesta = true;
-        int i, longitud = codigos.length;
-
-        for (i = 0; i < longitud && respuesta; i++) {
-            respuesta = verificarCodigo(codigos[i]);
-        }
-        return respuesta;
-    }
-
-    public static boolean verificarCodigo(int codigo) {
-        return obtenerLongitudInt(codigo) == 4;
     }
 
     public static int convertirCodigoPostal(String codigoPostal, Scanner inputUsuario) {
@@ -488,7 +552,7 @@ public class MudanzasCompartidas {
             System.out.println(errorInput);
         }
 
-        if (codigoInt < 0 || !verificarCodigo(codigoInt)) {
+        if (!verificarCodigo(codigoInt)) {
             System.out.println("Ingrese nuevamente el codigo postal de 4 digitos");
             codigoInt = convertirCodigoPostal(inputUsuario.nextLine(), inputUsuario);
         }
@@ -496,26 +560,19 @@ public class MudanzasCompartidas {
         return codigoInt;
     }
 
-    public static int[] toIntArray(String[] arrString, Scanner input) {
+    public static int[] toIntArray(String[] arrString, int cantElementos, Scanner input) {
         // Metodo que convierte un arreglo de strings a ints
-        int i = 0, longitud = arrString.length, codigo = 0;
-        int[] arrInts = new int[longitud];
+        int i = 0;
+        int[] arrInts = new int[cantElementos];
 
-        while (i < longitud) {
+        while (i < cantElementos) {
 
             try {
-                codigo = Integer.parseInt(arrString[i]);
-            } catch (NumberFormatException e) {
-                System.out.println(errorInput);
+                arrInts[i] = convertirCodigoPostal(arrString[i], input);
+            } catch (ArrayIndexOutOfBoundsException e) {
+                arrInts[i] = convertirCodigoPostal("", input);
             }
-
-            if (verificarCodigo(codigo)) {
-                arrInts[i] = codigo;
-            } else {
-                System.out.println(errorInput);
-                System.out.println("Ingrese un codigo postal valido");
-                codigo = input.nextInt();
-            }
+            i++;
         }
 
         return arrInts;
@@ -570,6 +627,7 @@ public class MudanzasCompartidas {
         Scanner inputUsuario = new Scanner(System.in);
         String[] codigoPostal;
         int[] codigoPostalInt;
+        int cantCiudades = 2;
         boolean seguir = true;
 
         while (seguir) {
@@ -577,8 +635,7 @@ public class MudanzasCompartidas {
             codigoPostal = inputUsuario.nextLine().toString().split("-");
 
             // Se verifican que los codigos postales sean validos
-            codigoPostalInt = toIntArray(codigoPostal, inputUsuario);
-            verificarCodigosPostales(codigoPostalInt);
+            codigoPostalInt = toIntArray(codigoPostal, cantCiudades, inputUsuario);
 
             System.out
                     .println("El camino mas corto es:\n"
@@ -595,6 +652,7 @@ public class MudanzasCompartidas {
         Scanner inputUsuario = new Scanner(System.in);
         String[] codigoPostal;
         int[] codigoPostalInt;
+        int cantCiudades = 3;
         boolean seguir = true;
 
         while (seguir) {
@@ -602,7 +660,7 @@ public class MudanzasCompartidas {
             // Hago un split() para obtener un array con los codigos postales
             codigoPostal = inputUsuario.nextLine().split("-");
             // Procedo a verificar dichos codigos si es que son validos
-            codigoPostalInt = toIntArray(codigoPostal, inputUsuario);
+            codigoPostalInt = toIntArray(codigoPostal, cantCiudades, inputUsuario);
 
             // Finalmente muestro la respuesta si son validos, caso contrario muestro msj
             // error
@@ -621,6 +679,7 @@ public class MudanzasCompartidas {
         Scanner inputUsuario = new Scanner(System.in);
         String[] codigoPostal;
         int[] codigoPostalInt;
+        int cantCiudades = 2;
         Ciudad origen, destino;
         boolean seguir = true;
         int kilometros;
@@ -628,7 +687,7 @@ public class MudanzasCompartidas {
         while (seguir) {
             System.out.println("Ingrese los codigos postales de la ciudades separadas por un guion. Ej: XXXX-YYYY");
             codigoPostal = inputUsuario.nextLine().split("-");
-            codigoPostalInt = toIntArray(codigoPostal, inputUsuario);
+            codigoPostalInt = toIntArray(codigoPostal, cantCiudades, inputUsuario);
 
             System.out.println("Ingrese la cantidad de kilometros");
             kilometros = inputUsuario.nextInt();

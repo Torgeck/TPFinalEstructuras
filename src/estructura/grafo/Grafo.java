@@ -147,7 +147,7 @@ public class Grafo {
         return exito;
     }
 
-    public boolean eliminarArco(Object origen, Object destino) {
+    public boolean eliminarArco(Object origen, Object destino, Object etiqueta) {
         // Metodo que elimina solo si este existe entre origen y destino pasados por
         // parametros
         boolean exito = false;
@@ -159,9 +159,40 @@ public class Grafo {
             // Si ambos exiten busco si existe el arco
             if (nodoOrigen != null && nodoDestino != null) {
                 // Busco el arco en el nodo origen si existe lo elimino
-                exito = eliminarArcoConNodos(nodoOrigen, nodoDestino);
-                eliminarArcoConNodos(nodoDestino, nodoOrigen);
+                exito = eliminarArcoConEtiqueta(nodoOrigen, nodoDestino, etiqueta);
+                eliminarArcoConEtiqueta(nodoDestino, nodoOrigen, etiqueta);
             }
+        }
+        return exito;
+    }
+
+    private boolean eliminarArcoConEtiqueta(NodoVert origen, NodoVert destino, Object etiqueta) {
+        // Metodo que analiza los diferentes casos de eliminar un arco y devuelve un
+        // boolean
+        boolean exito = true;
+        NodoAdy arcoBuscado = origen.getPrimerAdy(), anterior;
+
+        // Si el arco es el primero se setea al siguiente como primero
+        if (arcoBuscado.getVertice() == destino && arcoBuscado.getEtiqueta().equals(etiqueta))
+            origen.setPrimerAdy(arcoBuscado.getSigAdyacente());
+
+        else {
+            anterior = null;
+            // Caso contrario recorro todos los arcos de origen hasta encontrarlo
+            while (arcoBuscado != null && arcoBuscado.getVertice() != destino
+                    && !arcoBuscado.getEtiqueta().equals(etiqueta)) {
+                anterior = arcoBuscado;
+                arcoBuscado = arcoBuscado.getSigAdyacente();
+            }
+
+            // Si es encontrado seteo al nodoAdy anterior con el posterior del nodoAdy a
+            // eliminar
+            if (arcoBuscado != null) {
+                anterior.setSigAdyacente(arcoBuscado.getSigAdyacente());
+            }
+            // Caso contrario no se encontró y, por lo tanto, no se pudo eliminar
+            else
+                exito = false;
         }
         return exito;
     }
