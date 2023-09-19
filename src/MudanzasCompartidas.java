@@ -90,12 +90,12 @@ public class MudanzasCompartidas {
 
         while (seguir) {
             System.out.println("Ingrese el codigo postal de la ciudad");
-            codigoPostal = convertirCodigoPostal(inputUsuario.nextLine(), inputUsuario);
+            codigoPostal = Utilidades.verificarCodigoPostal(inputUsuario.nextLine(), inputUsuario);
 
             if (ciudades.obtenerElemento(codigoPostal) == null) {
                 System.out.println(
                         "Ingrese nombre de la ciudad y provincia separadas por -. \nEj: Ciudad-Provincia");
-                ciudadUsuario = crearCiudad(inputUsuario.nextLine(), codigoPostal, inputUsuario);
+                ciudadUsuario = crearCiudad(inputUsuario.nextLine().split("-"), codigoPostal, inputUsuario);
 
                 ciudades.insertar(codigoPostal, ciudadUsuario);
                 solicitudesViajes.insertar(codigoPostal, new Lista());
@@ -109,16 +109,19 @@ public class MudanzasCompartidas {
         inputUsuario.close();
     }
 
-    public static Ciudad crearCiudad(String datosCiudad, int codigoPostal, Scanner inputUsuario) {
+    public static Ciudad crearCiudad(String[] datosCiudad, int codigoPostal, Scanner inputUsuario) {
         // Metodo que verifica el input del usuario y crea una ciudad
-        String[] arrInput = datosCiudad.split("-");
+        String nombre, provincia;
 
-        while (arrInput.length != 2) {
+        while (datosCiudad.length != 2) {
             System.out.println("Ingrese nuevamente nombre de la ciudad y provincias separadas por -");
-            arrInput = inputUsuario.nextLine().split("-");
+            datosCiudad = inputUsuario.nextLine().split("-");
         }
 
-        return new Ciudad(codigoPostal, arrInput[0], arrInput[1]);
+        nombre = Utilidades.verificarLetras(datosCiudad[0], inputUsuario);
+        provincia = Utilidades.verificarLetras(datosCiudad[1], inputUsuario);
+
+        return new Ciudad(codigoPostal, nombre, provincia);
     }
 
     public static void darBajaCiudad() {
@@ -129,7 +132,7 @@ public class MudanzasCompartidas {
 
         while (seguir) {
             System.out.println("Ingrese el codigo postal de la ciudad que desea eliminar");
-            codigoPostal = convertirCodigoPostal(inputUsuario.nextLine(), inputUsuario);
+            codigoPostal = Utilidades.verificarCodigoPostal(inputUsuario.nextLine(), inputUsuario);
 
             if (ciudades.obtenerElemento(codigoPostal) != null) {
 
@@ -155,7 +158,7 @@ public class MudanzasCompartidas {
         while (seguir) {
             // Pregunta que ciudad quiere modificar
             System.out.println("Ingrese el codigo postal de la ciudad a modificar");
-            codigoPostal = convertirCodigoPostal(inputUsuario.nextLine(), inputUsuario);
+            codigoPostal = Utilidades.verificarCodigoPostal(inputUsuario.nextLine(), inputUsuario);
             ciudad = (Ciudad) ciudades.obtenerElemento(codigoPostal);
 
             if (ciudad != null) {
@@ -169,12 +172,12 @@ public class MudanzasCompartidas {
                 switch (opcion) {
                     case 1:
                         System.out.println("Ingrese nuevo nombre para la ciudad");
-                        ciudad.setNombre(inputUsuario.nextLine());
+                        ciudad.setNombre(Utilidades.verificarLetras(inputUsuario.nextLine(), inputUsuario));
                         System.out.println("Se cambio el nombre de la ciudad a: " + ciudad.getNombre());
                         break;
                     case 2:
                         System.out.println("Ingrese la nueva provincia para la ciudad");
-                        ciudad.setProvincia(inputUsuario.nextLine());
+                        ciudad.setProvincia(Utilidades.verificarLetras(inputUsuario.nextLine(), inputUsuario));
                         System.out.println("Se cambio la provincia a: " + ciudad.getProvincia());
                         break;
                     default:
@@ -196,15 +199,15 @@ public class MudanzasCompartidas {
         // Metodo que da de alta un cliente si es que no existe en el sistema
         Scanner inputUsuario = new Scanner(System.in);
         Cliente cliente;
-        String[] claveCliente;
+        Par claveCliente;
         boolean seguir = true;
 
         while (seguir) {
             System.out.println("Ingrese el tipo y numero de documento del cliente separada por -. Ej TIPO-11111111");
-            claveCliente = verificarClaveCliente(inputUsuario.nextLine().split("-"), inputUsuario);
+            claveCliente = Utilidades.verificarClaveCliente(inputUsuario.nextLine().split("-"), inputUsuario);
             // Validar clave
 
-            if (clientes.get(claveCliente[0].concat(claveCliente[1])) == null) {
+            if (clientes.get(claveCliente.toConcatString()) == null) {
                 System.out.println("Ingrese nombre, apellido, telefono y email del cliente separados por -");
                 cliente = crearCliente(inputUsuario.nextLine().split("-"), claveCliente, inputUsuario);
 
@@ -219,33 +222,10 @@ public class MudanzasCompartidas {
         inputUsuario.close();
     }
 
-    public static String[] verificarClaveCliente(String[] clave, Scanner inputUsuario) {
-        // Metodo que verifica si al clave ingresada es valida
-        int num = -1;
-
-        while (clave.length != 2) {
-            System.out.println("Ingresar nuevamente tipo y numero de documento separado por -");
-            clave = inputUsuario.nextLine().split("-");
-        }
-
-        try {
-            num = Integer.parseInt(clave[1]);
-        } catch (NumberFormatException e) {
-            System.out.println(errorInput);
-            System.out.println("Ingresar nuevamente numero de documento");
-            clave[1] = inputUsuario.nextLine();
-        }
-
-        if (num == -1) {
-            clave = verificarClaveCliente(clave, inputUsuario);
-        }
-
-        return clave;
-    }
-
-    public static Cliente crearCliente(String[] datosCliente, String[] clave, Scanner inputUsuario) {
+    public static Cliente crearCliente(String[] datosCliente, Par clave, Scanner inputUsuario) {
         // Metodo que crea y retorna un cliente en base a los datos pasados por
         // parametro y pide al usuario que reingrese info si es que falta
+        String nombre, apellido, email;
         int telefono = -1;
 
         while (datosCliente.length != 4) {
@@ -253,17 +233,12 @@ public class MudanzasCompartidas {
             datosCliente = inputUsuario.nextLine().split("-");
         }
 
-        while (telefono == -1) {
-            try {
-                telefono = Integer.parseInt(datosCliente[2]);
-            } catch (NumberFormatException e) {
-                System.out.println("Formato de telefono erroneo. Ingresar nuevamente telefono");
-                datosCliente[2] = inputUsuario.nextLine();
-            }
-        }
+        nombre = Utilidades.verificarLetras(datosCliente[0], inputUsuario);
+        apellido = Utilidades.verificarLetras(datosCliente[1], inputUsuario);
+        telefono = Utilidades.verificarTelefono(datosCliente[2], inputUsuario);
+        email = Utilidades.verificarEmail(datosCliente[3], inputUsuario);
 
-        return new Cliente(clave[0], Integer.parseInt(clave[1]), datosCliente[0], datosCliente[1],
-                telefono, datosCliente[3]);
+        return new Cliente(clave.getA().toString(), (int) clave.getB(), nombre, apellido, telefono, email);
     }
 
     public static void modificarCliente() {
@@ -274,8 +249,10 @@ public class MudanzasCompartidas {
         boolean seguir = true;
 
         while (seguir) {
-            System.out.println("Ingrese tipo y numero de documento del cliente a modificar");
-            cliente = clientes.get(inputUsuario.nextLine());
+            System.out.println(
+                    "Ingrese el tipo y numero de documento del cliente a modificar separada por -. Ej TIPO-11111111");
+            cliente = clientes.get(Utilidades.verificarClaveCliente(inputUsuario.nextLine().split("-"), inputUsuario)
+                    .toConcatString());
 
             if (cliente != null) {
                 System.out.println("""
@@ -292,23 +269,22 @@ public class MudanzasCompartidas {
                 switch (opcion) {
                     case 1:
                         System.out.println("Ingrese nuevo nombre para el cliente");
-                        cliente.setNombre(inputUsuario.nextLine());
+                        cliente.setNombre(Utilidades.verificarLetras(inputUsuario.nextLine(), inputUsuario));
                         System.out.println("Se cambio el nombre del cliente a: " + cliente.getNombre());
                         break;
                     case 2:
                         System.out.println("Ingrese nuevo apellido para el cliente");
-                        cliente.setApellido(inputUsuario.nextLine());
+                        cliente.setApellido(Utilidades.verificarLetras(inputUsuario.nextLine(), inputUsuario));
                         System.out.println("Se cambio el apellido a: " + cliente.getApellido());
                         break;
                     case 3:
                         System.out.println("Ingrese nuevo telefono para el cliente");
-                        cliente.setTelefono(inputUsuario.nextInt());
-                        inputUsuario.nextLine();
+                        cliente.setTelefono(Utilidades.verificarTelefono(inputUsuario.nextLine(), inputUsuario));
                         System.out.println("Se cambio el telefono a: " + cliente.getTelefono());
                         break;
                     case 4:
                         System.out.println("Ingrese nuevo email para el cliente");
-                        cliente.setEmail(inputUsuario.nextLine());
+                        cliente.setEmail(Utilidades.verificarEmail(inputUsuario.nextLine(), inputUsuario));
                         System.out.println("Se cambio el email a: " + cliente.getEmail());
                     default:
                         System.out.println("Opcion ingresada incorrecta");
@@ -329,11 +305,13 @@ public class MudanzasCompartidas {
         boolean seguir = true;
 
         while (seguir) {
-            System.out.println("Ingrese el tipo y numero de documento del cliente a eliminar. Ej: DNI11111111");
-            clave = inputUsuario.nextLine();
+            System.out.println(
+                    "Ingrese el tipo y numero de documento del cliente a eliminar separada por -. Ej TIPO-11111111");
+            clave = Utilidades.verificarClaveCliente(inputUsuario.nextLine().split("-"), inputUsuario).toConcatString();
             // Si el cliente esta en el sistema
             if (clientes.get(clave) != null) {
                 clientes.remove(clave);
+                System.out.println("Se elimino el cliente ");
             } else {
                 System.out.println(errorInput);
             }
@@ -353,12 +331,10 @@ public class MudanzasCompartidas {
 
         while (seguir) {
             System.out.println("Ingrese los codigos postales de las ciudades separados por -. Ej 1111-2222");
-            ciudad = toIntArray(inputUsuario.nextLine().split("-"), cantCiudades, inputUsuario);
+            ciudad = Utilidades.toIntArray(inputUsuario.nextLine().split("-"), cantCiudades, inputUsuario);
             System.out.println("Ingrese la cantidad de kilometros de la ruta");
 
-            // TODO implementar un metodo para identificar numeros
-            cantKms = inputUsuario.nextDouble();
-            inputUsuario.nextLine();
+            cantKms = Utilidades.verificarDouble(inputUsuario.nextLine(), inputUsuario);
 
             // TODO loggear todas las inserciones y eliminaciones en el sistema
             System.out.println("Se dio de alta la ruta: " + mapaRutas.insertarArco(ciudad[0], ciudad[1], cantKms));
@@ -377,12 +353,10 @@ public class MudanzasCompartidas {
 
         while (seguir) {
             System.out.println("Ingrese los codigos postales de las ciudades separados por -. Ej 1111-2222");
-            ciudad = toIntArray(inputUsuario.nextLine().split("-"), cantCiudades, inputUsuario);
+            ciudad = Utilidades.toIntArray(inputUsuario.nextLine().split("-"), cantCiudades, inputUsuario);
             System.out.println("Ingrese la cantidad de kilometros de la ruta");
 
-            // TODO implementar un metodo para identificar numeros
-            cantKms = inputUsuario.nextDouble();
-            inputUsuario.nextLine();
+            cantKms = Utilidades.verificarDouble(inputUsuario.nextLine(), inputUsuario);
 
             // TODO loggear todas las inserciones y eliminaciones en el sistema
             System.out.println("Se dio de baja la ruta: " + mapaRutas.eliminarArco(ciudad[0], ciudad[1], cantKms));
@@ -402,17 +376,14 @@ public class MudanzasCompartidas {
 
         while (seguir) {
             System.out.println("Ingrese los codigos postales de las ciudades separados por -. Ej 1111-2222");
-            ciudad = toIntArray(inputUsuario.nextLine().split("-"), cantCiudades, inputUsuario);
+            ciudad = Utilidades.toIntArray(inputUsuario.nextLine().split("-"), cantCiudades, inputUsuario);
             System.out.println("Ingrese la cantidad de kilometros de la ruta");
 
-            // TODO implementar un metodo para identificar numeros
-            cantKms = inputUsuario.nextDouble();
-            inputUsuario.nextLine();
+            cantKms = Utilidades.verificarDouble(inputUsuario.nextLine(), inputUsuario)
 
             if (mapaRutas.eliminarArco(ciudad[0], ciudad[1], cantKms)) {
                 System.out.println("Ingrese la nueva cantidad de kilometros de la ruta");
-                nuevoKms = inputUsuario.nextDouble();
-                inputUsuario.nextLine();
+                nuevoKms = Utilidades.verificarDouble(inputUsuario.nextLine(), inputUsuario);
                 System.out.println("Se modifico la distancia de la ruta: "
                         + mapaRutas.insertarArco(ciudad[0], ciudad[1], nuevoKms));
             }
@@ -440,7 +411,7 @@ public class MudanzasCompartidas {
     }
 
     // * Consultas sobre clientes
-    public static void consultasCliente(HashMap<Comparable, Object> clientes) {
+    public static void consultasCliente() {
         // Muestra toda la info de los clientes
         Scanner inputUsuario = new Scanner(System.in);
         Cliente clienteObtenido;
@@ -448,15 +419,15 @@ public class MudanzasCompartidas {
 
         while (seguir) {
             System.out.println(
-                    "Ingrese tipo y numero de documento del cliente separados por un guion, en formato TIPO-NUMEROS");
+                    "Ingrese tipo y numero de documento del cliente separados por - , en formato TIPO-NUMEROS");
 
-            clienteObtenido = (Cliente) clientes.get(inputUsuario.nextLine());
+            clienteObtenido = (Cliente) clientes.get(Utilidades
+                    .verificarClaveCliente(inputUsuario.nextLine().split("-"), inputUsuario).toConcatString());
 
             System.out.println(((clienteObtenido == null) ? "No se existe cliente con clave\n"
-                    : "El cliente es: \n" + clienteObtenido.toString()) + "\nDesea salir? S/N");
+                    : "El cliente es: \n" + clienteObtenido.toString()));
 
-            if (inputUsuario.nextLine().toUpperCase().equals("S"))
-                seguir = false;
+            seguir = !deseaSalir(inputUsuario);
         }
         inputUsuario.close();
     }
@@ -466,15 +437,17 @@ public class MudanzasCompartidas {
         // Muestra toda la info de una ciudad dada la clave
         Scanner inputUsuario = new Scanner(System.in);
         Ciudad ciudadObtenida;
+        int codigoPostal;
         boolean seguir = true;
 
         while (seguir) {
             System.out.println("Ingrese el codigo postal de la ciudad");
-
-            ciudadObtenida = (Ciudad) ciudades.obtenerElemento(inputUsuario.nextInt());
+            codigoPostal = Utilidades.verificarCodigoPostal(inputUsuario.nextLine(), inputUsuario);
+            ciudadObtenida = (Ciudad) ciudades.obtenerElemento(codigoPostal);
 
             System.out.println(((ciudadObtenida == null) ? "No se existe cliente con clave\n"
-                    : "El cliente es: \n" + ciudadObtenida.toString()) + "\nDesea salir? S/N");
+                    : "El cliente es: \n" + ciudadObtenida.toString()));
+            seguir = !deseaSalir(inputUsuario);
         }
         inputUsuario.close();
     }
@@ -489,19 +462,14 @@ public class MudanzasCompartidas {
 
         while (seguir) {
             System.out.println("Ingrese un prefijo numerico que no exceda 4 caracteres");
+            rango = obtenerRango(Utilidades.verificarPrefijo(inputUsuario.nextLine(), inputUsuario));
+            ciudadesObtenidas = ciudades.listarRango((int) rango.getA(), (int) rango.getB());
 
-            if (inputUsuario.nextLine().length() > 4) {
-                System.out.println("ERROR mas de 4 caracteres");
-            } else {
-                rango = obtenerRango(inputUsuario.toString());
-                ciudadesObtenidas = ciudades.listarRango((int) rango.getA(), (int) rango.getB());
-
-                // Muestro la lista de las ciudades obtenidas
-                System.out.println(ciudadesObtenidas.toString());
-            }
-            // Pregunta si desea continuar o no
-            seguir = !deseaSalir(inputUsuario);
+            // Muestro la lista de las ciudades obtenidas
+            System.out.println(ciudadesObtenidas.toString());
         }
+        seguir = !deseaSalir(inputUsuario);
+
         inputUsuario.close();
     }
 
@@ -550,55 +518,6 @@ public class MudanzasCompartidas {
         // es Si
         System.out.println("Desea salir? S/N");
         return input.nextLine().toUpperCase().equals("S");
-    }
-
-    public static boolean contineSoloNumeros(String string) {
-        // Metodo que retorna si un string esta conformado solo por numeros
-    }
-
-    public static boolean contieneSoloLetras(String string) {
-        // Metodo que retorna un boolean si un string esta conformado solo por letras
-
-    }
-
-    public static int convertirCodigoPostal(String codigoPostal, Scanner inputUsuario) {
-        /*
-         * Metodo que toma un string del usuario, verifica que sea un int y lo retorna
-         * caso contrario se llama recursivamente hasta que el input ingresado por el
-         * usuario sea de tipo int y contenga 4 digitos
-         */
-        int codigoInt = -1;
-
-        try {
-            codigoInt = Integer.parseInt(codigoPostal);
-        } catch (NumberFormatException e) {
-            System.out.println(errorInput);
-        }
-
-        if (!verificarCodigo(codigoInt)) {
-            System.out.println("Ingrese nuevamente el codigo postal de 4 digitos numericos");
-            codigoInt = convertirCodigoPostal(inputUsuario.nextLine(), inputUsuario);
-        }
-
-        return codigoInt;
-    }
-
-    public static int[] toIntArray(String[] arrString, int cantElementos, Scanner input) {
-        // Metodo que convierte un arreglo de strings a ints
-        int i = 0;
-        int[] arrInts = new int[cantElementos];
-
-        while (i < cantElementos) {
-
-            try {
-                arrInts[i] = convertirCodigoPostal(arrString[i], input);
-            } catch (ArrayIndexOutOfBoundsException e) {
-                arrInts[i] = convertirCodigoPostal("", input);
-            }
-            i++;
-        }
-
-        return arrInts;
     }
 
     // ! COMPLETAR | VER SI CONVIENE REFACTORIZAR EL INPUT EN UN METODO

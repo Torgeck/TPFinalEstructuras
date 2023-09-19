@@ -35,4 +35,8 @@ public class Par {
         return "[ " + a.toString() + " | " + b.toString() + " ]";
     }
 
+    public String toConcatString() {
+        return a.toString() + b.toString();
+    }
+
 }
