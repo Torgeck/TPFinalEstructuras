@@ -2,10 +2,10 @@ import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Scanner;
 
-import estructura.arbolAVL.ArbolAVL;
-import estructura.grafo.Grafo;
-import estructura.lineales.Lista;
-import estructura.lineales.Par;
+import estructuras.arbolAVL.ArbolAVL;
+import estructuras.grafo.Grafo;
+import estructuras.lineales.Lista;
+import estructuras.lineales.Par;
 import objetos.Ciudad;
 import objetos.Cliente;
 
@@ -422,7 +422,22 @@ public class MudanzasCompartidas {
         }
     }
 
-    // * PEDIDOS CONSULTAR A PROFE
+    // * PEDIDOS
+    public static void darAltaPedido(Scanner inputUsuario) {
+        // Metodo que da de alta un pedido de una ciudad a otra
+        boolean seguir = true;
+
+        while (seguir) {
+            // Pedir ciudades origen y destino
+            // ver si existen
+            // Pedir cliente
+            // ver si existe
+            // pedir demas datos y crear solicitud
+            // agregarla al avl con la ciudad origen
+
+            seguir = !deseaSalir(inputUsuario);
+        }
+    }
 
     // * Consultas sobre clientes
     public static void consultasCliente(HashMap<Comparable, Object> clientes) {
@@ -517,7 +532,6 @@ public class MudanzasCompartidas {
         return i;
     }
 
-    // * Utilidades
     public static int obtenerLongitudInt(int numero) {
         // Metodo que obtine la cantidad de digitos de un numero
         return (int) Math.ceil(Math.log10(numero + 1));
@@ -538,6 +552,15 @@ public class MudanzasCompartidas {
         return input.nextLine().toUpperCase().equals("S");
     }
 
+    public static boolean contineSoloNumeros(String string) {
+        // Metodo que retorna si un string esta conformado solo por numeros
+    }
+
+    public static boolean contieneSoloLetras(String string) {
+        // Metodo que retorna un boolean si un string esta conformado solo por letras
+
+    }
+
     public static int convertirCodigoPostal(String codigoPostal, Scanner inputUsuario) {
         /*
          * Metodo que toma un string del usuario, verifica que sea un int y lo retorna
@@ -553,7 +576,7 @@ public class MudanzasCompartidas {
         }
 
         if (!verificarCodigo(codigoInt)) {
-            System.out.println("Ingrese nuevamente el codigo postal de 4 digitos");
+            System.out.println("Ingrese nuevamente el codigo postal de 4 digitos numericos");
             codigoInt = convertirCodigoPostal(inputUsuario.nextLine(), inputUsuario);
         }
 

@@ -1,6 +1,6 @@
-package estructura.arbolAVL;
+package estructuras.arbolAVL;
 
-import estructura.lineales.Lista;
+import estructuras.lineales.Lista;
 
 public class ArbolAVL {
     // Atributo

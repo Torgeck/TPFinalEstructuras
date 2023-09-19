@@ -1,6 +1,6 @@
 package tests.conjuntistas;
 
-import estructura.arbolAVL.ArbolAVL;
+import estructuras.arbolAVL.ArbolAVL;
 
 public class TestAVL {
 

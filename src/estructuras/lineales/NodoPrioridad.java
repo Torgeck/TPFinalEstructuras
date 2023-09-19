@@ -1,6 +1,6 @@
-package estructura.lineales;
+package estructuras.lineales;
 
-public class NodoPrioridad implements Comparable{
+public class NodoPrioridad implements Comparable {
 
     private int prioridad;
     private NodoPrioridad enlace;
@@ -42,7 +42,7 @@ public class NodoPrioridad implements Comparable{
         this.elemento = elemento;
     }
 
-    public int compareTo(Object nodo){
+    public int compareTo(Object nodo) {
         int resultado;
         NodoPrioridad otro = (NodoPrioridad) nodo;
 

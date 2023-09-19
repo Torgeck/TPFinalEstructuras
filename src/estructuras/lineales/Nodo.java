@@ -1,4 +1,4 @@
-package estructura.lineales;
+package estructuras.lineales;
 
 class Nodo {
 

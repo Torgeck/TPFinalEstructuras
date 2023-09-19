@@ -1,4 +1,4 @@
-package estructura.arbolAVL;
+package estructuras.arbolAVL;
 
 public class NodoAVL {
 
@@ -9,7 +9,7 @@ public class NodoAVL {
     private NodoAVL derecho;
 
     // Constructor
-    public NodoAVL(Object value, Comparable key, NodoAVL izquierdo, NodoAVL derecho){
+    public NodoAVL(Object value, Comparable key, NodoAVL izquierdo, NodoAVL derecho) {
         this.value = value;
         this.key = key;
         this.izquierdo = izquierdo;
@@ -17,7 +17,7 @@ public class NodoAVL {
         this.altura = 0;
     }
 
-    public NodoAVL(Object value, Comparable key){
+    public NodoAVL(Object value, Comparable key) {
         this(value, key, null, null);
     }
 
@@ -59,18 +59,18 @@ public class NodoAVL {
         this.derecho = derecho;
     }
 
-    public void recalcularAltura(){
+    public void recalcularAltura() {
         // Metodo que obtiene y setea la altura actual de un nodo
         this.altura = obtenerAltura(this, -1);
     }
 
-    private int obtenerAltura(NodoAVL nodo, int altura){
+    private int obtenerAltura(NodoAVL nodo, int altura) {
         // Metodo recursivo que obtiene y retorna la altura de un nodo
         int alturaIzquierdo, alturaDerecho;
         // Recorre sus hijos si no es nulo
-        if(nodo != null){
-            alturaIzquierdo = obtenerAltura(nodo.getIzquierdo(), altura );
-            alturaDerecho = obtenerAltura(nodo.getDerecho(), altura );
+        if (nodo != null) {
+            alturaIzquierdo = obtenerAltura(nodo.getIzquierdo(), altura);
+            alturaDerecho = obtenerAltura(nodo.getDerecho(), altura);
 
             // Me quedo con la altura maxima y la incremento en 1
             altura = Math.max(alturaIzquierdo, alturaDerecho) + 1;

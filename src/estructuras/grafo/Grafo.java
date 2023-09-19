@@ -1,12 +1,12 @@
-package estructura.grafo;
+package estructuras.grafo;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import estructura.lineales.Cola;
-import estructura.lineales.ColaPrioridad;
-import estructura.lineales.Lista;
-import estructura.lineales.Par;
+import estructuras.lineales.Cola;
+import estructuras.lineales.ColaPrioridad;
+import estructuras.lineales.Lista;
+import estructuras.lineales.Par;
 
 public class Grafo {
 

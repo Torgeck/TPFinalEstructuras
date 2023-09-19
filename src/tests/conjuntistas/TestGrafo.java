@@ -1,7 +1,7 @@
 package tests.conjuntistas;
 
-import estructura.grafo.Grafo;
-import estructura.lineales.Lista;
+import estructuras.grafo.Grafo;
+import estructuras.lineales.Lista;
 
 public class TestGrafo {
 

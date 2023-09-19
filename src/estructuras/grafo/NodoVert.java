@@ -1,4 +1,4 @@
-package estructura.grafo;
+package estructuras.grafo;
 
 import java.util.Objects;
 

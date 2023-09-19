@@ -1,4 +1,4 @@
-package estructura.grafo;
+package estructuras.grafo;
 
 public class NodoAdy {
 

@@ -1,12 +1,9 @@
 package objetos;
 
-import java.time.LocalDate;
-
 public class Solicitud {
 
     private String ciudadDestino;
-    private LocalDate fechaSol; // ! Ver como resolver el tema de entrada de este parametro si lo resuelve el
-                                // constructor, o se delega la responsabilidad afuera
+    private String fechaSol;
     private Cliente cliente;
     private int metrosCubicos;
     private int cantBultos;
@@ -15,7 +12,7 @@ public class Solicitud {
     private boolean estaPago;
 
     // Contructores
-    public Solicitud(String ciudadDestino, LocalDate fechaSol, Cliente cliente, int metrosCubicos, int cantBultos,
+    public Solicitud(String ciudadDestino, String fechaSol, Cliente cliente, int metrosCubicos, int cantBultos,
             String domicilioRetiro, String domicilioEntrega, boolean estaPago) {
         this.ciudadDestino = ciudadDestino;
         this.fechaSol = fechaSol;
@@ -48,11 +45,11 @@ public class Solicitud {
         this.ciudadDestino = ciudadDestino;
     }
 
-    public LocalDate getFechaSol() {
+    public String getFechaSol() {
         return this.fechaSol;
     }
 
-    public void setFechaSol(LocalDate fechaSol) {
+    public void setFechaSol(String fechaSol) {
         this.fechaSol = fechaSol;
     }
 
