@@ -7,13 +7,17 @@ public final class Utilidades {
 
     // * Patrones de expresiones regulares
     private static final Pattern FORMATO_FECHA = Pattern.compile("(0[1-9]|[12]\\d|30)/(1[012]|0[1-9])/[1-9]\\d{3}");
-    private static final Pattern FORMATO_EMAIL = Pattern.compile("\\w+@(w+.w+)+"); // ! TESTEAR
+    private static final Pattern FORMATO_EMAIL = Pattern.compile("(\\w+@\\w+)([.]\\w+)+");
     private static final Pattern FORMATO_TELEFONO = Pattern.compile("\\d{2,3}\\d{8}");
     private static final Pattern CODIGO_POSTAL = Pattern.compile("[1-9]\\d{3}");
     private static final Pattern SOLO_LETRAS = Pattern.compile("[a-zA-Z]+");
 
     // * Mensajes de error
     private static final String ERROR_CODIGO_INVALIDO = "ERROR, codigo postal ingresado invalido";
+
+    // * Constantes
+    private static final int LONGITUD_CODIGO_POSTAL = 4;
+
     // TODO hacer el resto de mensajes de errores
 
     // * Verificadores de input
@@ -130,16 +134,23 @@ public final class Utilidades {
         return fecha;
     }
 
-    // TODO arreglar
     public static int verificarPrefijo(String prefijo, Scanner inputUsuario) {
         // Metodo que verifica si el prefijo ingresado es correcto, si no pide al
         // usuario ingresarlo de nuevo
+        int resultado;
+        String formatoPrefijo = "0*\\d{0,4}";
 
-        while (!inputUsuario.hasNext("\\d{0,4}")) {
-            System.out.println("ERROR, prefijo invalido");
-            inputUsuario.next();
+        if (!prefijo.matches(formatoPrefijo)) {
+            System.out.println("Prefijo invalido, ingrese un prefijo valido");
+            while (!inputUsuario.hasNext(formatoPrefijo)) {
+                System.out.println("ERROR, prefijo invalido");
+                inputUsuario.next();
+            }
+            resultado = inputUsuario.nextInt();
+        } else {
+            resultado = Integer.parseInt(prefijo);
         }
-        return inputUsuario.nextInt();
+        return resultado;
     }
 
     public static Par verificarClaveCliente(String[] clave, Scanner inputUsuario) {
@@ -175,4 +186,40 @@ public final class Utilidades {
 
         return arrInts;
     }
+
+    public static Par obtenerRango(int prefijo) {
+        // Metodo que analiza si es un string y devuelve un rango en forma de par o tira
+        // una excepcion en caso de no serlo
+        Par rango = new Par();
+        int n, limiteInferior;
+
+        n = LONGITUD_CODIGO_POSTAL - obtenerLongitudInt(prefijo);
+        limiteInferior = (int) (prefijo * Math.pow(10, n));
+
+        rango.setA(limiteInferior);
+        rango.setB(obtenerLimiteSuperior(limiteInferior, n));
+
+        return rango;
+    }
+
+    public static int obtenerLongitudInt(int numero) {
+        // Metodo que obtine la cantidad de digitos de un numero
+        return (int) Math.ceil(Math.log10(numero + 1));
+    }
+
+    public static int obtenerLimiteSuperior(int numero, int digitosFaltantes) {
+        return numero + (9 * obtenerMax(digitosFaltantes));
+    }
+
+    public static int obtenerMax(int n) {
+        int i;
+        // Caso base
+        if (n <= 1) {
+            i = (n == 0) ? 0 : 1;
+        } else {
+            i = obtenerMax(n - 1) + (int) Math.pow(10, n - 1);
+        }
+        return i;
+    }
+
 }

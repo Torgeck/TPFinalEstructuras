@@ -452,65 +452,28 @@ public class MudanzasCompartidas {
         inputUsuario.close();
     }
 
-    // ! ARREGLAR
     public static void listarCiudades() {
         // Muestra un listado de las ciudades con un prefijo dado por usuario
         Scanner inputUsuario = new Scanner(System.in);
         Lista ciudadesObtenidas;
         Par rango;
+        int prefijo;
         boolean seguir = true;
 
         while (seguir) {
             System.out.println("Ingrese un prefijo numerico que no exceda 4 caracteres");
-            rango = obtenerRango(Utilidades.verificarPrefijo(inputUsuario.nextLine(), inputUsuario));
+            prefijo = Utilidades.verificarPrefijo(inputUsuario.nextLine(), inputUsuario);
+
+            rango = Utilidades.obtenerRango(prefijo);
             ciudadesObtenidas = ciudades.listarRango((int) rango.getA(), (int) rango.getB());
 
             // Muestro la lista de las ciudades obtenidas
-            System.out.println(ciudadesObtenidas.toString());
+            System.out.println("Las ciudades dentro del rango [" + rango.getA() + " - " + rango.getB() + "] son:\n"
+                    + ciudadesObtenidas.toString());
         }
         seguir = !deseaSalir(inputUsuario);
 
         inputUsuario.close();
-    }
-
-    public static Par obtenerRango(int prefijo) {
-        // Metodo que analiza si es un string y devuelve un rango en forma de par o tira
-        // una excepcion en caso de no serlo
-        Par rango = new Par();
-        int n, limiteInferior;
-
-        n = longitudCodigoPostal - obtenerLongitudInt(prefijo);
-        limiteInferior = (int) (prefijo * Math.pow(10, n));
-
-        rango.setA(limiteInferior);
-        rango.setB(obtenerLimiteMax(limiteInferior, n));
-
-        return rango;
-    }
-
-    // * Utilidades, mover a otra clase para que sea mas limpio
-    public static int obtenerMax(int n) {
-        int i;
-        // Caso base
-        if (n <= 1) {
-            i = (n == 0) ? 0 : 1;
-        } else {
-            i = obtenerMax(n - 1) + (int) Math.pow(10, n - 1);
-        }
-        return i;
-    }
-
-    public static int obtenerLongitudInt(int numero) {
-        // Metodo que obtine la cantidad de digitos de un numero
-        return (int) Math.ceil(Math.log10(numero + 1));
-    }
-
-    public static boolean verificarCodigo(int codigo) {
-        return obtenerLongitudInt(codigo) == 4;
-    }
-
-    public static int obtenerLimiteMax(int numero, int digitosFaltantes) {
-        return numero + (9 * obtenerMax(digitosFaltantes));
     }
 
     public static boolean deseaSalir(Scanner input) {
@@ -520,46 +483,35 @@ public class MudanzasCompartidas {
         return input.nextLine().toUpperCase().equals("S");
     }
 
-    // ! COMPLETAR | VER SI CONVIENE REFACTORIZAR EL INPUT EN UN METODO
     // * Consultas viajes
     public static void caminoMenosCiudades() {
         // Metodo que pide al usuario que ingrese 2 codigos postales de ciudades y
         // muestra el camino que pase por menos ciudades
         boolean seguir = true;
         Scanner inputUsuario = new Scanner(System.in);
-        int codigoOrigen = 0, codigoDestino = 0;
+        int[] codigoPostal;
         Ciudad ciudadOrigen, ciudadDestino;
 
         while (seguir) {
-            try {
-                System.out.println("Ingrese el codigo postal de la ciudad de partida");
-                codigoOrigen = inputUsuario.nextInt();
-                System.out.println("Ingrese el codigo postal de la ciudad destino");
-                codigoDestino = inputUsuario.nextInt();
 
-            } catch (java.util.InputMismatchException e) {
-                System.out.println(errorInput);
-                inputUsuario.next();
-            }
-            // Asigno las ciudades
-            ciudadOrigen = (Ciudad) ciudades.obtenerElemento(codigoOrigen);
-            ciudadDestino = (Ciudad) ciudades.obtenerElemento(codigoDestino);
+            System.out.println(
+                    "Ingrese el codigo postal de la ciudad de partida y la ciudad de destino separadas por un -. Ej XXXX-YYYY");
+            codigoPostal = Utilidades.toIntArray(inputUsuario.nextLine().split("-"), 2, inputUsuario);
+
+            ciudadOrigen = (Ciudad) ciudades.obtenerElemento(codigoPostal[0]);
+            ciudadDestino = (Ciudad) ciudades.obtenerElemento(codigoPostal[1]);
 
             // Si las ciudades existen muestro el camino
             if (ciudadOrigen != null && ciudadDestino != null) {
-                // Muestra el camino si es que hay
                 System.out.println("El camino que pasa por menos ciudades de "
                         + ciudadOrigen.getNombre() + " a " + ciudadDestino.getNombre()
-                        + " es: " + mapaRutas.menorCaminoCantidadNodos(codigoOrigen, codigoDestino));
-                // ! Faltaria ver si es conveniente o no listar solo los nombres
+                        + " es: " + mapaRutas.menorCaminoCantidadNodos(ciudadOrigen.getCodigoPostal(),
+                                ciudadDestino.getCodigoPostal()).toString());
             } else {
                 System.out.println(errorInput);
             }
-
-            // Se le pregunta al usuario si desea continuar
             seguir = !deseaSalir(inputUsuario);
         }
-
         inputUsuario.close();
     }
 
@@ -567,17 +519,15 @@ public class MudanzasCompartidas {
         // Metodo que pide al usuario que ingrese 2 codigos postales de ciudades y
         // muestra el camino con menos kilometros si es que existe
         Scanner inputUsuario = new Scanner(System.in);
-        String[] codigoPostal;
         int[] codigoPostalInt;
         int cantCiudades = 2;
         boolean seguir = true;
 
         while (seguir) {
             System.out.println("Ingrese los codigos postales de la ciudades separadas por un guion. Ej: XXXX-YYYY");
-            codigoPostal = inputUsuario.nextLine().toString().split("-");
-
             // Se verifican que los codigos postales sean validos
-            codigoPostalInt = toIntArray(codigoPostal, cantCiudades, inputUsuario);
+            codigoPostalInt = Utilidades.toIntArray(inputUsuario.nextLine().toString().split("-"), cantCiudades,
+                    inputUsuario);
 
             System.out
                     .println("El camino mas corto es:\n"
@@ -602,7 +552,7 @@ public class MudanzasCompartidas {
             // Hago un split() para obtener un array con los codigos postales
             codigoPostal = inputUsuario.nextLine().split("-");
             // Procedo a verificar dichos codigos si es que son validos
-            codigoPostalInt = toIntArray(codigoPostal, cantCiudades, inputUsuario);
+            codigoPostalInt = Utilidades.toIntArray(codigoPostal, cantCiudades, inputUsuario);
 
             // Finalmente muestro la respuesta si son validos, caso contrario muestro msj
             // error
