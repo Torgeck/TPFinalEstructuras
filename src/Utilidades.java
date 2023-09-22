@@ -103,18 +103,18 @@ public final class Utilidades {
         return resultado;
     }
 
-    public static double verificarDouble(String objeto, Scanner inputUsuario) {
+    public static double verificarDouble(String numero, String objeto, Scanner inputUsuario) {
         // Metodo que verifica que se hayan ingresado numeros reales
         double resultado;
 
-        if (!objeto.matches("\\d+.\\d*")) {
+        if (!numero.matches("\\d+.\\d*")) {
             while (!inputUsuario.hasNextDouble()) {
-                System.out.println("Error, Ingrese nuevamente un " + objeto + " valido");
+                System.out.println("Error, Ingrese nuevamente " + objeto + " valido");
                 inputUsuario.next();
             }
             resultado = inputUsuario.nextDouble();
         } else {
-            resultado = Double.parseDouble(objeto);
+            resultado = Double.parseDouble(numero);
         }
 
         return resultado;

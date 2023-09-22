@@ -2,17 +2,17 @@ package objetos;
 
 public class Solicitud {
 
-    private String ciudadDestino;
+    private int ciudadDestino;
     private String fechaSol;
     private Cliente cliente;
-    private int metrosCubicos;
+    private double metrosCubicos;
     private int cantBultos;
     private String domicilioRetiro;
     private String domicilioEntrega;
     private boolean estaPago;
 
     // Contructores
-    public Solicitud(String ciudadDestino, String fechaSol, Cliente cliente, int metrosCubicos, int cantBultos,
+    public Solicitud(int ciudadDestino, String fechaSol, Cliente cliente, double metrosCubicos, int cantBultos,
             String domicilioRetiro, String domicilioEntrega, boolean estaPago) {
         this.ciudadDestino = ciudadDestino;
         this.fechaSol = fechaSol;
@@ -25,7 +25,7 @@ public class Solicitud {
     }
 
     public Solicitud() {
-        this.ciudadDestino = "";
+        this.ciudadDestino = -1;
         this.fechaSol = null;
         this.cliente = null;
         this.metrosCubicos = -1;
@@ -37,11 +37,11 @@ public class Solicitud {
 
     // Getters/Setters
 
-    public String getCiudadDestino() {
+    public int getCiudadDestino() {
         return this.ciudadDestino;
     }
 
-    public void setCiudadDestino(String ciudadDestino) {
+    public void setCiudadDestino(int ciudadDestino) {
         this.ciudadDestino = ciudadDestino;
     }
 
@@ -61,11 +61,11 @@ public class Solicitud {
         this.cliente = cliente;
     }
 
-    public int getMetrosCubicos() {
+    public double getMetrosCubicos() {
         return this.metrosCubicos;
     }
 
-    public void setMetrosCubicos(int metrosCubicos) {
+    public void setMetrosCubicos(double metrosCubicos) {
         this.metrosCubicos = metrosCubicos;
     }
 

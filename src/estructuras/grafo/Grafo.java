@@ -433,15 +433,15 @@ public class Grafo {
         return cantNodosYCamino;
     }
 
-    public boolean verificarCaminoMenorDistacia(Object origen, Object destino, int distancia) {
+    public boolean verificarCaminoMenorDistacia(Object origen, Object destino, double distancia) {
         // Metodo que verifica si se puede llegar de A - B en distancia o menos
         ColaPrioridad cola = new ColaPrioridad();
         Lista visitados = new Lista();
-        HashMap<NodoVert, Integer> distanciaNodo = new HashMap<>();
+        HashMap<NodoVert, Double> distanciaNodo = new HashMap<>();
         NodoVert nodoOrigen = ubicarVertice(origen), nodoDestino = ubicarVertice(destino), nodoActual = this.inicio,
                 vecino;
         NodoAdy arcoActual;
-        int distanciaTentativa;
+        double distanciaTentativa;
         boolean exito = false, encontrado = false;
 
         // Verifico que existan ambos nodos
@@ -450,11 +450,11 @@ public class Grafo {
             // Se inicilizan las estructuras [NO ES NECESARIO TENER PADRES ya que no se
             // devuelve una lista]
             while (nodoActual != null) {
-                distanciaNodo.put(nodoActual, Integer.MAX_VALUE);
+                distanciaNodo.put(nodoActual, Double.MAX_VALUE);
                 nodoActual = nodoActual.getSigVertice();
             }
 
-            distanciaNodo.put(nodoOrigen, 0);
+            distanciaNodo.put(nodoOrigen, 0.0);
             cola.poner(nodoOrigen, 0);
 
             // Mientras la cola no este vacia, el nodo destino no se encontro
@@ -502,7 +502,7 @@ public class Grafo {
         return exito;
     }
 
-    public boolean vacio() {
+    public boolean estaVacio() {
         // Metodo que retorna true si el grafo esta vacio y false caso contrario
         return this.inicio == null;
     }

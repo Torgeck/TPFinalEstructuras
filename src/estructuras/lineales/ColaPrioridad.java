@@ -10,7 +10,7 @@ public class ColaPrioridad {
         this.fin = null;
     }
 
-    public boolean poner(Object elemento, int prioridad) {
+    public boolean poner(Object elemento, double prioridad) {
         NodoPrioridad nuevoNodo = new NodoPrioridad(prioridad, elemento);
 
         // Caso especial cola vacia

@@ -8,10 +8,10 @@ import estructuras.lineales.Lista;
 import estructuras.lineales.Par;
 import objetos.Ciudad;
 import objetos.Cliente;
+import objetos.Solicitud;
 
 public class MudanzasCompartidas {
 
-    final static int longitudCodigoPostal = 4;
     private static ArbolAVL ciudades;
     private static ArbolAVL solicitudesViajes;
     private static Grafo mapaRutas;
@@ -66,10 +66,15 @@ public class MudanzasCompartidas {
     }
 
     // Submenu de VerificarViajes
-    public static void verificarVIajes() {
+    public static void verificarViajesMenu() {
         System.out.println("""
-
-                """);
+                ======== Dadas 2 ciudades X e Y ========
+                1 - Mostrar todos los pedidos y calcular el espacio total faltante en el camion
+                2 - Verificar si sobra espacio en el camion y listar posibles solicitudes a ciudades
+                    intermedias que se podrian aprovechar a cubrir (Considerando el camino mas corto en kms)
+                ======= Dada una lista de ciudades =======
+                3 - Verificar si es un camino perfecto
+                    """);
     }
 
     // * Operaciones ABM
@@ -81,9 +86,8 @@ public class MudanzasCompartidas {
 
     // TODO Ver si es conveniente sacar el switch por un HM
     // * CIUDADES
-    public static void darAltaCiudad() {
+    public static void darAltaCiudad(Scanner inputUsuario) {
         // Metodo que pide datos al usuario para dar de alta una ciudad
-        Scanner inputUsuario = new Scanner(System.in);
         Ciudad ciudadUsuario;
         boolean seguir = true;
         int codigoPostal;
@@ -106,7 +110,6 @@ public class MudanzasCompartidas {
             }
             seguir = !deseaSalir(inputUsuario);
         }
-        inputUsuario.close();
     }
 
     public static Ciudad crearCiudad(String[] datosCiudad, int codigoPostal, Scanner inputUsuario) {
@@ -124,9 +127,8 @@ public class MudanzasCompartidas {
         return new Ciudad(codigoPostal, nombre, provincia);
     }
 
-    public static void darBajaCiudad() {
+    public static void darBajaCiudad(Scanner inputUsuario) {
         // Metodo que da de baja una ciudad en el sistema si es que existe
-        Scanner inputUsuario = new Scanner(System.in);
         int codigoPostal;
         boolean seguir = true;
 
@@ -145,12 +147,10 @@ public class MudanzasCompartidas {
 
             seguir = !deseaSalir(inputUsuario);
         }
-        inputUsuario.close();
     }
 
-    public static void modificarCiudad() {
+    public static void modificarCiudad(Scanner inputUsuario) {
         // Metodo que modifica una ciudad en el sistema si es que existe
-        Scanner inputUsuario = new Scanner(System.in);
         Ciudad ciudad;
         boolean seguir = true;
         int codigoPostal, opcion;
@@ -190,14 +190,12 @@ public class MudanzasCompartidas {
 
             seguir = !deseaSalir(inputUsuario);
         }
-        inputUsuario.close();
     }
 
     // * CLIENTES
 
-    public static void darAltaCliente() {
+    public static void darAltaCliente(Scanner inputUsuario) {
         // Metodo que da de alta un cliente si es que no existe en el sistema
-        Scanner inputUsuario = new Scanner(System.in);
         Cliente cliente;
         Par claveCliente;
         boolean seguir = true;
@@ -219,7 +217,6 @@ public class MudanzasCompartidas {
 
             seguir = !deseaSalir(inputUsuario);
         }
-        inputUsuario.close();
     }
 
     public static Cliente crearCliente(String[] datosCliente, Par clave, Scanner inputUsuario) {
@@ -241,9 +238,8 @@ public class MudanzasCompartidas {
         return new Cliente(clave.getA().toString(), (int) clave.getB(), nombre, apellido, telefono, email);
     }
 
-    public static void modificarCliente() {
+    public static void modificarCliente(Scanner inputUsuario) {
         // Metodo que pide al usuario que quiere modificar del cliente y lo modifica
-        Scanner inputUsuario = new Scanner(System.in);
         Cliente cliente;
         int opcion;
         boolean seguir = true;
@@ -298,9 +294,8 @@ public class MudanzasCompartidas {
         }
     }
 
-    public static void eliminarCliente() {
+    public static void eliminarCliente(Scanner inputUsuario) {
         // Metodo que pide al usuario que cliente desea eliminar del sistema
-        Scanner inputUsuario = new Scanner(System.in);
         String clave;
         boolean seguir = true;
 
@@ -321,9 +316,8 @@ public class MudanzasCompartidas {
     }
 
     // * Rutas
-    public static void darAltaRuta() {
+    public static void darAltaRuta(Scanner inputUsuario) {
         // Metodo que da de alta una ruta
-        Scanner inputUsuario = new Scanner(System.in);
         int[] ciudad;
         int cantCiudades = 2;
         double cantKms;
@@ -334,7 +328,7 @@ public class MudanzasCompartidas {
             ciudad = Utilidades.toIntArray(inputUsuario.nextLine().split("-"), cantCiudades, inputUsuario);
             System.out.println("Ingrese la cantidad de kilometros de la ruta");
 
-            cantKms = Utilidades.verificarDouble(inputUsuario.nextLine(), inputUsuario);
+            cantKms = Utilidades.verificarDouble(inputUsuario.nextLine(), "cantidad de kms", inputUsuario);
 
             // TODO loggear todas las inserciones y eliminaciones en el sistema
             System.out.println("Se dio de alta la ruta: " + mapaRutas.insertarArco(ciudad[0], ciudad[1], cantKms));
@@ -343,9 +337,8 @@ public class MudanzasCompartidas {
         }
     }
 
-    public static void darBajaRuta() {
+    public static void darBajaRuta(Scanner inputUsuario) {
         // Metodo que da de baja una ruta si es que existe en el sistema
-        Scanner inputUsuario = new Scanner(System.in);
         int[] ciudad;
         int cantCiudades = 2;
         double cantKms;
@@ -356,19 +349,17 @@ public class MudanzasCompartidas {
             ciudad = Utilidades.toIntArray(inputUsuario.nextLine().split("-"), cantCiudades, inputUsuario);
             System.out.println("Ingrese la cantidad de kilometros de la ruta");
 
-            cantKms = Utilidades.verificarDouble(inputUsuario.nextLine(), inputUsuario);
+            cantKms = Utilidades.verificarDouble(inputUsuario.nextLine(), "cantidad de kms", inputUsuario);
 
             // TODO loggear todas las inserciones y eliminaciones en el sistema
             System.out.println("Se dio de baja la ruta: " + mapaRutas.eliminarArco(ciudad[0], ciudad[1], cantKms));
             seguir = !deseaSalir(inputUsuario);
         }
-        inputUsuario.close();
     }
 
-    public static void modificarRuta() {
+    public static void modificarRuta(Scanner inputUsuario) {
         // Metodo que modifica una ruta especificada por el usuario si es que existe en
         // el sistema
-        Scanner inputUsuario = new Scanner(System.in);
         int[] ciudad;
         int cantCiudades = 2;
         double cantKms, nuevoKms;
@@ -379,11 +370,11 @@ public class MudanzasCompartidas {
             ciudad = Utilidades.toIntArray(inputUsuario.nextLine().split("-"), cantCiudades, inputUsuario);
             System.out.println("Ingrese la cantidad de kilometros de la ruta");
 
-            cantKms = Utilidades.verificarDouble(inputUsuario.nextLine(), inputUsuario)
+            cantKms = Utilidades.verificarDouble(inputUsuario.nextLine(), "cantidad de kms", inputUsuario);
 
             if (mapaRutas.eliminarArco(ciudad[0], ciudad[1], cantKms)) {
                 System.out.println("Ingrese la nueva cantidad de kilometros de la ruta");
-                nuevoKms = Utilidades.verificarDouble(inputUsuario.nextLine(), inputUsuario);
+                nuevoKms = Utilidades.verificarDouble(inputUsuario.nextLine(), "cantidad de kms", inputUsuario);
                 System.out.println("Se modifico la distancia de la ruta: "
                         + mapaRutas.insertarArco(ciudad[0], ciudad[1], nuevoKms));
             }
@@ -411,9 +402,8 @@ public class MudanzasCompartidas {
     }
 
     // * Consultas sobre clientes
-    public static void consultasCliente() {
+    public static void consultasCliente(Scanner inputUsuario) {
         // Muestra toda la info de los clientes
-        Scanner inputUsuario = new Scanner(System.in);
         Cliente clienteObtenido;
         boolean seguir = true;
 
@@ -429,13 +419,11 @@ public class MudanzasCompartidas {
 
             seguir = !deseaSalir(inputUsuario);
         }
-        inputUsuario.close();
     }
 
     // * Consultas sobre ciudades
-    public static void consultaCiudad() {
+    public static void consultaCiudad(Scanner inputUsuario) {
         // Muestra toda la info de una ciudad dada la clave
-        Scanner inputUsuario = new Scanner(System.in);
         Ciudad ciudadObtenida;
         int codigoPostal;
         boolean seguir = true;
@@ -449,12 +437,10 @@ public class MudanzasCompartidas {
                     : "El cliente es: \n" + ciudadObtenida.toString()));
             seguir = !deseaSalir(inputUsuario);
         }
-        inputUsuario.close();
     }
 
-    public static void listarCiudades() {
+    public static void listarCiudades(Scanner inputUsuario) {
         // Muestra un listado de las ciudades con un prefijo dado por usuario
-        Scanner inputUsuario = new Scanner(System.in);
         Lista ciudadesObtenidas;
         Par rango;
         int prefijo;
@@ -470,10 +456,9 @@ public class MudanzasCompartidas {
             // Muestro la lista de las ciudades obtenidas
             System.out.println("Las ciudades dentro del rango [" + rango.getA() + " - " + rango.getB() + "] son:\n"
                     + ciudadesObtenidas.toString());
-        }
-        seguir = !deseaSalir(inputUsuario);
 
-        inputUsuario.close();
+            seguir = !deseaSalir(inputUsuario);
+        }
     }
 
     public static boolean deseaSalir(Scanner input) {
@@ -484,13 +469,12 @@ public class MudanzasCompartidas {
     }
 
     // * Consultas viajes
-    public static void caminoMenosCiudades() {
+    public static void caminoMenosCiudades(Scanner inputUsuario) {
         // Metodo que pide al usuario que ingrese 2 codigos postales de ciudades y
         // muestra el camino que pase por menos ciudades
-        boolean seguir = true;
-        Scanner inputUsuario = new Scanner(System.in);
-        int[] codigoPostal;
         Ciudad ciudadOrigen, ciudadDestino;
+        int[] codigoPostal;
+        boolean seguir = true;
 
         while (seguir) {
 
@@ -512,13 +496,11 @@ public class MudanzasCompartidas {
             }
             seguir = !deseaSalir(inputUsuario);
         }
-        inputUsuario.close();
     }
 
-    public static void caminoMenosKilometros() {
+    public static void caminoMenosKilometros(Scanner inputUsuario) {
         // Metodo que pide al usuario que ingrese 2 codigos postales de ciudades y
         // muestra el camino con menos kilometros si es que existe
-        Scanner inputUsuario = new Scanner(System.in);
         int[] codigoPostalInt;
         int cantCiudades = 2;
         boolean seguir = true;
@@ -536,56 +518,41 @@ public class MudanzasCompartidas {
             // Se pregunta al usuario si desea salir o no
             seguir = !deseaSalir(inputUsuario);
         }
-        inputUsuario.close();
     }
 
-    public static void caminoTresCiudades() {
+    public static void caminoTresCiudades(Scanner inputUsuario) {
         // Metodo que retorna un camino que pasa por 3 ciudades si es que existe
-        Scanner inputUsuario = new Scanner(System.in);
-        String[] codigoPostal;
         int[] codigoPostalInt;
         int cantCiudades = 3;
         boolean seguir = true;
 
         while (seguir) {
             System.out.println("Ingrese los codigos postales de las 3 ciudades separadas por '-'. Ej XXXX-YYYY-ZZZZ");
-            // Hago un split() para obtener un array con los codigos postales
-            codigoPostal = inputUsuario.nextLine().split("-");
-            // Procedo a verificar dichos codigos si es que son validos
-            codigoPostalInt = Utilidades.toIntArray(codigoPostal, cantCiudades, inputUsuario);
+            codigoPostalInt = Utilidades.toIntArray(inputUsuario.nextLine().split("-"), cantCiudades, inputUsuario);
 
-            // Finalmente muestro la respuesta si son validos, caso contrario muestro msj
-            // error
             System.out.println("Todos los caminos posibles "
                     + mapaRutas.listarCaminosPosibles(codigoPostalInt[0], codigoPostalInt[1], codigoPostalInt[2]));
 
-            // Salir
             seguir = !deseaSalir(inputUsuario);
         }
-        inputUsuario.close();
     }
 
-    public static void esPosibleConKilometros() {
+    public static void esPosibleConKilometros(Scanner inputUsuario) {
         // Metodo que verifica si es posible llegar de ciudad A a ciudad B con X kms o
         // menos
-        Scanner inputUsuario = new Scanner(System.in);
-        String[] codigoPostal;
         int[] codigoPostalInt;
-        int cantCiudades = 2;
         Ciudad origen, destino;
+        int cantCiudades = 2;
+        double kilometros;
         boolean seguir = true;
-        int kilometros;
 
         while (seguir) {
             System.out.println("Ingrese los codigos postales de la ciudades separadas por un guion. Ej: XXXX-YYYY");
-            codigoPostal = inputUsuario.nextLine().split("-");
-            codigoPostalInt = toIntArray(codigoPostal, cantCiudades, inputUsuario);
+            codigoPostalInt = Utilidades.toIntArray(inputUsuario.nextLine().split("-"), cantCiudades, inputUsuario);
 
             System.out.println("Ingrese la cantidad de kilometros");
-            kilometros = inputUsuario.nextInt();
+            kilometros = Utilidades.verificarDouble(inputUsuario.nextLine(), "cantidad de kms", inputUsuario);
 
-            // ! O simplemete usar los codigos postales y me evito los nulos y crear tantos
-            // objetos
             origen = (Ciudad) ciudades.obtenerElemento(codigoPostalInt[0]);
             destino = (Ciudad) ciudades.obtenerElemento(codigoPostalInt[1]);
 
@@ -594,16 +561,104 @@ public class MudanzasCompartidas {
                         origen.getNombre(),
                         destino.getNombre(),
                         kilometros,
-                        mapaRutas.verificarCaminoMenorDistacia(codigoPostalInt[0], codigoPostalInt[1], kilometros));
+                        mapaRutas.verificarCaminoMenorDistacia(origen.getCodigoPostal(), destino.getCodigoPostal(),
+                                kilometros));
             } else {
                 System.out.println("No existe codigo postal ingresado en el sistema");
             }
             seguir = !deseaSalir(inputUsuario);
         }
-        inputUsuario.close();
     }
 
     // * Verificar viaje
+    public static void obtenerEspacioFaltante(Scanner inputUsuario) {
+        Par pedidosYEspacio;
+        int[] codigoPostal;
+        int cantCiudades = 2;
+        boolean seguir = true;
+
+        while (seguir) {
+            System.out.println("Ingrese codigos postales de la ciudades separadas por un -. Ej XXXX-YYYY");
+            codigoPostal = Utilidades.toIntArray(inputUsuario.nextLine().split("-"), cantCiudades, inputUsuario);
+
+            if (mapaRutas.existeCamino(codigoPostal[0], codigoPostal[1])) {
+
+                pedidosYEspacio = obtenerParListaEspacio(codigoPostal[0], codigoPostal[1], 0);
+                System.out.println("Todos los pedidos de: " + codigoPostal[0] + " a " + codigoPostal[1] + "son: "
+                        + pedidosYEspacio.getA().toString());
+
+                System.out.println("El espacio faltante es de: " + pedidosYEspacio.getB() + " metros cubicos");
+            } else {
+                System.out.println("No existe camino entre las ciudades ingresadas");
+            }
+            seguir = !deseaSalir(inputUsuario);
+        }
+    }
+
+    private static Par obtenerParListaEspacio(int origen, int destino, double espacioCamion) {
+        // Metodo que obtiene la lista de todos los pedidos de origen a destino y
+        // calcula el espacio faltante en el camion
+        // Retornando un par con los resultados obtenidos
+        Par resultado = new Par();
+        Lista solicitudes = (Lista) solicitudesViajes.obtenerElemento(origen);
+
+        // Filtro las solicitudes con destino
+        resultado.setA(crearYFiltrar(solicitudes, destino));
+        resultado.setB(calcularEspacioFaltante((Lista) resultado.getA(), espacioCamion));
+
+        return resultado;
+    }
+
+    private static Lista crearYFiltrar(Lista lista, int destino) {
+        int i = 0, longitud = lista.longitud();
+        Lista resultado = new Lista();
+        Solicitud aux;
+
+        while (i < longitud) {
+            aux = (Solicitud) lista.recuperar(i);
+            if (aux.getCiudadDestino() == destino) {
+                resultado.insertar(aux, 0);
+            }
+            i++;
+        }
+        return resultado;
+    }
+
+    private static double calcularEspacioFaltante(Lista lista, double espacioCamion) {
+        int i = 0, longitud = lista.longitud();
+        double resultado = -espacioCamion;
+        Solicitud aux;
+
+        while (i < longitud) {
+            aux = (Solicitud) lista.recuperar(i);
+            resultado += aux.getMetrosCubicos();
+        }
+
+        return resultado;
+    }
+
+    public static void verificarEspacioListarSolicitudes(Scanner inputUsuario) {
+        Lista camino;
+        int[] codigoPostal;
+        int cantCiudades = 2;
+        boolean seguir = true;
+        double espacioCamion;
+
+        while (seguir) {
+            System.out.println("Ingrese codigos postales de la ciudades separadas por un -. Ej XXXX-YYYY");
+            codigoPostal = Utilidades.toIntArray(inputUsuario.nextLine().split("-"), cantCiudades, inputUsuario);
+
+            camino = (Lista) mapaRutas.caminoMasCorto(codigoPostal[0], codigoPostal[1]).getB();
+
+            if (camino != null) {
+                System.out.println("Ingrese cantidad de espacio en el camion en metros cubicos");
+                espacioCamion = Utilidades.verificarDouble(inputUsuario.nextLine(), "cantidad de metros cubicos",
+                        inputUsuario);
+
+            }
+            seguir = !deseaSalir(inputUsuario);
+        }
+    }
 
     public void iniciarMenu() {
         boolean seguir = true;

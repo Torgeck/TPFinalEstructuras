@@ -2,17 +2,17 @@ package estructuras.lineales;
 
 public class NodoPrioridad implements Comparable {
 
-    private int prioridad;
+    private double prioridad;
     private NodoPrioridad enlace;
     private Object elemento;
 
-    public NodoPrioridad(int prioridad, NodoPrioridad enlace, Object elemento) {
+    public NodoPrioridad(double prioridad, NodoPrioridad enlace, Object elemento) {
         this.prioridad = prioridad;
         this.enlace = enlace;
         this.elemento = elemento;
     }
 
-    public NodoPrioridad(int prioridad, Object elemento) {
+    public NodoPrioridad(double prioridad, Object elemento) {
         this.prioridad = prioridad;
         this.elemento = elemento;
         this.enlace = null;
@@ -26,11 +26,11 @@ public class NodoPrioridad implements Comparable {
         this.enlace = enlace;
     }
 
-    public int getPrioridad() {
+    public double getPrioridad() {
         return prioridad;
     }
 
-    public void setPrioridad(int prioridad) {
+    public void setPrioridad(double prioridad) {
         this.prioridad = prioridad;
     }
 
@@ -46,7 +46,7 @@ public class NodoPrioridad implements Comparable {
         int resultado;
         NodoPrioridad otro = (NodoPrioridad) nodo;
 
-        resultado = Integer.compare(this.prioridad, otro.getPrioridad());
+        resultado = Double.compare(this.prioridad, otro.getPrioridad());
         return resultado;
     }
 }
