@@ -190,6 +190,37 @@ public class Lista {
             invertirRecursivo(invertida, nodoOG.getEnlace());
         }
     }
+
+    public boolean insertarElementosLista(Lista listaElementos) {
+        // Metodo que recibe una lista por parametro y agrega los elementos de ella a la
+        // lista que llama el metodo
+        boolean resultado = true;
+        int i = 1;
+
+        if (this.cabecera != null) {
+            insertarElementosListaRecursivo(this.cabecera, listaElementos, i);
+        } else if (!listaElementos.esVacia()) {
+            this.cabecera = new Nodo(listaElementos.recuperar(i), null);
+            this.longitud++;
+            insertarElementosListaRecursivo(this.cabecera, listaElementos, i++);
+        } else {
+            resultado = false;
+        }
+
+        return resultado;
+    }
+
+    private void insertarElementosListaRecursivo(Nodo nodoActual, Lista elementos, int posicionElemento) {
+
+        if (nodoActual.getEnlace() != null) {
+            insertarElementosListaRecursivo(nodoActual.getEnlace(), elementos, posicionElemento);
+        } else if (elementos.recuperar(posicionElemento) != null) {
+            nodoActual.setEnlace(new Nodo(elementos.recuperar(posicionElemento), null));
+            this.longitud++;
+            insertarElementosListaRecursivo(nodoActual.getEnlace(), elementos, posicionElemento + 1);
+        }
+    }
+
     /*
      * 
      * public Lista eliminarApariciones(Object elemento) {

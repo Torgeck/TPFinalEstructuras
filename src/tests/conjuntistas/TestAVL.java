@@ -1,11 +1,38 @@
 package tests.conjuntistas;
 
 import estructuras.arbolAVL.ArbolAVL;
+import estructuras.lineales.Lista;
 
 public class TestAVL {
 
     public static void main(String[] args) {
         ArbolAVL a = new ArbolAVL(), b = new ArbolAVL();
+        Lista listaA = new Lista(), listaB = new Lista();
+
+        // TESTEO NUEVO METODO DE LISTAS
+        System.out.println("Muestra lista A = " + listaA.toString() + " con longitud: " + listaA.longitud());
+        System.out.println("Muestra lista B = " + listaB.toString() + " con longitud: " + listaB.longitud());
+
+        // AGREGO ITEMS
+        System.out.println("Agrego A a lista A" + listaA.insertar('A', 1));
+        System.out.println("Agrego B a lista A" + listaA.insertar('B', 2));
+        System.out.println("Agrego C a lista A" + listaA.insertar('C', 3));
+        System.out.println("Agrego D a lista A" + listaA.insertar('D', 4));
+        System.out.println("Agrego E a lista A" + listaA.insertar('E', 5));
+        System.out.println("Agrego F a lista A" + listaA.insertar('F', 6));
+        System.out.println("Muestra lista A = " + listaA.toString() + " con longitud: " + listaA.longitud());
+
+        System.out.println("Agrego 1 a lista B" + listaB.insertar('1', 1));
+        System.out.println("Agrego 2 a lista B" + listaB.insertar('2', 2));
+        System.out.println("Agrego 3 a lista B" + listaB.insertar('3', 3));
+        System.out.println("Agrego 4 a lista B" + listaB.insertar('4', 4));
+        System.out.println("Agrego 5 a lista B" + listaB.insertar('5', 5));
+        System.out.println("Agrego 6 a lista B" + listaB.insertar('6', 6));
+        System.out.println("Muestra lista B = " + listaB.toString() + " con longitud: " + listaB.longitud());
+
+        System.out.println("Ahora agrego los items de B a A: " + listaA.insertarElementosLista(listaB));
+        System.out.println("Muestra lista A = " + listaA.toString() + " con longitud: " + listaA.longitud());
+        System.out.println("Muestra lista B = " + listaB.toString() + " con longitud: " + listaB.longitud());
 
         // Muestra los arboles y checkean si estan vacios
         System.out.println("Muestra el arbol a " + a.toString() + "\n El arbol esta vacio?: " + a.esVacio());
@@ -66,61 +93,61 @@ public class TestAVL {
          * System.out.println("Se inserta 6" + a.insertar(6) + a.toString());
          * System.out.println("Se inserta 7" + a.insertar(7) + a.toString());
          */
-        System.out.println("Se inserta 10 tiene que dar true: " + a.insertar(1, 10));
+        System.out.println("Se inserta 10 tiene que dar true: " + a.insertar(10, 10));
         System.out.println("El arbol a es: " + a.toString());
-        System.out.println("Se inserta 6 tiene que dar true: " + a.insertar(1, 6));
+        System.out.println("Se inserta 6 tiene que dar true: " + a.insertar(6, 6));
         System.out.println("El arbol a es: " + a.toString());
-        System.out.println("Se inserta 12 tiene que dar true: " + a.insertar(1, 12));
+        System.out.println("Se inserta 12 tiene que dar true: " + a.insertar(12, 12));
         System.out.println("El arbol a es: " + a.toString());
-        System.out.println("Se inserta 10 tiene que dar false: " + a.insertar(1, 10));
+        System.out.println("Se inserta 10 tiene que dar false: " + a.insertar(10, 10));
         System.out.println("El arbol a es: " + a.toString());
-        System.out.println("Se inserta 20 tiene que dar true: " + a.insertar(1, 20));
+        System.out.println("Se inserta 20 tiene que dar true: " + a.insertar(20, 20));
         System.out.println("El arbol a es: " + a.toString());
-        System.out.println("Se inserta 3 tiene que dar true: " + a.insertar(1, 3));
+        System.out.println("Se inserta 3 tiene que dar true: " + a.insertar(3, 3));
         System.out.println("El arbol a es: " + a.toString());
-        System.out.println("Se inserta 7 tiene que dar true: " + a.insertar(1, 7));
+        System.out.println("Se inserta 7 tiene que dar true: " + a.insertar(7, 7));
         System.out.println("El arbol a es: " + a.toString());
-        System.out.println("Se inserta 9 tiene que dar true: " + a.insertar(1, 9));
+        System.out.println("Se inserta 9 tiene que dar true: " + a.insertar(9, 9));
         System.out.println("El arbol a es: " + a.toString());
-        System.out.println("Se inserta 4 tiene que dar true: " + a.insertar(1, 4));
+        System.out.println("Se inserta 4 tiene que dar true: " + a.insertar(4, 4));
         System.out.println("El arbol a es: " + a.toString());
         System.out.println("Se inserta 1 tiene que dar true: " + a.insertar(1, 1));
         System.out.println("El arbol a es: " + a.toString());
-        System.out.println("Se inserta 2 tiene que dar true: " + a.insertar(1, 2));
+        System.out.println("Se inserta 2 tiene que dar true: " + a.insertar(2, 2));
         System.out.println("El arbol a es: " + a.toString());
-        System.out.println("Se inserta 22 tiene que dar true: " + a.insertar(1, 22));
+        System.out.println("Se inserta 22 tiene que dar true: " + a.insertar(22, 22));
         System.out.println("El arbol a es: " + a.toString());
-        System.out.println("Se inserta 22 tiene que dar false: " + a.insertar(1, 22));
+        System.out.println("Se inserta 22 tiene que dar false: " + a.insertar(22, 22));
         System.out.println("El arbol a es: " + a.toString());
-        System.out.println("Se inserta 3 tiene que dar false: " + a.insertar(1, 3));
+        System.out.println("Se inserta 3 tiene que dar false: " + a.insertar(3, 3));
         System.out.println("El arbol a es: " + a.toString());
     }
 
     private static void llenarCaso1(ArbolAVL a) {
         // Metodo que llena al arbol con numeros y testea si se estan insertando
 
-        System.out.println("Se inserta 5 tiene que dar true: " + a.insertar(1, 5) + a.toString());
-        System.out.println("Se inserta 4 tiene que dar true: " + a.insertar(1, 4) + a.toString());
-        System.out.println("Se inserta 3 tiene que dar true: " + a.insertar(1, 3) + a.toString());
-        System.out.println("Se inserta 2 tiene que dar true: " + a.insertar(1, 2) + a.toString());
+        System.out.println("Se inserta 5 tiene que dar true: " + a.insertar(5, 5) + a.toString());
+        System.out.println("Se inserta 4 tiene que dar true: " + a.insertar(4, 4) + a.toString());
+        System.out.println("Se inserta 3 tiene que dar true: " + a.insertar(3, 3) + a.toString());
+        System.out.println("Se inserta 2 tiene que dar true: " + a.insertar(2, 2) + a.toString());
         System.out.println("Se inserta 1 tiene que dar true: " + a.insertar(1, 1) + a.toString());
-        System.out.println("Se inserta 10 tiene que dar true: " + a.insertar(1, 10));
-        System.out.println("El arbol a es: " + a.toString());
-        System.out.println("Se inserta 2 tiene que dar true: " + a.insertar(1, 2));
-        System.out.println("El arbol a es: " + a.toString());
-        System.out.println("Se inserta 3 tiene que dar true: " + a.insertar(1, 3));
-        System.out.println("El arbol a es: " + a.toString());
-        System.out.println("Se inserta 4 tiene que dar true: " + a.insertar(1, 4));
-        System.out.println("Se inserta 5 tiene que dar true: " + a.insertar(1, 5));
-        System.out.println("Se inserta 3 tiene que dar false: " + a.insertar(1, 3));
-        System.out.println("Se inserta 7 tiene que dar true: " + a.insertar(1, 7));
-        System.out.println("Se inserta 9 tiene que dar true: " + a.insertar(1, 9));
-        System.out.println("Se inserta 4 tiene que dar false: " + a.insertar(1, 4));
-        System.out.println("Se inserta 15 tiene que dar true: " + a.insertar(1, 15));
-        System.out.println("Se inserta 12 tiene que dar true: " + a.insertar(1, 12));
-        System.out.println("Se inserta 20 tiene que dar true: " + a.insertar(1, 20));
-        System.out.println("Se inserta 11 tiene que dar true: " + a.insertar(1, 11));
-        System.out.println("Se inserta 13 tiene que dar true: " + a.insertar(1, 13));
+        System.out.println("Se inserta 10 tiene que dar true: " + a.insertar(10, 10));
+        System.out.println("El arbol b es: " + a.toString());
+        System.out.println("Se inserta 2 tiene que dar true: " + a.insertar(2, 2));
+        System.out.println("El arbol b es: " + a.toString());
+        System.out.println("Se inserta 3 tiene que dar false: " + a.insertar(3, 3));
+        System.out.println("El arbol b es: " + a.toString());
+        System.out.println("Se inserta 4 tiene que dar true: " + a.insertar(4, 4));
+        System.out.println("Se inserta 5 tiene que dar true: " + a.insertar(5, 5));
+        System.out.println("Se inserta 3 tiene que dar false: " + a.insertar(3, 3));
+        System.out.println("Se inserta 7 tiene que dar true: " + a.insertar(7, 7));
+        System.out.println("Se inserta 9 tiene que dar true: " + a.insertar(9, 9));
+        System.out.println("Se inserta 4 tiene que dar false: " + a.insertar(4, 4));
+        System.out.println("Se inserta 15 tiene que dar true: " + a.insertar(15, 15));
+        System.out.println("Se inserta 12 tiene que dar true: " + a.insertar(12, 12));
+        System.out.println("Se inserta 20 tiene que dar true: " + a.insertar(20, 20));
+        System.out.println("Se inserta 11 tiene que dar true: " + a.insertar(11, 11));
+        System.out.println("Se inserta 13 tiene que dar true: " + a.insertar(13, 13));
     }
 
     private static void vaciarMenor(ArbolAVL a) {

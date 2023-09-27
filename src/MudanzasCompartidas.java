@@ -638,7 +638,7 @@ public class MudanzasCompartidas {
     }
 
     public static void verificarEspacioListarSolicitudes(Scanner inputUsuario) {
-        Lista camino;
+        Lista camino, solicitudesDestino, posiblesSolicitudes;
         int[] codigoPostal;
         int cantCiudades = 2;
         boolean seguir = true;
@@ -654,10 +654,46 @@ public class MudanzasCompartidas {
                 System.out.println("Ingrese cantidad de espacio en el camion en metros cubicos");
                 espacioCamion = Utilidades.verificarDouble(inputUsuario.nextLine(), "cantidad de metros cubicos",
                         inputUsuario);
-
+                // llamo al metodo que verifica si hay espacio para los pedidos de origen a
+                // destino
+                solicitudesDestino = crearYFiltrar((Lista) solicitudesViajes.obtenerElemento(codigoPostal[0]),codigoPostal[1]);
+                espacioCamion = calcularEspacioFaltante(solicitudesDestino, espacioCamion);
+                if( espacioCamion < 0);{
+                    // Hay espacio
+                    posiblesSolicitudes = obtenerSolicitudesSatisfacibles(camino, codigoPostal[1], espacioCamion);
+                    System.out.println(posiblesSolicitudes );
+                } else{
+                    // No hay espacio
+                    System.out.println("No hay espacio por ende no se pueden listar posibles pedidos a satisfacer");
+                };
+                // si hay espacio > 0 entonces recorro la lista en busca de pedidos de ciudad
+                // actual a ciudad destino
+                // los agrego a una lista y los muestro
+                // si no hay espacio le digo al usuario que no hay espacio y no listo ningun
+                // pedido ya que no se puede aprovechar nada
             }
             seguir = !deseaSalir(inputUsuario);
         }
+    }
+
+    private Lista obtenerPosiblesSolcitudes(Lista camino, int destino, double espacioDisponible) {
+        // Metodo que obtiene las posibles solicitudes que se pueden satisfacer de
+        // origen a destino
+        int i = 0, longitud, ciudadActual = (int) camino.recuperar(i);
+        Lista posiblesSolicitudes = crearYFiltrar(solicitudesViajes.obtenerElemento(ciudadActual), destino),
+                solicitudesFinales = new Lista();
+        Solicitud aux;
+
+        while (i > longitud) {
+            aux = (Solicitud) posiblesSolicitudes.recuperar(i);
+
+            if (aux.getMetrosCubicos() >= espacioDisponible) {
+                resultado.insertar(aux, 1);
+            }
+            i++;
+        }
+
+        return solicitudesFinales;
     }
 
     public void iniciarMenu() {
