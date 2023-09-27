@@ -502,7 +502,7 @@ public class Grafo {
         return exito;
     }
 
-    public boolean estaVacio() {
+    public boolean esVacio() {
         // Metodo que retorna true si el grafo esta vacio y false caso contrario
         return this.inicio == null;
     }
@@ -683,6 +683,7 @@ public class Grafo {
         }
     }
 
+    // TODO ARREGLAR/TERMINAR CLONE()
     public Grafo clone() {
         // Metodo que clona la estructura de grafo y la retorna
         Grafo clon = new Grafo();

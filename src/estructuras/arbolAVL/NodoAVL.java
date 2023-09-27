@@ -1,5 +1,7 @@
 package estructuras.arbolAVL;
 
+@SuppressWarnings("rawtypes")
+
 public class NodoAVL {
 
     private Object value;

@@ -34,6 +34,9 @@ public class TestAVL {
         System.out.println("Muestra lista A = " + listaA.toString() + " con longitud: " + listaA.longitud());
         System.out.println("Muestra lista B = " + listaB.toString() + " con longitud: " + listaB.longitud());
 
+        System.out.println("Muestro el elemento con indice 0 en la lista " + listaA.recuperar(0));
+        System.out.println("Muestro el elemento con indice 1 en la lista " + listaA.recuperar(1));
+
         // Muestra los arboles y checkean si estan vacios
         System.out.println("Muestra el arbol a " + a.toString() + "\n El arbol esta vacio?: " + a.esVacio());
         System.out.println("Muestra el arbol b " + b.toString() + "\n El arbol esta vacio?: " + b.esVacio());

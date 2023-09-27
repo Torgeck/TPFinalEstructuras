@@ -14,15 +14,17 @@ public class TestGrafo {
                 // Lleno una lista con nodos que almacenan valores numericos
                 generarNodosA(nodosA);
 
-                // Muestra los grafos y chekean si estan vacios
+                // Muestra los grafos y chekean si estan esVacios
                 System.out.println(
-                                barra + "Muestra el grafo a \n" + a.toString() + "\nEl grafo esta vacio?: " + a.vacio()
+                                barra + "Muestra el grafo a \n" + a.toString() + "\nEl grafo esta esVacio?: "
+                                                + a.esVacio()
                                                 + barra);
 
                 // Lleno el grafo y luego lo muestro
                 llenarGrafo(a, nodosA);
                 System.out.println(
-                                barra + "Muestra el grafo a \n" + a.toString() + "\nEl grafo esta vacio?: " + a.vacio()
+                                barra + "Muestra el grafo a \n" + a.toString() + "\nEl grafo esta esVacio?: "
+                                                + a.esVacio()
                                                 + barra);
 
                 // Veo si en el grafo existe arco
@@ -60,7 +62,7 @@ public class TestGrafo {
                 // Muestro el grafo con los arcos
                 System.out.println("Existe arco de A a D tiene que ser true es: " + a.existeArco('A', 'D'));
                 System.out.println("Existe vertice E tiene que ser true es: " + a.existeVertice('E'));
-                System.out.println("Muestra el grafo a \n" + a.toString() + "\nEl grafo esta vacio?: " + a.vacio());
+                System.out.println("Muestra el grafo a \n" + a.toString() + "\nEl grafo esta esVacio?: " + a.esVacio());
 
                 // Encuentro el camino mas corto entre nodos
                 System.out.println(barra + "El camino mas corto entre A y B tiene que dar [A, B] con 5u, y da: "
@@ -101,13 +103,16 @@ public class TestGrafo {
 
                 // Obtener todos los caminos posibles de A-B que pasen por C
                 System.out.println(barra + "Todos los caminos posibles de A->E->H son: "
-                                + a.listarCaminosPosibles('A', 'H', 'E'));
-                System.out.println("Todos los caminos posibles de A->E->A son: "
+                                + a.listarCaminosPosibles('A', 'E', 'H'));
+
+                System.out.println(barra + "Todos los caminos posibles de A->A->H son: "
                                 + a.listarCaminosPosibles('A', 'A', 'E'));
+                System.out.println("Todos los caminos posibles de A->E->A son: "
+                                + a.listarCaminosPosibles('A', 'E', 'A'));
                 System.out.println("Todos los caminos posibles de K->B->I son: "
-                                + a.listarCaminosPosibles('K', 'I', 'B'));
+                                + a.listarCaminosPosibles('K', 'B', 'I'));
                 System.out.println("Todos los caminos posibles de B->D->G son: "
-                                + a.listarCaminosPosibles('B', 'G', 'D') + barra);
+                                + a.listarCaminosPosibles('B', 'D', 'G') + barra);
 
                 // Existe camino
                 System.out.println(
@@ -123,30 +128,30 @@ public class TestGrafo {
                 // Elimino nodos vertices
                 System.out.println(barra + "Elimino vertice B se tienen que eliminar tambien los arcos de [A,E,G] "
                                 + a.eliminarVertice('B'));
-                System.out.println("Muestra el grafo a \n" + a.toString() + "\nEl grafo esta vacio?: " + a.vacio());
+                System.out.println("Muestra el grafo a \n" + a.toString() + "\nEl grafo esta esVacio?: " + a.esVacio());
                 System.out.println("Elimino vertice D se tienen que eliminar tambien los arcos de [A,E] "
                                 + a.eliminarVertice('D'));
-                System.out.println("Muestra el grafo a \n" + a.toString() + "\nEl grafo esta vacio?: " + a.vacio()
+                System.out.println("Muestra el grafo a \n" + a.toString() + "\nEl grafo esta esVacio?: " + a.esVacio()
                                 + barra);
 
                 // Elimino arcos
-                System.out.println(barra + "Elimino arco A a C" + a.eliminarArco('A', 'C'));
-                System.out.println("Muestra el grafo a \n" + a.toString() + "\nEl grafo esta vacio?: " + a.vacio());
-                System.out.println("Elimino arco J a F" + a.eliminarArco('J', 'F'));
-                System.out.println("Muestra el grafo a \n" + a.toString() + "\nEl grafo esta vacio?: " + a.vacio()
+                System.out.println(barra + "Elimino arco A a C" + a.eliminarArco('A', 'C', 10));
+                System.out.println("Muestra el grafo a \n" + a.toString() + "\nEl grafo esta esVacio?: " + a.esVacio());
+                System.out.println("Elimino arco J a F" + a.eliminarArco('J', 'F', 6));
+                System.out.println("Muestra el grafo a \n" + a.toString() + "\nEl grafo esta esVacio?: " + a.esVacio()
                                 + barra);
 
-                // Vacio el grafo
-                System.out.println(barra + "Vacio el grafo");
+                // esVacio el grafo
+                System.out.println(barra + "esVacio el grafo");
                 a.vaciar();
-                System.out.println("Muestra el grafo a \n" + a.toString() + "\nEl grafo esta vacio?: " + a.vacio());
+                System.out.println("Muestra el grafo a \n" + a.toString() + "\nEl grafo esta esVacio?: " + a.esVacio());
 
-                // Existe camino pero con grafo vacio
+                // Existe camino pero con grafo esVacio
                 System.out.println("Existe camino entre A y F? tiene que dar false: " + a.existeCamino('A', 'F'));
                 System.out.println("Existe camino entre F y A? tiene que dar false: " + a.existeCamino('F', 'A'));
                 System.out.println("Existe camino entre B y Z? tiene que dar false: " + a.existeCamino('B', 'Z'));
 
-                // Camino mas corto pero con grafo vacio
+                // Camino mas corto pero con grafo esVacio
                 System.out.println("El camino mas corto entre A y B tiene que dar [] con , y da: "
                                 + a.caminoMasCorto('A', 'B').toString());
                 System.out.println("El camino mas corto entre A y J tiene que dar [] con , y da: "

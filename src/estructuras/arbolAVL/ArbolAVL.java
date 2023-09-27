@@ -2,6 +2,8 @@ package estructuras.arbolAVL;
 
 import estructuras.lineales.Lista;
 
+@SuppressWarnings({ "rawtypes", "unchecked" })
+
 public class ArbolAVL {
     // Atributo
     private NodoAVL raiz;
