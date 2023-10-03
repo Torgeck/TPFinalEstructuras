@@ -1,11 +1,14 @@
+import java.nio.file.Path;
 import java.util.Scanner;
 import java.util.regex.Pattern;
-
 import estructuras.lineales.Par;
 
 public final class Utilidades {
 
-    // * Patrones de expresiones regulares
+    // * Path para la carga inicial
+    static Path cargaInicial = Path.of("./src/cargaInicial/carga_ini.txt");
+
+    // * Patterns de expresiones regulares
     private static final Pattern FORMATO_FECHA = Pattern.compile("(0[1-9]|[12]\\d|30)/(1[012]|0[1-9])/[1-9]\\d{3}");
     private static final Pattern FORMATO_EMAIL = Pattern.compile("(\\w+@\\w+)([.]\\w+)+");
     private static final Pattern FORMATO_TELEFONO = Pattern.compile("\\d{2,3}\\d{8}");
@@ -220,6 +223,11 @@ public final class Utilidades {
             i = obtenerMax(n - 1) + (int) Math.pow(10, n - 1);
         }
         return i;
+    }
+
+    public static void lecturaYCarga() {
+        // Metodo que lee un txt y carga a las estructuras correspondientes
+
     }
 
 }

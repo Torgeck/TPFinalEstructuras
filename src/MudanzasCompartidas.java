@@ -12,10 +12,10 @@ import objetos.Solicitud;
 
 public class MudanzasCompartidas {
 
-    private static ArbolAVL ciudades;
-    private static ArbolAVL solicitudesViajes;
-    private static Grafo mapaRutas;
-    private static HashMap<String, Cliente> clientes;
+    public static ArbolAVL ciudades;
+    public static ArbolAVL solicitudesViajes;
+    public static Grafo mapaRutas;
+    public static HashMap<String, Cliente> clientes;
 
     // Mensajes de error
     private static String errorInput = "ERROR clave ingresada erronea o no existente";
@@ -679,7 +679,7 @@ public class MudanzasCompartidas {
 
                 if ((double) solicitudesEspacio.getB() < 0) {
                     // Hay espacio
-                    posiblesSolicitudes = obtenerPosiblesSolicitudes(camino, codigoPostal[1],
+                    posiblesSolicitudes = obtenerPosiblesSolicitudes(camino, codigoPostal[0],
                             Math.abs((double) solicitudesEspacio.getB()));
                     System.out.println("Los pedidos que se pueden satisfacer a lo largo de todo el tramo son: "
                             + posiblesSolicitudes);
@@ -692,30 +692,29 @@ public class MudanzasCompartidas {
         }
     }
 
-    private static Lista obtenerPosiblesSolicitudes(Lista camino, int destinoFinal, double espacioDisponible) {
-        // Metodo que obtiene las posibles solicitudes que se pueden satisfacer de
-        // origen a destino
-        int origen = 1, destino, longitud = camino.longitud(), ciudadActual, destinoActual;
+    private static Lista obtenerPosiblesSolicitudes(Lista camino, int origen,
+            double espacioDisponible) {
+        // Metodo que obtiene todas las posibles solicitudes que se pueden satisfacer de
+        // origen a las ciudades que le siguen en el camino dado
+        int indiceActual = camino.localizar(origen), indiceDestino = indiceActual + 1;
+        int ciudadActual, destinoActual, longitud = camino.longitud();
         Lista solicitudesCiudadActual, posiblesSolicitudes = new Lista();
 
-        while (origen < longitud) {
-            ciudadActual = (int) camino.recuperar(origen);
-            destino = origen + 1;
+        while (indiceActual < indiceDestino) {
+            ciudadActual = (int) camino.recuperar(indiceActual);
             solicitudesCiudadActual = (Lista) solicitudesViajes.obtenerElemento(ciudadActual);
 
-            while (destino <= longitud) {
-                destinoActual = (int) camino.recuperar(destino);
+            while (indiceDestino <= longitud) {
+                destinoActual = (int) camino.recuperar(indiceDestino);
 
-                // Excepcion si es la ciudad origen
-                if (!(origen == 1 && destino == longitud)) {
+                if (!(indiceActual == 1 && indiceDestino == longitud)) {
                     filtrarSolicitudesEspacio(crearYFiltrar(solicitudesCiudadActual, destinoActual),
                             posiblesSolicitudes, espacioDisponible);
                 }
-                destino++;
+                indiceDestino++;
             }
-            origen++;
+            indiceActual++;
         }
-
         return posiblesSolicitudes;
     }
 
@@ -724,7 +723,7 @@ public class MudanzasCompartidas {
         // solicitudes
         double menorEspacio = Double.MAX_VALUE;
         int i = 1, longitud = solicitudes.longitud();
-        Solicitud solicitudMenorEspacio, solicitudActual;
+        Solicitud solicitudMenorEspacio = null, solicitudActual;
 
         while (i <= longitud) {
             solicitudActual = (Solicitud) solicitudes.recuperar(i);
@@ -740,7 +739,7 @@ public class MudanzasCompartidas {
     public static void verificarCaminoPerfecto(Scanner inputUsuario) {
         // Metodo que verifica si existe un camino perfecto con una lista de ciudades,
         // dadas las ciudades y el espacio del camion por el usuario
-        boolean seguir = true;
+        boolean seguir = true, esPerfecto = true;
         int cantCiudades = 2, caminoElegido;
         double espacioCamion;
         Lista caminoCiudades;
@@ -757,16 +756,17 @@ public class MudanzasCompartidas {
                 espacioCamion = Utilidades.verificarDouble(inputUsuario.nextLine(), "cantidad de metros cubicos",
                         inputUsuario);
 
-                while (seguir) {
+                while (esPerfecto) {
                     System.out.println("Los caminos posibles son: " + caminoCiudades.toString()
                             + "\nIngrese un numero para elegir el camino a verificar");
                     caminoElegido = Utilidades.verificarInts(inputUsuario.nextLine(), "entero", inputUsuario);
 
-                    if (caminoElegido <= caminoCiudades.longitud()) {
+                    if (caminoElegido > 0 && caminoElegido <= caminoCiudades.longitud()) {
                         // Se verifica si es perfecto
+                        esPerfecto = esCaminoPerfecto((Lista) caminoCiudades.recuperar(caminoElegido), espacioCamion);
                         System.out.println("El camino " + caminoCiudades.recuperar(caminoElegido).toString()
                                 + " con un espacio de: " + espacioCamion + "metros cubicos\nEs perfecto? : "
-                                + esCaminoPerfecto((Lista) caminoCiudades.recuperar(caminoElegido), espacioCamion));
+                                + esPerfecto);
                     } else {
                         System.out.println("Opcion ingresada invalida");
                     }
@@ -785,9 +785,26 @@ public class MudanzasCompartidas {
          * solicitud que se pueda transportar entre las ciudades por las cuales pasará
          * el camión
          */
-
+        boolean esPerfecto = true;
         double espacioActual = espacio;
+        int i = 1, longitud = camino.longitud(), ciudadActual;
+        Lista solicitudesCiudadActual;
+        Solicitud solicitudMenorEspacio;
 
+        while (i < longitud || esPerfecto) {
+            ciudadActual = (int) camino.recuperar(i);
+
+            solicitudesCiudadActual = obtenerPosiblesSolicitudes(camino, ciudadActual, espacioActual);
+            solicitudMenorEspacio = obtenerSolicitudMenorEspacio(solicitudesCiudadActual);
+            // Podria obtener solo el espacio de la solicitud y no toda la solicitud
+            if (solicitudMenorEspacio.getMetrosCubicos() <= espacioActual) {
+                espacioActual -= solicitudMenorEspacio.getMetrosCubicos();
+            } else {
+                esPerfecto = false;
+            }
+            i++;
+        }
+        return esPerfecto;
     }
 
     public void iniciarMenu() {

@@ -1,0 +1,30 @@
+C;2000;Rosario;Santa Fe
+C;5000;Cordoba;Cordoba
+C;1425;Buenos Aires;Buenos Aires
+C;4000;San Miguel de Tucuman;Tucuman
+C;8300;Neuquen;Neuquen
+C;8000;Bahia Blanca;Buenos Aires
+C;3500;Resistencia;Chaco
+C;3000;Santa Fe;Santa Fe
+C;4100;Salta;Salta
+C;2000;La Plata;Buenos Aires
+C;3400;Corrientes;Corrientes
+C;8301;Cipolletti;Rio Negro
+C;5001;Villa Maria;Cordoba
+C;3300;Parana;Entre Rios
+C;5152;Villa Allende;Cordoba
+C;2001;San Nicolas de los Arroyos;Buenos Aires
+C;9400;Rio Gallegos;Santa Cruz
+C;7000;Tandil;Buenos Aires
+C;3600;Formosa;Formosa
+C;8400;Bariloche;Rio Negro
+C;4103;Metan;Salta
+C;3501;Barranqueras;Chaco
+C;5153;Alta Gracia;Cordoba
+C;5002;Rio Cuarto;Cordoba
+C;8305;Plottier;Neuquen
+C;3001;Rafaela;Santa Fe
+C;1424;Villa Lugano;Buenos Aires
+C;2200;San Lorenzo;Santa Fe
+C;9420;Puerto Deseado;Santa Cruz
+C;3416;Itati;Corrientes

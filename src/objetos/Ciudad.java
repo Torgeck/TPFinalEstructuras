@@ -46,7 +46,7 @@ public class Ciudad {
     public String toString() {
         return "Codigo Postal = " + this.codigoPostal +
                 ", Nombre de ciudad = " + this.nombreCiudad +
-                ", Provincia ='" + this.provincia;
+                ", Provincia = " + this.provincia;
     }
 
 }
