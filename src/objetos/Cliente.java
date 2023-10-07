@@ -11,15 +11,6 @@ public class Cliente {
     private String email;
 
     // Constructures
-    public Cliente() {
-        this.tipoDoc = "";
-        this.numeroDoc = -1;
-        this.nombre = "";
-        this.apellido = "";
-        this.telefono = -1;
-        this.email = "";
-    }
-
     public Cliente(String tipoDoc, int numeroDoc, String nombre, String apellido, int telefono, String email) {
         this.tipoDoc = tipoDoc;
         this.numeroDoc = numeroDoc;
@@ -27,6 +18,10 @@ public class Cliente {
         this.apellido = apellido;
         this.telefono = telefono;
         this.email = email;
+    }
+
+    public Cliente() {
+        this("", -1, "", "", -1, "");
     }
 
     // Getters/Setters

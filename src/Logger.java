@@ -7,15 +7,14 @@ import java.sql.Timestamp;
 import java.util.Date;
 
 public class Logger {
-    // Todo terminar el logger, ver como resolver el loggear distinatas clases
+
     static Path log = Path.of("./src/logs/log.txt");
     static Charset charset = Charset.forName("US-ASCII");
-    // - Logear una string pasada por parametro y que el logger se encargue de la
-    // timestamp(opcional)
 
     public static void log(String unString) {
         // Metodo que loggea la creacion de un bojeto
 
+        // Try with resources cierra automaticamente el writer
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(log.toString(), true))) {
             writer.write(agregarTimeStamp(unString));
             writer.newLine();
@@ -30,8 +29,19 @@ public class Logger {
         return "[ " + ts + " ] " + unString;
     }
 
-    public static void loggearSistema(MudanzasCompartidas sistema){
+    public static void loggearSistema(MudanzasCompartidas sistema) {
         // Metodo que loggea el estado del sistema
-        log("ArbolAVL con info de ciudades\n" + sistema.)
+
+        try (BufferedWriter escritor = new BufferedWriter(new FileWriter(log.toString(), true))) {
+            escritor.write(
+                    agregarTimeStamp("ArbolAVL con info de ciudades\n" + sistema.getCiudades().toString() + "\n"));
+            escritor.write(agregarTimeStamp("ArbolAVL con solicitudes originadas de una ciudad\n "
+                    + sistema.getSolicitudesViajes().toString() + "\n"));
+            escritor.write(agregarTimeStamp("Grafo, representado el mapa de rutas\n" + sistema.getMapaRutas() + "\n"));
+            escritor.write(agregarTimeStamp("HashMap con info de clientes\n" + sistema.getClientes() + "\n"));
+
+        } catch (IOException x) {
+            System.err.format("IOException: %s%n", x);
+        }
     }
 }

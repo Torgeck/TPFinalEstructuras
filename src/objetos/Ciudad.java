@@ -8,20 +8,17 @@ public class Ciudad {
     private String provincia;
 
     // Constructores
-    public Ciudad() {
-        this.codigoPostal = 0;
-        this.nombreCiudad = "";
-        this.provincia = "";
-    }
-
     public Ciudad(int codigoPostal, String nombreCiudad, String provincia) {
         this.codigoPostal = codigoPostal;
         this.nombreCiudad = nombreCiudad;
         this.provincia = provincia;
     }
 
-    // Metodos
+    public Ciudad() {
+        this(0, "", "");
+    }
 
+    // Metodos
     public int getCodigoPostal() {
         return this.codigoPostal;
     }
