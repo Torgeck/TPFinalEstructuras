@@ -1,4 +1,3 @@
-import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -45,6 +44,15 @@ public class MudanzasCompartidas {
         return this.clientes;
     }
 
+    public String mostrarSistema() {
+        // Metodo que retorna en un string las estructuras del sistema tal cual esta en
+        // el momento de ser llamado
+        return "ArbolAVL con info de ciudades\n" + this.ciudades.toString()
+                + "\nArbolAVL con solicitudes originadas de una ciudad\n" + this.solicitudesViajes.toString()
+                + "\nGrafo, representando el mapa de rutas\n" + this.mapaRutas.toString()
+                + "\nHashMap con info de clientes\n" + this.clientes.toString();
+    }
+
     // * Se podria tener un HM con los strings para los menus
     // Menu principal
     public static void menuPrincipal() {
@@ -60,7 +68,7 @@ public class MudanzasCompartidas {
     }
 
     // Submenu ABM
-    public static void abmMenu() {
+    public static void menuABM() {
 
         System.out.println("""
                 1 - ABM Ciudades
@@ -72,7 +80,7 @@ public class MudanzasCompartidas {
     }
 
     // Submenu Consultas
-    public static void consultasMenu() {
+    public static void menuConsultas() {
         System.out.println("""
                 ===== CLIENTE =====
                 1 - Mostrar toda la informacion de un cliente dada la clave
@@ -91,21 +99,50 @@ public class MudanzasCompartidas {
     }
 
     // Submenu de VerificarViajes
-    public static void verificarViajesMenu() {
+    public static void menuVerificarViajes() {
         System.out.println("""
                 ======== Dadas 2 ciudades X e Y ========
-                1 - Mostrar todos los pedidos y calcular el espacio total faltante en el camion
-                2 - Verificar si sobra espacio en el camion y listar posibles solicitudes a ciudades
-                    intermedias que se podrian aprovechar a cubrir (Considerando el camino mas corto en kms)
-                ======= Dada una lista de ciudades =======
-                3 - Verificar si es un camino perfecto
-                    """);
+                    1 - Mostrar todos los pedidos y calcular el espacio total faltante en el camion
+                    2 - Verificar si sobra espacio en el camion y listar posibles solicitudes a ciudades
+                        intermedias que se podrian aprovechar a cubrir (Considerando el camino mas corto en kms)
+                    ======= Dada una lista de ciudades =======
+                    3 - Verificar si es un camino perfecto
+                        """);
+    }
+
+    private static void menuModificacionCiudad() {
+        System.out.println("""
+                    Que desea modificar?\n
+                1 - Nombre de la ciudad\n
+                2 - Provincia de la ciudad""");
+    }
+
+    private static void menuModificacionCliente() {
+        System.out.println("""
+                    Ingrese la opcion correspondiente al atributo a modificar
+                    1 - Nombre
+                    2 - Apellido
+                    3 - Telefono
+                    4 - Email
+                """);
+    }
+
+    private static void menuModificacionSolicitud() {
+        System.out.println("""
+                Que desea modificar?
+                1 - Fecha de solicitud
+                2 - Cantidad de metros cubicos
+                3 - Cantidad de bultos
+                4 - Domicilio de retiro
+                5 - Domicilio de entrega
+                6 - Estado de pago
+                """);
     }
 
     // * Operaciones ABM
     // Ciudades, clientes, solicitudes
     public static void operacionABM(String objeto) {
-        System.out.printf("1 - Dar alta un %s\n2 - Dar baja un %s\n3 - Modificar un %s\n4 - Salir\n%n", objeto, objeto,
+        System.out.printf("1 - Dar alta %s\n2 - Dar baja %s\n3 - Modificar %s\n0 - Salir\n", objeto, objeto,
                 objeto);
     }
 
@@ -200,10 +237,7 @@ public class MudanzasCompartidas {
             ciudad = (Ciudad) ciudades.obtenerElemento(codigoPostal);
 
             if (ciudad != null) {
-                System.out.println("""
-                            Que desea modificar?\n
-                        1 - Nombre de la ciudad\n
-                        2 - Provincia de la ciudad""");
+                menuModificacionCiudad();
 
                 opcion = inputUsuario.nextInt();
                 inputUsuario.nextLine();
@@ -297,13 +331,7 @@ public class MudanzasCompartidas {
                     .toConcatString());
 
             if (cliente != null) {
-                System.out.println("""
-                            Ingrese la opcion correspondiente al atributo a modificar
-                            1 - Nombre
-                            2 - Apellido
-                            3 - Telefono
-                            4 - Email
-                        """);
+                menuModificacionCliente();
 
                 opcion = inputUsuario.nextInt();
                 inputUsuario.nextLine();
@@ -347,7 +375,7 @@ public class MudanzasCompartidas {
         }
     }
 
-    public void eliminarCliente(Scanner inputUsuario) {
+    public void darBajaCliente(Scanner inputUsuario) {
         // Metodo que pide al usuario que cliente desea eliminar del sistema
         String clave;
         Cliente clienteAEliminar;
@@ -439,7 +467,7 @@ public class MudanzasCompartidas {
             if (mapaRutas.eliminarArco(ciudad[0], ciudad[1], cantKms)) {
                 System.out.println("Ingrese la nueva cantidad de kilometros de la ruta");
                 nuevoKms = Verificador.verificarDouble(inputUsuario.nextLine(), "cantidad de kms", inputUsuario);
-                extracted(ciudad, nuevoKms);
+                agregarRuta(ciudad[0], ciudad[1], nuevoKms);
 
                 Logger.log("Se modifico la distancia de la ruta que unia " + ciudad[0] + " y " + ciudad[1] + " con "
                         + cantKms + " kilometros a " + nuevoKms + " kilometros");
@@ -451,18 +479,193 @@ public class MudanzasCompartidas {
     // * PEDIDOS
     public void darAltaPedido(Scanner inputUsuario) {
         // Metodo que da de alta un pedido de una ciudad a otra
+        Par clave;
+        int[] ciudad;
         boolean seguir = true;
 
         while (seguir) {
-            // Pedir ciudades origen y destino
-            // ver si existen
-            // Pedir cliente
-            // ver si existe
-            // pedir demas datos y crear solicitud
-            // agregarla al avl con la ciudad origen
+            ciudad = solicitarOrigenDestino(inputUsuario);
+
+            // Si existe un camino y por ende las ciudades en el sistema
+            if (mapaRutas.existeCamino(ciudad[0], ciudad[1])) {
+                // Pedir clave del cliente, y verificar que exista en el sistema
+                clave = solicitarClaveCliente(inputUsuario);
+                // Podria tomar que exista el cliente o saltarlo y directamente agregar una
+                // solicitud sin que exista el cliente seria muy raro
+                if (clientes.get(clave.toConcatString()) != null) {
+                    agregarSolicitud(ciudad[0], crearSolicitud(ciudad[1], clave.toConcatString(), inputUsuario));
+                } else {
+                    // Error no existe cliente
+                }
+            }
+            seguir = !deseaSalir(inputUsuario);
+        }
+    }
+
+    private int[] solicitarOrigenDestino(Scanner inputUsuario) {
+        // Metodo que solicita al usuario ciudad de origen y destino
+        int cantCiudades = 2;
+
+        System.out.println(
+                "Ingrese los codigos postales de las ciudades de origen y destino separadas por - . EJ 1111-4444");
+        return Utilidades.toIntArray(inputUsuario.nextLine().split("-"), cantCiudades, inputUsuario);
+    }
+
+    private Par solicitarClaveCliente(Scanner inputUsuario) {
+        // Metodo que solicita al usuario que ingrese la clave de un cliente
+        System.out.println("Ingrese tipo y numero de documento separados por -");
+        return Verificador.verificarClaveCliente(inputUsuario.nextLine().split("-"), inputUsuario);
+    }
+
+    public Solicitud crearSolicitud(int destino, String claveCliente, Scanner inputUsuario) {
+        // Metodo que pide datos al usuario, crea y devuelve una solicitud
+        String fecha, domRetiro, domEntrega;
+        boolean estado;
+        double cantM;
+        int cantBultos;
+
+        System.out.println("Ingrese fecha en formato dd/mm/aaaa");
+        fecha = Verificador.verificarFecha(inputUsuario.nextLine(), inputUsuario);
+        System.out.println("Ingrese cantidad de metros cubicos de la solicitud");
+        cantM = Verificador.verificarDouble(inputUsuario.nextLine(), "cantidad de metros cubicos", inputUsuario);
+        System.out.println("Ingrese cantidad de bultos");
+        cantBultos = Verificador.verificarInts(inputUsuario.nextLine(), "cantidad de bultos", inputUsuario);
+        System.out.println("Ingrese el domicilio de retiro");
+        domRetiro = Verificador.verificarDireccion(inputUsuario.nextLine(), inputUsuario);
+        System.out.println("Ingrese el domicilio de entrega");
+        domEntrega = Verificador.verificarDireccion(inputUsuario.nextLine(), inputUsuario);
+        System.out.println("Ingrese si la solicitud esta paga o no, T/F");
+        estado = Verificador.verificarEstadoPago(inputUsuario.nextLine(), inputUsuario);
+
+        return new Solicitud(destino, fecha, claveCliente, cantM, cantBultos, domRetiro, domEntrega, estado);
+    }
+
+    public void agregarSolicitud(int origen, Solicitud solicitud) {
+        // Agrega solicitud al sistema y loggea la misma
+        ciudades.insertar(origen, solicitud);
+        Logger.log("Se agrego solicitud: " + solicitud + " a ciudad: " + origen);
+    }
+
+    public void modificarPedido(Scanner inputUsuario) {
+        // Pedir ciudad de origen, destino y cliente; mostrar las solicitudes a
+        // modificar, y que elija que modificar de cada solicitud
+        Par clave;
+        int[] ciudad;
+        Lista solicitudesFiltradas;
+        Solicitud solicitudElegida;
+        int numeroSolicitud, operacionElegida;
+        boolean seguir = true;
+
+        while (seguir) {
+            ciudad = solicitarOrigenDestino(inputUsuario);
+
+            if (mapaRutas.existeCamino(ciudad[0], ciudad[1])) {
+                clave = solicitarClaveCliente(inputUsuario);
+                // Filtro las solicitudes para ver si existe alguna que el usuario quiera
+                // modificar
+                solicitudesFiltradas = Utilidades.filtrarConCiudadYCliente((Lista) ciudades.obtenerElemento(ciudad[0]),
+                        ciudad[1], clave.toConcatString());
+
+                if (!solicitudesFiltradas.esVacia()) {
+                    mostrarOpcionesSolicitudes(ciudad, clave, solicitudesFiltradas);
+                    numeroSolicitud = inputUsuario.nextInt();
+                    inputUsuario.next();
+
+                    if (numeroSolicitud > 0 && numeroSolicitud <= solicitudesFiltradas.longitud()) {
+                        solicitudElegida = (Solicitud) solicitudesFiltradas.recuperar(numeroSolicitud);
+                        // TODO hacer esto un metodo separado, y usar clase verificador
+                        menuModificacionSolicitud();
+                        operacionElegida = inputUsuario.nextInt();
+                        inputUsuario.next();
+
+                        switch (operacionElegida) {
+                            case 1:
+                                System.out.println("Ingrese nueva fecha");
+                                solicitudElegida
+                                        .setFechaSol(Verificador.verificarFecha(inputUsuario.nextLine(), inputUsuario));
+                                break;
+                            case 2:
+                                System.out.println("Ingrese nueva cantidad de metros cubicos");
+                                solicitudElegida.setMetrosCubicos(Verificador.verificarDouble(inputUsuario.nextLine(),
+                                        "cantidad de metros cubicos", inputUsuario));
+                                break;
+                            case 3:
+                                System.out.println("Ingrese nueva cantidad de bultos");
+                                solicitudElegida.setCantBultos(Verificador.verificarInts(inputUsuario.nextLine(),
+                                        "cantidad de bultos", inputUsuario));
+                                break;
+                            case 4:
+                                System.out.println("Ingrese nuevo domicilio de retiro");
+                                solicitudElegida.setDomicilioRetiro(
+                                        Verificador.verificarDireccion(inputUsuario.nextLine(), inputUsuario));
+                                break;
+                            case 5:
+                                System.out.println("Ingrese nuevo domicilio de entrega");
+                                solicitudElegida.setDomicilioEntrega(
+                                        Verificador.verificarDireccion(inputUsuario.nextLine(), inputUsuario));
+                                break;
+                            case 6:
+                                System.out.println("Ingrese nuevo estado de pago (T/F)");
+                                solicitudElegida.setEstaPago(
+                                        Verificador.verificarEstadoPago(inputUsuario.nextLine(), inputUsuario));
+                                break;
+                            default:
+                                System.out.println("ERROR");
+                        }
+                        Logger.log("Se modifico la solicitud: " + solicitudElegida);
+
+                    } else {
+                        // ERROR
+                        System.out.println("Opcion invalida");
+                    }
+                }
+            }
+        }
+    }
+
+    public void darBajaPedido(Scanner inputUsuario) {
+        // Pedir ciudad de origen, destino y cliente; mostrar las solicitudes y que
+        // elija cual eliminar
+        int[] ciudad;
+        Par claveCliente;
+        boolean seguir = true;
+        int opcion;
+        Solicitud solElegida;
+        Lista solicitudesCiudad, solicitudesFiltradas;
+
+        while (seguir) {
+            ciudad = solicitarOrigenDestino(inputUsuario);
+
+            if (mapaRutas.existeCamino(ciudad[0], ciudad[1])) {
+                claveCliente = solicitarClaveCliente(inputUsuario);
+
+                if (clientes.get(claveCliente.toConcatString()) != null) {
+                    // Listo todas las solicitudes del la ciudad origen a destino con el cliente tal
+                    solicitudesCiudad = (Lista) ciudades.obtenerElemento(ciudad[0]);
+                    solicitudesFiltradas = Utilidades.filtrarConCiudadYCliente(solicitudesCiudad,
+                            ciudad[1], claveCliente.toConcatString());
+
+                    mostrarOpcionesSolicitudes(ciudad, claveCliente, solicitudesFiltradas);
+
+                    opcion = inputUsuario.nextInt();
+                    solElegida = (Solicitud) solicitudesFiltradas.recuperar(opcion);
+
+                    if (solicitudesCiudad.eliminarElemento(solElegida)) {
+                        Logger.log("Se elimino la solicitud: " + solElegida + " con origen: " + ciudad[0]);
+                    }
+                }
+            }
 
             seguir = !deseaSalir(inputUsuario);
         }
+
+    }
+
+    private void mostrarOpcionesSolicitudes(int[] ciudad, Par claveCliente, Lista solicitudes) {
+        System.out
+                .println("Las solicitudes de " + ciudad[0] + " a " + ciudad[1] + " con el cliente con clave"
+                        + claveCliente.toConcatString() + " son:\n" + solicitudes.enumerar()
+                        + "\nIngrese el numero de la solicitud");
     }
 
     // * Consultas sobre clientes
@@ -871,48 +1074,204 @@ public class MudanzasCompartidas {
         return esPerfecto;
     }
 
-    public void iniciarMenu() {
+    public void ciudadABM(Scanner inputUsuario) {
+        // Metodo que presenta las operaciones de ABM de las ciudades
         boolean seguir = true;
-        Scanner opcion = new Scanner(System.in);
+        int opcion;
 
-        // Mostrar menu
         do {
-            // Muestro las opciones
-            menu();
-            // Lectura de la variable ingresada por usuario
-            switch (opcion.nextInt()) {
+            operacionABM("ciudad");
+            opcion = inputUsuario.nextInt();
+            inputUsuario.nextLine();
+
+            switch (opcion) {
+                case 0:
+                    seguir = true;
+                    break;
+                case 1:
+                    darAltaCiudad(inputUsuario);
+                    break;
+                case 2:
+                    darBajaCiudad(inputUsuario);
+                    break;
+                case 3:
+                    modificarCiudad(inputUsuario);
+                    break;
+            }
+        } while (seguir);
+    }
+
+    public void redRutasABM(Scanner inputUsuario) {
+        // Metodo que presenta las operaciones de ABM de la red de rutas
+        boolean seguir = true;
+        int opcion;
+
+        do {
+            operacionABM("ruta");
+            opcion = inputUsuario.nextInt();
+            inputUsuario.nextLine();
+
+            switch (opcion) {
+                case 0:
+                    seguir = true;
+                    break;
+                case 1:
+                    darAltaRuta(inputUsuario);
+                    break;
+                case 2:
+                    darBajaRuta(inputUsuario);
+                    break;
+                case 3:
+                    modificarRuta(inputUsuario);
+                    break;
+            }
+        } while (seguir);
+    }
+
+    public void clientesABM(Scanner inputUsuario) {
+        // Metodo que presenta las operaciones de ABM de los clientes
+        boolean seguir = true;
+        int opcion;
+
+        do {
+            operacionABM("cliente");
+            opcion = inputUsuario.nextInt();
+            inputUsuario.nextLine();
+
+            switch (opcion) {
+                case 0:
+                    seguir = true;
+                    break;
+                case 1:
+                    darAltaCliente(inputUsuario);
+                    break;
+                case 2:
+                    darBajaCliente(inputUsuario);
+                    break;
+                case 3:
+                    modificarCliente(inputUsuario);
+                    break;
+            }
+        } while (seguir);
+    }
+
+    public void solicitudesABM(Scanner inputUsuario) {
+        // Metodo que presenta las operaciones de ABM de las solicitudes/pedidos
+        boolean seguir = true;
+        int opcion;
+
+        do {
+            operacionABM("pedidos");
+            opcion = inputUsuario.nextInt();
+            inputUsuario.nextLine();
+
+            switch (opcion) {
+                case 0:
+                    seguir = true;
+                    break;
+                case 1:
+                    darAltaPedido(inputUsuario);
+                    break;
+                case 2:
+                    darBajaPedido(inputUsuario);
+                    break;
+                case 3:
+                    modificarPedido(inputUsuario);
+                    break;
+            }
+        } while (seguir);
+    }
+
+    public void operacionesABM(Scanner inputUsuario) {
+        boolean seguir = true;
+        int opcion;
+
+        do {
+            menuABM();
+            opcion = inputUsuario.nextInt();
+            inputUsuario.nextLine();
+
+            switch (opcion) {
                 case 0:
                     seguir = false;
                     break;
                 case 1:
-                    // cargaInicial(); mas mensaje de que se realizo una carga inicial de datos
-                    // mostrar el otro menu
+                    ciudadABM(inputUsuario);
                     break;
                 case 2:
-                    abmMenu();
+                    redRutasABM(inputUsuario);
                     break;
                 case 3:
-                    operacionABM("Cliente");
-                    // mostrar el otro menu
+                    clientesABM(inputUsuario);
                     break;
                 case 4:
-                    operacionABM("Pedido");
-                    // mostrar el otro menu
+                    solicitudesABM(inputUsuario);
+                    break;
+                default:
+                    System.out.println(errorInput);
+
+            }
+        } while (seguir);
+    }
+
+    public void consultas(Scanner inputUsuario) {
+        // Metodo que muestra el menu de consultas y llama a los metodos
+        // correspondientes
+        boolean seguir = true;
+        int opcion;
+
+        do {
+            menuConsultas();
+            opcion = inputUsuario.nextInt();
+            inputUsuario.nextLine();
+
+            switch (opcion) {
+
+            }
+
+        } while (seguir);
+
+    }
+
+    public void iniciarMenu() {
+        boolean seguir = true;
+        int opcion;
+        Scanner inputUsuario = new Scanner(System.in);
+
+        // Mostrar menu
+        do {
+            // Muestro las opciones
+            menuPrincipal();
+            opcion = inputUsuario.nextInt();
+            inputUsuario.nextLine();
+            // Lectura de la variable ingresada por usuario
+            switch (opcion) {
+                case 0:
+                    seguir = false;
+                    break;
+                case 1:
+                    System.out.println("Comienzo de la carga inicial");
+                    Loader.cargarDatos(this);
+                    System.out.println("Finalizacion de la carga inicial");
+                    break;
+                case 2:
+                    operacionesABM(inputUsuario);
+                    break;
+                case 3:
+                    consultas(inputUsuario);
+                    break;
+                case 4:
+                    verificarViajes(inputUsuario);
                     break;
                 case 5:
-                    consultasCliente();
+                    System.out.println(mostrarSistema());
                     // Hacer cosas
                     break;
                 default:
                     System.out.println("\nNO EXISTE OPCION INGRESADA\n");
             }
         } while (seguir);
-        // Al salir del sistema guardar un archivo LOG con el estado final del sistema
+        // loggea el estado final del sistema al terminar
+        Logger.loggearSistema(this);
     }
-
-    // Listar clientes con mas pasajes comprados (Ver que estructura es la mas
-    // optima para ir ordenando mientras agrego
-    // o hacer una lista y despues un quick sort) TESTEAR AMBOS POR TIEMPO
-
-    // Mostrar sistema (TODAS las estructuras usadas con su contenido)
 }

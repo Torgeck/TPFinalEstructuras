@@ -33,13 +33,7 @@ public class Logger {
         // Metodo que loggea el estado del sistema
 
         try (BufferedWriter escritor = new BufferedWriter(new FileWriter(log.toString(), true))) {
-            escritor.write(
-                    agregarTimeStamp("ArbolAVL con info de ciudades\n" + sistema.getCiudades().toString() + "\n"));
-            escritor.write(agregarTimeStamp("ArbolAVL con solicitudes originadas de una ciudad\n "
-                    + sistema.getSolicitudesViajes().toString() + "\n"));
-            escritor.write(agregarTimeStamp("Grafo, representado el mapa de rutas\n" + sistema.getMapaRutas() + "\n"));
-            escritor.write(agregarTimeStamp("HashMap con info de clientes\n" + sistema.getClientes() + "\n"));
-
+            escritor.write(sistema.mostrarSistema());
         } catch (IOException x) {
             System.err.format("IOException: %s%n", x);
         }

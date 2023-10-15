@@ -118,17 +118,16 @@ public class ColaPrioridad {
         StringBuilder salida = new StringBuilder("[");
         NodoPrioridad puntero = this.frente;
 
-        if (!this.esVacia()) {
-            while (puntero != null) {
-                salida.append(puntero.getElemento());
-                // Me muevo al siguiente nodo
-                puntero = puntero.getEnlace();
+        while (puntero != null) {
+            salida.append(puntero.getElemento());
+            // Me muevo al siguiente nodo
+            puntero = puntero.getEnlace();
 
-                // Agrego comas entre elementos
-                if (puntero != null)
-                    salida.append(",");
-            }
+            // Agrego comas entre elementos
+            if (puntero != null)
+                salida.append(",");
         }
+
         return salida.append("]").toString();
     }
 

@@ -1,5 +1,8 @@
 import java.util.Scanner;
+
+import estructuras.lineales.Lista;
 import estructuras.lineales.Par;
+import objetos.Solicitud;
 
 public final class Utilidades {
 
@@ -57,6 +60,25 @@ public final class Utilidades {
             i = obtenerMax(n - 1) + (int) Math.pow(10, n - 1);
         }
         return i;
+    }
+
+    public static Lista filtrarConCiudadYCliente(Lista listaOriginal, int ciudad, String claveCliente) {
+        // Metodo que crea y retorna una lista nueva y agrega las apariciones que
+        // contengan ciudad y claveCliente pasadas por parametro
+        Lista listaFiltrada = new Lista();
+        Solicitud aux;
+        int longitud = listaOriginal.longitud(), posicion = 1;
+
+        while (posicion <= longitud) {
+            aux = (Solicitud) listaOriginal.recuperar(posicion);
+
+            if (aux.getIdCliente().equals(claveCliente) && aux.getCiudadDestino() == ciudad) {
+                listaFiltrada.insertar(aux, 1);
+            }
+            posicion++;
+        }
+
+        return listaFiltrada;
     }
 
 }

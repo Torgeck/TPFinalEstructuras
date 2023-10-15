@@ -106,6 +106,34 @@ public class Lista {
         return posicion;
     }
 
+    public boolean eliminarElemento(Object objeto) {
+        boolean exito = false;
+
+        // Caso que se elimine la primer posicion
+        if (this.cabecera.getElemento().equals(objeto)) {
+            this.cabecera = this.cabecera.getEnlace();
+            exito = true;
+        } else {
+            exito = eliminarElementoRecursivo(objeto, this.cabecera, this.cabecera.getEnlace());
+        }
+
+        return exito;
+    }
+
+    private boolean eliminarElementoRecursivo(Object objeto, Nodo nodoAnterior, Nodo nodoActual) {
+        boolean exito = false;
+
+        if (nodoActual != null) {
+            if (nodoActual.getElemento().equals(objeto)) {
+                nodoAnterior.setEnlace(nodoActual.getEnlace());
+                exito = true;
+            } else {
+                exito = eliminarElementoRecursivo(objeto, nodoActual, nodoActual.getEnlace());
+            }
+        }
+        return exito;
+    }
+
     public boolean esVacia() {
         return this.cabecera == null;
     }
@@ -147,22 +175,35 @@ public class Lista {
         }
     }
 
-    // TODO usar StringBuffer
     public String toString() {
-        String salida = "[";
+        StringBuilder salida = new StringBuilder("[");
         Nodo aux = this.cabecera;
 
-        if (!this.esVacia()) {
-            while (aux != null) {
-                salida += aux.getElemento();
-                // Muevo puntero
-                aux = aux.getEnlace();
-                // Agrego comas entre elementos
-                if (aux != null)
-                    salida += ",";
-            }
+        while (aux != null) {
+            salida.append(aux.getElemento());
+            // Muevo puntero
+            aux = aux.getEnlace();
+            // Agrego comas entre elementos
+            if (aux != null)
+                salida.append(",");
         }
-        return salida + "]";
+
+        return salida.append("]").toString();
+    }
+
+    public String enumerar() {
+        StringBuilder salida = new StringBuilder();
+        Nodo aux = this.cabecera;
+        int indice = 1;
+
+        while (aux != null) {
+            salida.append(indice + " - " + aux.getElemento() + "\n");
+
+            aux = aux.getEnlace();
+            indice++;
+        }
+
+        return salida.toString();
     }
 
     public Lista invertir() {
@@ -220,36 +261,6 @@ public class Lista {
             insertarElementosListaRecursivo(nodoActual.getEnlace(), elementos, posicionElemento + 1);
         }
     }
-
-    /*
-     * 
-     * public Lista eliminarApariciones(Object elemento) {
-     * Lista lista = new Lista();
-     * Nodo puntero = this.cabecera, auxLista = lista.cabecera;
-     * 
-     * while(puntero != null) {
-     * 
-     * if(elemento != puntero.getElemento()) {
-     * 
-     * //Caso en que sea el primer elemento insertado en la lista
-     * if (lista.cabecera == null) {
-     * lista.cabecera = new Nodo(puntero.getElemento(), null);
-     * auxLista = lista.cabecera;
-     * }
-     * 
-     * else{
-     * auxLista.setEnlace(new Nodo(puntero.getElemento(), null));
-     * auxLista = auxLista.getEnlace();
-     * }
-     * //Aumento longitud de la cadena
-     * lista.longitud++;
-     * }
-     * //Se saltea el elemento que hay que eliminar
-     * puntero = puntero.getEnlace();
-     * }
-     * return lista;
-     * }
-     */
 
     public void eliminarApariciones(Object elemento) {
 

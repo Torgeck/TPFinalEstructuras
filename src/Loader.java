@@ -16,7 +16,7 @@ public class Loader {
     static Path datos = Path.of("./src/cargaInicial/carga_ini.txt");
     static Charset charset = Charset.forName("US-ASCII");
 
-    public void cargarDatos(MudanzasCompartidas sistema) {
+    public static void cargarDatos(MudanzasCompartidas sistema) {
         String line;
         StringTokenizer token;
 
@@ -30,19 +30,19 @@ public class Loader {
                 switch (token.nextToken()) {
                     case "C":
                         // crear ciudad, aniadirla a las estructuras y logear
-                        Logger.log(cargarCiudad(token, sistema));
+                        cargarCiudad(token, sistema);
                         break;
                     case "S":
                         // crear, aniadirla a las estructuras y logear la solicitud
-                        Logger.log(cargarSolicitud(token, sistema));
+                        cargarSolicitud(token, sistema);
                         break;
                     case "P":
                         // crear, aniadirl a las estructuras y logear el cliente
-                        Logger.log(cargarCliente(token, sistema));
+                        cargarCliente(token, sistema);
                         break;
                     case "R":
                         // crear aniadirla a las estructuras y logear la ruta
-                        Logger.log(cargarRuta(token, sistema));
+                        cargarRuta(token, sistema);
                         break;
 
                     default:
@@ -58,7 +58,7 @@ public class Loader {
         }
     }
 
-    public void cargarCiudad(StringTokenizer token, MudanzasCompartidas sistema) {
+    public static void cargarCiudad(StringTokenizer token, MudanzasCompartidas sistema) {
         // Metodo que carga una ciudad al sistema y retorna la ciudad cargada
         Ciudad ciudad;
         String cp, nombre, provincia;
@@ -77,7 +77,7 @@ public class Loader {
         }
     }
 
-    public void cargarSolicitud(StringTokenizer token, MudanzasCompartidas sistema) {
+    public static void cargarSolicitud(StringTokenizer token, MudanzasCompartidas sistema) {
         Solicitud solicitud;
         String[] arr = new String[9];
 
@@ -89,13 +89,13 @@ public class Loader {
             solicitud = new Solicitud(Integer.parseInt(arr[1]), arr[2], arr[3], Double.parseDouble(arr[4]),
                     Integer.parseInt(arr[5]), arr[6], arr[7], (arr[8].equals("T")));
             // Agrego la solicitud a las estructuras
-            sistema.agregarSolicitud(solicitud, Integer.parseInt(arr[0]));
+            sistema.agregarSolicitud(Integer.parseInt(arr[0]), solicitud);
         } else {
             // Error en el sistema
         }
     }
 
-    private void llenarArraySolicitud(String[] arr, StringTokenizer token) {
+    private static void llenarArraySolicitud(String[] arr, StringTokenizer token) {
         // Metodo que llena un array para una solicitud con tokens
         int i = 0, longitud = arr.length;
 
@@ -110,7 +110,7 @@ public class Loader {
         }
     }
 
-    public void cargarCliente(StringTokenizer token, MudanzasCompartidas sistema) {
+    public static void cargarCliente(StringTokenizer token, MudanzasCompartidas sistema) {
         Cliente cliente;
         String[] arr = new String[6];
 
@@ -124,7 +124,7 @@ public class Loader {
         }
     }
 
-    private void llenarArray(String[] arr, StringTokenizer token) {
+    private static void llenarArray(String[] arr, StringTokenizer token) {
         int i = 0, longitud = arr.length;
 
         while (i < longitud) {
@@ -132,7 +132,7 @@ public class Loader {
         }
     }
 
-    public void cargarRuta(StringTokenizer token, MudanzasCompartidas sistema) {
+    public static void cargarRuta(StringTokenizer token, MudanzasCompartidas sistema) {
         String[] arr = new String[3];
 
         llenarArray(arr, token);

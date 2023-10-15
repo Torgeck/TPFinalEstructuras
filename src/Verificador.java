@@ -6,7 +6,7 @@ import estructuras.lineales.Par;
 public class Verificador {
 
     // * Clase que se encarga de verificar que un string cumpla con una expresion
-    // regular dada */
+    // * regular dada
 
     private static final Pattern FORMATO_FECHA = Pattern.compile("(0[1-9]|[12]\\d|30)/(1[012]|0[1-9])/[1-9]\\d{3}");
     private static final Pattern FORMATO_EMAIL = Pattern.compile("(\\w+@\\w+)([.]\\w+)+");
@@ -185,6 +185,37 @@ public class Verificador {
             fecha = inputUsuario.next();
         }
         return fecha;
+    }
+
+    public static String verificarDireccion(String direccion, Scanner inputUsuario) {
+        // Metodo que verifica que se haya ingresado una direccion en el formato
+        // correcto
+
+        if (!esDireccion(direccion)) {
+            System.out.println(
+                    "Ingrese nuevamente una direccion en formato NOMBRE_CALLE NUMERO_CASA\nEj: calle falsa 123");
+            while (!inputUsuario.hasNext(DIRECCION)) {
+                System.out.println("Error, Ingrese nuevamente la direccion");
+                inputUsuario.next();
+            }
+            direccion = inputUsuario.next();
+        }
+        return direccion;
+    }
+
+    public static boolean verificarEstadoPago(String estado, Scanner inputUsuario) {
+        // Metodo que verifica que se haya ingresado una direccion en el formato
+        // correcto
+
+        if (!esBoolean(estado)) {
+            System.out.println("Ingrese fecha en formato dd/mm/aaaa");
+            while (!inputUsuario.hasNext(BOOLEAN)) {
+                System.out.println("Error, Ingrese nuevamente el estado, T/F");
+                inputUsuario.next();
+            }
+            estado = inputUsuario.next();
+        }
+        return estado.equals("T");
     }
 
     public static int verificarPrefijo(String prefijo, Scanner inputUsuario) {
