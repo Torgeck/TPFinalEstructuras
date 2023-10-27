@@ -1,30 +1,111 @@
-C;2000;Rosario;Santa Fe
-C;5000;Cordoba;Cordoba
-C;1425;Buenos Aires;Buenos Aires
-C;4000;San Miguel de Tucuman;Tucuman
-C;8300;Neuquen;Neuquen
-C;8000;Bahia Blanca;Buenos Aires
+C;1000;Capital Federal;Buenos Aires
+C;4700;San Fernando del Valle de Catamarca;Catamarca
 C;3500;Resistencia;Chaco
-C;3000;Santa Fe;Santa Fe
-C;4100;Salta;Salta
-C;2000;La Plata;Buenos Aires
+C;9103;Rawson;Chubut
+C;5000;Córdoba;Córdoba
 C;3400;Corrientes;Corrientes
-C;8301;Cipolletti;Rio Negro
-C;5001;Villa Maria;Cordoba
-C;3300;Parana;Entre Rios
-C;5152;Villa Allende;Cordoba
-C;2001;San Nicolas de los Arroyos;Buenos Aires
-C;9400;Rio Gallegos;Santa Cruz
-C;7000;Tandil;Buenos Aires
+C;3100;Paraná;Entre Ríos
 C;3600;Formosa;Formosa
+C;4600;San Salvador de Jujuy;Jujuy
+C;6300;Santa Rosa;La Pampa
+C;5300;La Rioja;La Rioja
+C;5500;Mendoza;Mendoza
+C;3300;Posadas;Misiones
+C;8300;Neuquén;Neuquén
+C;8500;Viedma;Río Negro
+C;4400;Salta;Salta
+C;5400;San Juan;San Juan
+C;5700;San Luis;San Luis
+C;9400;Río Gallegos;Santa Cruz
+C;3000;Santa Fe;Santa Fe
+C;4200;Santiago del Estero;Santiago del Estero
+C;9410;Ushuaia;Tierra del Fuego
+C;4000;San Miguel de Tucumán;Tucumán
 C;8400;Bariloche;Rio Negro
-C;4103;Metan;Salta
-C;3501;Barranqueras;Chaco
-C;5153;Alta Gracia;Cordoba
-C;5002;Rio Cuarto;Cordoba
-C;8305;Plottier;Neuquen
-C;3001;Rafaela;Santa Fe
-C;1424;Villa Lugano;Buenos Aires
-C;2200;San Lorenzo;Santa Fe
-C;9420;Puerto Deseado;Santa Cruz
-C;3416;Itati;Corrientes
+C;8407;Villa La Angostura;Neuquen
+C;9200;Esquel;Chubut
+C;9040;Perito Moreno;Santa Cruz
+C;9405;El Calafate;Santa Cruz
+C;9420;Rio Grande;Tierra del Fuego
+C;9000;Comodoro Rivadavia;Chubut
+P;DNI;56789012;LOPEZ;CARLOS ALBERTO;11-1234567;carlosalberto@gmail.com
+P;DNI;35678965;FERNANDEZ;JUAN CARLOS;299-4495117;juancarlos@gmail.com
+P;DNI;24567890;GOMEZ;ANA MARIA;387-5123456;anamaria@yahoo.com
+P;LE;18765432;RODRIGUEZ;MIGUEL ANGEL;221-7654321;miguel@gmail.com
+P;DNI;39876543;MARTINEZ;MARIA ELENA;351-6789012;mariaelena@hotmail.com
+P;DNI;45670901;PEREZ;SILVIA BEATRIZ;11-9876532;silvia@yahoo.com
+P;DNI;12345678;GARCIA;LUCIA INES;387-2345678;luciaines@gmail.com
+P;DNI;23456789;SANCHEZ;JORGE LUIS;299-8765432;jorgeluis@hotmail.com
+P;LE;34567890;ROMERO;ANA VICTORIA;221-3456789;anavictoria@gmail.com
+P;DNI;87654321;TORRES;RICARDO JAVIER;351-5678901;ricardo@yahoo.com
+P;DNI;98765432;DIAZ;CLAUDIA ALEJANDRA;11-8754321;claudia@gmail.com
+P;DNI;76543210;CASTRO;MARIO ALBERTO;11-2356789;marioalberto@hotmail.com
+P;LE;87654721;ROJAS;SUSANA ISABEL;387-6543210;susana@yahoo.com
+P;DNI;67890123;MOLINA;GABRIEL EDUARDO;221-9876543;gabriel@gmail.com
+P;DNI;78901234;GUTIERREZ;NATALIA PATRICIA;351-7654321;natalia@hotmail.com
+P;LE;89012345;FERRARI;FABIAN OSCAR;299-2345678;fabian@yahoo.com
+P;DNI;90123456;MORENO;VERONICA LAURA;11-3457890;veronica@gmail.com
+P;DNI;34597890;ALVAREZ;HUGO ALFREDO;11-8764321;hugo@hotmail.com
+P;LE;23456889;CRUZ;CAROLINA BEATRIZ;387-5678901;carolina@yahoo.com
+P;DNI;45678901;RAMIREZ;SERGIO GABRIEL;221-1234567;sergio@gmail.com
+S;2000;5000;15/06/2023;DNI;35678965;12.5;3;San Martin 1200;Belgrano 450;F
+S;5000;1425;16/06/2023;DNI;45231876;10.2;2;Alberdi 890;Santa Fe 200;T
+S;1425;4000;17/06/2023;DNI;57890123;15.7;4;Maipu 750;San Luis 1200;F
+S;4000;8300;18/06/2023;DNI;63214587;8.3;1;Sarmiento 340;Roca 210;T
+S;8300;8000;19/06/2023;DNI;78965432;11.0;2;Mitre 500;Buenos Aires 100;F
+S;8000;3500;20/06/2023;DNI;89562314;9.8;3;Colon 800;Juan B. Justo 300;T
+S;3500;3000;21/06/2023;DNI;98745632;13.5;4;San Juan 600;Cordoba 150;F
+S;3000;4100;22/06/2023;DNI;36451287;6.4;1;Lavalle 200;Salta 400;T
+S;4100;2000;23/06/2023;DNI;74563218;14.2;3;Belgrano 950;Rosario 300;F
+S;2000;3400;24/06/2023;DNI;51237894;7.9;2;Brown 300;Chacabuco 600;T
+S;3400;8301;25/06/2023;DNI;67894521;16.8;4;San Martin 1200;Cipolletti 400;F
+S;8301;5001;26/06/2023;DNI;12345678;10.5;2;Alberdi 890;Villa Maria 200;T
+S;5001;3300;27/06/2023;DNI;43218976;8.7;3;Maipu 750;Parana 1200;F
+S;3300;5152;28/06/2023;DNI;56782341;12.1;2;Sarmiento 340;Villa Allende 210;T
+S;5152;2001;29/06/2023;DNI;87651234;9.3;1;Mitre 500;San Nicolas 100;F
+S;2001;9400;30/06/2023;DNI;23987456;14.7;3;Colon 800;Rio Gallegos 300;T
+S;9400;7000;01/07/2023;DNI;64582379;7.5;2;San Juan 600;Tandil 150;F
+S;7000;3600;02/07/2023;DNI;79853214;11.8;4;Lavalle 200;Formosa 400;T
+S;3600;8400;03/07/2023;DNI;51234876;5.6;1;Belgrano 950;Bariloche 300;F
+S;8400;4103;04/07/2023;DNI;65432198;13.2;3;Brown 300;Metan 600;T
+R;9410;9420;211
+R;9420;9400;374
+R;9400;9405;306
+R;9400;9000;778
+R;9405;9040;629
+R;9040;9200;543
+R;9000;9103;384
+R;9200;8400;284
+R;9103;8500;495
+R;8400;8407;82.4
+R;8407;8300;479
+R;8300;8500;660
+R;8300;6300;537
+R;8300;5500;855
+R;8500;1000;907
+R;6300;1000;620
+R;6300;5700;505
+R;5500;5700;258
+R;5500;5400;107
+R;5400;5300;444
+R;5400;5700;325
+R;5700;5000;404
+R;1000;3100;458
+R;1000;3000;478
+R;3100;3400;577
+R;3100;3000;31.3
+R;3000;3400;567
+R;3000;5000;370
+R;5000;4200;522
+R;5000;5300;443
+R;5300;4700;157
+R;4700;4000;209
+R;4000;4200;158
+R;4000;4400;329
+R;4400;4600;92.9
+R;4200;3500;620
+R;3500;3600;173
+R;3500;3400;20.2
+R;3400;3300;320
+R;9200;9103;622
+

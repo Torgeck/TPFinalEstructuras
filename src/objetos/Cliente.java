@@ -7,11 +7,11 @@ public class Cliente {
     private int numeroDoc; // CLAVE
     private String nombre;
     private String apellido;
-    private int telefono;
+    private String telefono;
     private String email;
 
     // Constructures
-    public Cliente(String tipoDoc, int numeroDoc, String nombre, String apellido, int telefono, String email) {
+    public Cliente(String tipoDoc, int numeroDoc, String apellido, String nombre, String telefono, String email) {
         this.tipoDoc = tipoDoc;
         this.numeroDoc = numeroDoc;
         this.nombre = nombre;
@@ -21,7 +21,7 @@ public class Cliente {
     }
 
     public Cliente() {
-        this("", -1, "", "", -1, "");
+        this("", -1, "", "", "", "");
     }
 
     // Getters/Setters
@@ -53,11 +53,11 @@ public class Cliente {
         this.apellido = apellido;
     }
 
-    public int getTelefono() {
+    public String getTelefono() {
         return this.telefono;
     }
 
-    public void setTelefono(int telefono) {
+    public void setTelefono(String telefono) {
         this.telefono = telefono;
     }
 
@@ -71,12 +71,12 @@ public class Cliente {
 
     @Override
     public String toString() {
-        return "Tipo documento = " + this.tipoDoc +
-                ", Numero documento = " + this.numeroDoc +
-                ", Nombre = " + this.nombre +
-                ", Apellido = " + this.apellido +
-                ", Telefono = " + this.telefono +
-                ", Email = " + this.email;
+        return "Tipo documento: " + this.tipoDoc +
+                ", Numero documento: " + this.numeroDoc +
+                ", Nombre: " + this.nombre +
+                ", Apellido:  " + this.apellido +
+                ", Telefono: " + this.telefono +
+                ", Email: " + this.email + "\n";
     }
 
 }

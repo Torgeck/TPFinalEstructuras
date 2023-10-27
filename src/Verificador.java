@@ -10,10 +10,11 @@ public class Verificador {
 
     private static final Pattern FORMATO_FECHA = Pattern.compile("(0[1-9]|[12]\\d|30)/(1[012]|0[1-9])/[1-9]\\d{3}");
     private static final Pattern FORMATO_EMAIL = Pattern.compile("(\\w+@\\w+)([.]\\w+)+");
-    private static final Pattern FORMATO_TELEFONO = Pattern.compile("[1-9]\\d{1,3}-\\d{8}");
-    private static final Pattern FORMATO_DOCUMENTO = Pattern.compile("[1-9]\\d{8}+");
+    private static final Pattern FORMATO_TELEFONO = Pattern.compile("[1-9]\\d{1,2}-\\d{7}");
+    private static final Pattern FORMATO_DOCUMENTO = Pattern.compile("[1-9]\\d{7}");
     private static final Pattern FORMATO_PREFIJO = Pattern.compile("0*\\d{0,4}");
-    private static final Pattern FORMATO_CLAVE_CLIENTE = Pattern.compile("[a-zA-Z]{3-4}[1-9]\\\\d{8}+");
+    private static final Pattern FORMATO_CLAVE_CLIENTE = Pattern.compile("[a-zA-Z]{2,4}[1-9]\\d{7}");
+    private static final Pattern FORMATO_PALABRAS = Pattern.compile("[a-zA-Z]+(\s[a-zA-Z]+)*");
     private static final Pattern CODIGO_POSTAL = Pattern.compile("[1-9]\\d{3}");
     private static final Pattern DIRECCION = Pattern.compile("([a-zA-Z]+)(\s[a-zA-Z]*)*(\s[1-9]\\d*)");
     private static final Pattern SOLO_LETRAS = Pattern.compile("[a-zA-Z]+");
@@ -27,6 +28,10 @@ public class Verificador {
     // * Verificadores basicos
     public static boolean esPalabra(String palabra) {
         return SOLO_LETRAS.matcher(palabra).matches();
+    }
+
+    public static boolean sonPalabras(String nombre) {
+        return FORMATO_PALABRAS.matcher(nombre).matches();
     }
 
     public static boolean esTelefono(String telefono) {
@@ -92,9 +97,9 @@ public class Verificador {
         return resultado;
     }
 
-    public static int verificarTelefono(String telefono, Scanner inputUsuario) {
+    public static String verificarTelefono(String telefono, Scanner inputUsuario) {
         // Metodo que verifica que el nro ingresado sea correcto
-        int tel;
+        String tel;
 
         if (!esTelefono(telefono)) {
             System.out.println("Ingrese numero de telefono");
@@ -102,9 +107,9 @@ public class Verificador {
                 System.out.println("Error, numero de telefono incorrecto.\n Ingrese numero de telefono nuevamente");
                 inputUsuario.next();
             }
-            tel = inputUsuario.nextInt();
+            tel = inputUsuario.nextLine();
         } else {
-            tel = Integer.parseInt(telefono);
+            tel = telefono;
         }
 
         return tel;
@@ -208,12 +213,13 @@ public class Verificador {
         // correcto
 
         if (!esBoolean(estado)) {
-            System.out.println("Ingrese fecha en formato dd/mm/aaaa");
+            System.out.println("Ingrese nuevo estado de pago, T/F");
             while (!inputUsuario.hasNext(BOOLEAN)) {
                 System.out.println("Error, Ingrese nuevamente el estado, T/F");
                 inputUsuario.next();
             }
-            estado = inputUsuario.next();
+            estado = inputUsuario.nextLine();
+
         }
         return estado.equals("T");
     }
@@ -263,7 +269,8 @@ public class Verificador {
     public static boolean verificarCliente(String[] arr) {
         // Metodo que verifica los atribudos de un cliente, retorna true si estan todos
         // correctos
-        return esPalabra(arr[0]) && esDocumento(arr[1]) && esPalabra(arr[2]) && esPalabra(arr[3]) && esTelefono(arr[4])
+        return esPalabra(arr[0]) && esDocumento(arr[1]) && sonPalabras(arr[2]) && sonPalabras(arr[3])
+                && esTelefono(arr[4])
                 && esEmail(arr[5]);
     }
 

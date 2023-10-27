@@ -381,11 +381,11 @@ public class ArbolAVL {
         NodoAVL nodoEncontrado = null;
 
         // Si encontramos el nodo con igual elemento lo devolvemos
-        if (nodo.getKey().compareTo(key) == 0)
+        if (key.compareTo(nodo.getKey()) == 0) {
             nodoEncontrado = nodo;
 
-        // Si el elemento es menor que el elemento del nodo actual busco en HI
-        else if (nodo.getKey().compareTo(key) < 0) {
+            // Si el elemento es menor que el elemento del nodo actual busco en HI
+        } else if (key.compareTo(nodo.getKey()) < 0) {
 
             if (nodo.getIzquierdo() != null)
                 nodoEncontrado = perteneceAux(nodo.getIzquierdo(), key);
@@ -401,14 +401,14 @@ public class ArbolAVL {
 
     public Object obtenerElemento(Comparable key) {
         // Metodo que devuelve el value de un nodo con la key ingresada por parametro
-        Object elemento = null;
+        NodoAVL nodo = null;
 
         // Checkea que el arbol no esta vacio
         if (this.raiz != null) {
-            elemento = perteneceAux(this.raiz, key).getValue();
+            nodo = perteneceAux(this.raiz, key);
         }
 
-        return elemento;
+        return (nodo != null) ? nodo.getValue() : null;
     }
 
     public boolean esVacio() {

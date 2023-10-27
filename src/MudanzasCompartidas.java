@@ -17,8 +17,9 @@ public class MudanzasCompartidas {
     private HashMap<String, Cliente> clientes;
 
     // Mensajes de error
-    private static String errorInput = "ERROR clave ingresada erronea o no existente";
-    private static String errorExistencia = "ERROR ya existe en el sistema";
+    private static String ERROR_INPUT = "ERROR clave ingresada erronea o no existente";
+    private static String ERROR_EXISTENCIA = "ERROR ya existe en el sistema";
+    private static String ERROR_OPCION = "ERROR opcion ingresada inexistente";
 
     public MudanzasCompartidas() {
         this.ciudades = new ArbolAVL();
@@ -88,7 +89,7 @@ public class MudanzasCompartidas {
                 2 - Mostrar informacion de una ciudad dada la clave
                 3 - Listar ciudades dado un prefijo
                 ===== VIAJE =====
-                [ Siendo A,B,C ciudades ]
+                [ Siendo A, B, C ciudades ]
                 4 - Obtener camino de A a B que pase por menos ciudades
                 5 - Obtener camino de A a B con menor distancia en Kms
                 6 - Obtener todos los caminos posibles de A a B que pasen por C
@@ -167,7 +168,7 @@ public class MudanzasCompartidas {
 
                 Logger.log("Se creo ciudad: " + ciudadUsuario);
             } else {
-                System.out.println(errorExistencia);
+                System.out.println(ERROR_EXISTENCIA);
             }
             seguir = !deseaSalir(inputUsuario);
         }
@@ -208,15 +209,19 @@ public class MudanzasCompartidas {
             codigoPostal = Verificador.verificarCodigoPostal(inputUsuario.nextLine(), inputUsuario);
             ciudadAEliminar = (Ciudad) ciudades.obtenerElemento(codigoPostal);
 
+            // Se opto por obtener primero la ciudad y despues eliminarla para poder loggear
+            // el objeto con sus datos (En vez de solo eliminarla de las estructuras y
+            // loggear solo el codigo postal)
             if (ciudadAEliminar != null) {
 
                 ciudades.eliminar(codigoPostal);
                 solicitudesViajes.eliminar(codigoPostal);
                 mapaRutas.eliminarVertice(codigoPostal);
 
+                System.out.println("Eliminacion exitosa");
                 Logger.log("Se elimino la ciudad: " + ciudadAEliminar);
             } else {
-                System.out.println(errorExistencia);
+                System.out.println("No existe en el sistema");
             }
 
             seguir = !deseaSalir(inputUsuario);
@@ -259,7 +264,7 @@ public class MudanzasCompartidas {
                 }
 
             } else {
-                System.out.println(errorExistencia);
+                System.out.println("No existe en el sistema");
             }
 
             seguir = !deseaSalir(inputUsuario);
@@ -287,7 +292,7 @@ public class MudanzasCompartidas {
                 agregarCliente(cliente);
                 Logger.log("Se creo el cliente: " + cliente);
             } else {
-                System.out.println(errorExistencia);
+                System.out.println(ERROR_EXISTENCIA);
             }
 
             seguir = !deseaSalir(inputUsuario);
@@ -301,8 +306,7 @@ public class MudanzasCompartidas {
     public Cliente crearCliente(String[] datosCliente, Par clave, Scanner inputUsuario) {
         // Metodo que crea y retorna un cliente en base a los datos pasados por
         // parametro y pide al usuario que reingrese info si es que falta
-        String nombre, apellido, email;
-        int telefono;
+        String nombre, apellido, email, telefono;
 
         while (datosCliente.length != 4) {
             System.out.println("Ingrese nombre, apellido, telefono y email del cliente separados por -");
@@ -353,7 +357,7 @@ public class MudanzasCompartidas {
                         Logger.log("Se cambio el apellido de: " + datoModificado + " a: " + cliente.getApellido());
                         break;
                     case 3:
-                        datoModificado = Integer.toString(cliente.getTelefono());
+                        datoModificado = cliente.getTelefono();
                         System.out.println("Ingrese nuevo telefono para el cliente");
                         cliente.setTelefono(Verificador.verificarTelefono(inputUsuario.nextLine(), inputUsuario));
                         Logger.log("Se cambio el telefono de: " + datoModificado + "a: " + cliente.getTelefono());
@@ -390,9 +394,11 @@ public class MudanzasCompartidas {
             // Si el cliente esta en el sistema
             if (clienteAEliminar != null) {
                 clientes.remove(clave);
-                System.out.println("Se elimino el cliente " + clienteAEliminar);
+                Logger.log("Se elimino el cliente con clave" + clienteAEliminar.getClave() + " con datos: "
+                        + clienteAEliminar);
+                System.out.println("Se elimino cliente con exito");
             } else {
-                System.out.println(errorInput);
+                System.out.println(ERROR_INPUT);
             }
 
             seguir = !deseaSalir(inputUsuario);
@@ -410,14 +416,19 @@ public class MudanzasCompartidas {
         while (seguir) {
             System.out.println("Ingrese los codigos postales de las ciudades separados por -. Ej 1111-2222");
             ciudad = Utilidades.toIntArray(inputUsuario.nextLine().split("-"), cantCiudades, inputUsuario);
-            System.out.println("Ingrese la cantidad de kilometros de la ruta");
 
-            cantKms = Verificador.verificarDouble(inputUsuario.nextLine(), "cantidad de kms", inputUsuario);
-            agregarRuta(ciudad[0], ciudad[1], cantKms);
+            // Si existen las dos ciudades en el sistema
+            if (ciudades.pertenece(ciudad[0]) && ciudades.pertenece(ciudad[1])) {
+                System.out.println("Ingrese la cantidad de kilometros de la ruta");
 
-            Logger.log("Se dio de alta la ruta que une " + ciudad[0] + " y " + ciudad[1] + " con " + cantKms
-                    + " kilometros");
+                cantKms = Verificador.verificarDouble(inputUsuario.nextLine(), "cantidad de kms", inputUsuario);
+                agregarRuta(ciudad[0], ciudad[1], cantKms);
 
+                Logger.log("Se dio de alta la ruta que une " + ciudad[0] + " y " + ciudad[1] + " con " + cantKms
+                        + " kilometros");
+            } else {
+                System.out.println(ERROR_EXISTENCIA);
+            }
             seguir = !deseaSalir(inputUsuario);
         }
     }
@@ -436,13 +447,22 @@ public class MudanzasCompartidas {
         while (seguir) {
             System.out.println("Ingrese los codigos postales de las ciudades separados por -. Ej 1111-2222");
             ciudad = Utilidades.toIntArray(inputUsuario.nextLine().split("-"), cantCiudades, inputUsuario);
-            System.out.println("Ingrese la cantidad de kilometros de la ruta");
 
-            cantKms = Verificador.verificarDouble(inputUsuario.nextLine(), "cantidad de kms", inputUsuario);
-            if (mapaRutas.eliminarArco(ciudad[0], ciudad[1], cantKms)) {
+            // Si existen las ciudades en el sistema
+            if (ciudades.pertenece(ciudad[0]) && ciudades.pertenece(ciudad[1])) {
+                System.out.println("Ingrese la cantidad de kilometros de la ruta");
+                cantKms = Verificador.verificarDouble(inputUsuario.nextLine(), "cantidad de kms", inputUsuario);
 
-                Logger.log("Se elimino la ruta que unia " + ciudad[0] + " y " + ciudad[1] + " con " + cantKms
-                        + " kilometros");
+                if (mapaRutas.eliminarArco(ciudad[0], ciudad[1], cantKms)) {
+                    System.out.println("Eliminacion exitosa");
+                    Logger.log("Se elimino la ruta que unia " + ciudad[0] + " y " + ciudad[1] + " con " + cantKms
+                            + " kilometros");
+                } else {
+                    System.out.println("No existe ruta que una " + ciudad[0] + " y " + ciudad[1] + " con " + cantKms
+                            + " cantidad de kms");
+                }
+            } else {
+                System.out.println("No existen ciudades ingresadas");
             }
 
             seguir = !deseaSalir(inputUsuario);
@@ -469,8 +489,11 @@ public class MudanzasCompartidas {
                 nuevoKms = Verificador.verificarDouble(inputUsuario.nextLine(), "cantidad de kms", inputUsuario);
                 agregarRuta(ciudad[0], ciudad[1], nuevoKms);
 
+                System.out.println("Modificacion exitosa");
                 Logger.log("Se modifico la distancia de la ruta que unia " + ciudad[0] + " y " + ciudad[1] + " con "
                         + cantKms + " kilometros a " + nuevoKms + " kilometros");
+            } else {
+                System.out.println("No existe ruta o ciudades en el sistema");
             }
             seguir = !deseaSalir(inputUsuario);
         }
@@ -495,8 +518,11 @@ public class MudanzasCompartidas {
                 if (clientes.get(clave.toConcatString()) != null) {
                     agregarSolicitud(ciudad[0], crearSolicitud(ciudad[1], clave.toConcatString(), inputUsuario));
                 } else {
+                    System.out.println("ERROR no existe cliente");
                     // Error no existe cliente
                 }
+            } else {
+                System.out.println("ERROR no existe camino entre ciudades");
             }
             seguir = !deseaSalir(inputUsuario);
         }
@@ -542,7 +568,10 @@ public class MudanzasCompartidas {
 
     public void agregarSolicitud(int origen, Solicitud solicitud) {
         // Agrega solicitud al sistema y loggea la misma
-        ciudades.insertar(origen, solicitud);
+        Lista solicitudes;
+
+        solicitudes = (Lista) solicitudesViajes.obtenerElemento(origen);
+        solicitudes.insertar(solicitud, 1);
         Logger.log("Se agrego solicitud: " + solicitud + " a ciudad: " + origen);
     }
 
@@ -563,20 +592,19 @@ public class MudanzasCompartidas {
                 clave = solicitarClaveCliente(inputUsuario);
                 // Filtro las solicitudes para ver si existe alguna que el usuario quiera
                 // modificar
-                solicitudesFiltradas = Utilidades.filtrarConCiudadYCliente((Lista) ciudades.obtenerElemento(ciudad[0]),
+                solicitudesFiltradas = Utilidades.filtrarConCiudadYCliente(
+                        (Lista) solicitudesViajes.obtenerElemento(ciudad[0]),
                         ciudad[1], clave.toConcatString());
 
                 if (!solicitudesFiltradas.esVacia()) {
                     mostrarOpcionesSolicitudes(ciudad, clave, solicitudesFiltradas);
                     numeroSolicitud = inputUsuario.nextInt();
-                    inputUsuario.next();
 
                     if (numeroSolicitud > 0 && numeroSolicitud <= solicitudesFiltradas.longitud()) {
                         solicitudElegida = (Solicitud) solicitudesFiltradas.recuperar(numeroSolicitud);
                         // TODO hacer esto un metodo separado, y usar clase verificador
                         menuModificacionSolicitud();
                         operacionElegida = inputUsuario.nextInt();
-                        inputUsuario.next();
 
                         switch (operacionElegida) {
                             case 1:
@@ -618,8 +646,15 @@ public class MudanzasCompartidas {
                         // ERROR
                         System.out.println("Opcion invalida");
                     }
+                } else {
+                    System.out.println("No hay solicitudes para la ciudades ingresadas");
                 }
+            } else {
+                System.out.println("No existe camino entre ciudades ingresadas");
             }
+            inputUsuario.reset();
+
+            seguir = !deseaSalir(inputUsuario);
         }
     }
 
@@ -639,11 +674,12 @@ public class MudanzasCompartidas {
             if (mapaRutas.existeCamino(ciudad[0], ciudad[1])) {
                 claveCliente = solicitarClaveCliente(inputUsuario);
 
-                if (clientes.get(claveCliente.toConcatString()) != null) {
+                solicitudesCiudad = (Lista) solicitudesViajes.obtenerElemento(ciudad[0]);
+                solicitudesFiltradas = Utilidades.filtrarConCiudadYCliente(solicitudesCiudad,
+                        ciudad[1], claveCliente.toConcatString());
+
+                if (!solicitudesFiltradas.esVacia()) {
                     // Listo todas las solicitudes del la ciudad origen a destino con el cliente tal
-                    solicitudesCiudad = (Lista) ciudades.obtenerElemento(ciudad[0]);
-                    solicitudesFiltradas = Utilidades.filtrarConCiudadYCliente(solicitudesCiudad,
-                            ciudad[1], claveCliente.toConcatString());
 
                     mostrarOpcionesSolicitudes(ciudad, claveCliente, solicitudesFiltradas);
 
@@ -651,8 +687,13 @@ public class MudanzasCompartidas {
                     solElegida = (Solicitud) solicitudesFiltradas.recuperar(opcion);
 
                     if (solicitudesCiudad.eliminarElemento(solElegida)) {
+                        System.out.println("Eliminacion exitosa");
                         Logger.log("Se elimino la solicitud: " + solElegida + " con origen: " + ciudad[0]);
+                    } else {
+                        System.out.println("ERROR no se que paso");
                     }
+                } else {
+                    System.out.println("ERROR no hay solicitudes con las ciudades y clave ingresada");
                 }
             }
 
@@ -759,7 +800,7 @@ public class MudanzasCompartidas {
                         + " es: " + mapaRutas.menorCaminoCantidadNodos(ciudadOrigen.getCodigoPostal(),
                                 ciudadDestino.getCodigoPostal()).toString());
             } else {
-                System.out.println(errorInput);
+                System.out.println(ERROR_INPUT);
             }
             seguir = !deseaSalir(inputUsuario);
         }
@@ -1086,7 +1127,7 @@ public class MudanzasCompartidas {
 
             switch (opcion) {
                 case 0:
-                    seguir = true;
+                    seguir = false;
                     break;
                 case 1:
                     darAltaCiudad(inputUsuario);
@@ -1097,6 +1138,8 @@ public class MudanzasCompartidas {
                 case 3:
                     modificarCiudad(inputUsuario);
                     break;
+                default:
+                    System.out.println(ERROR_OPCION);
             }
         } while (seguir);
     }
@@ -1113,7 +1156,7 @@ public class MudanzasCompartidas {
 
             switch (opcion) {
                 case 0:
-                    seguir = true;
+                    seguir = false;
                     break;
                 case 1:
                     darAltaRuta(inputUsuario);
@@ -1124,6 +1167,8 @@ public class MudanzasCompartidas {
                 case 3:
                     modificarRuta(inputUsuario);
                     break;
+                default:
+                    System.out.println(ERROR_OPCION);
             }
         } while (seguir);
     }
@@ -1140,7 +1185,7 @@ public class MudanzasCompartidas {
 
             switch (opcion) {
                 case 0:
-                    seguir = true;
+                    seguir = false;
                     break;
                 case 1:
                     darAltaCliente(inputUsuario);
@@ -1151,6 +1196,8 @@ public class MudanzasCompartidas {
                 case 3:
                     modificarCliente(inputUsuario);
                     break;
+                default:
+                    System.out.println(ERROR_OPCION);
             }
         } while (seguir);
     }
@@ -1167,7 +1214,7 @@ public class MudanzasCompartidas {
 
             switch (opcion) {
                 case 0:
-                    seguir = true;
+                    seguir = false;
                     break;
                 case 1:
                     darAltaPedido(inputUsuario);
@@ -1178,6 +1225,8 @@ public class MudanzasCompartidas {
                 case 3:
                     modificarPedido(inputUsuario);
                     break;
+                default:
+                    System.out.println(ERROR_OPCION);
             }
         } while (seguir);
     }
@@ -1208,7 +1257,7 @@ public class MudanzasCompartidas {
                     solicitudesABM(inputUsuario);
                     break;
                 default:
-                    System.out.println(errorInput);
+                    System.out.println(ERROR_OPCION);
 
             }
         } while (seguir);
@@ -1226,14 +1275,67 @@ public class MudanzasCompartidas {
             inputUsuario.nextLine();
 
             switch (opcion) {
-
+                case 0:
+                    seguir = false;
+                    break;
+                case 1:
+                    consultasCliente(inputUsuario);
+                    break;
+                case 2:
+                    consultaCiudad(inputUsuario);
+                    break;
+                case 3:
+                    listarCiudades(inputUsuario);
+                    break;
+                case 4:
+                    caminoMenosCiudades(inputUsuario);
+                    break;
+                case 5:
+                    caminoMenosKilometros(inputUsuario);
+                    break;
+                case 6:
+                    caminoTresCiudades(inputUsuario);
+                    break;
+                case 7:
+                    esPosibleConKilometros(inputUsuario);
+                    break;
+                default:
+                    System.out.println(ERROR_OPCION);
             }
-
         } while (seguir);
-
     }
 
-    public void iniciarMenu() {
+    public void verificarViajes(Scanner inputUsuario) {
+        // Metodo que muestra el menu de verificar viajes y llama a los metodos
+        // correspondientes
+        boolean seguir = true;
+        int opcion;
+
+        do {
+            menuVerificarViajes();
+            opcion = inputUsuario.nextInt();
+            inputUsuario.nextLine();
+
+            switch (opcion) {
+                case 0:
+                    seguir = false;
+                    break;
+                case 1:
+                    obtenerEspacioFaltante(inputUsuario);
+                    break;
+                case 2:
+                    verificarEspacioListarSolicitudes(inputUsuario);
+                    break;
+                case 3:
+                    verificarCaminoPerfecto(inputUsuario);
+                    break;
+                default:
+                    System.out.println(ERROR_OPCION);
+            }
+        } while (seguir);
+    }
+
+    public boolean iniciarMenu() {
         boolean seguir = true;
         int opcion;
         Scanner inputUsuario = new Scanner(System.in);
@@ -1265,13 +1367,13 @@ public class MudanzasCompartidas {
                     break;
                 case 5:
                     System.out.println(mostrarSistema());
-                    // Hacer cosas
                     break;
                 default:
-                    System.out.println("\nNO EXISTE OPCION INGRESADA\n");
+                    System.out.println(ERROR_OPCION);
             }
         } while (seguir);
         // loggea el estado final del sistema al terminar
         Logger.loggearSistema(this);
+        return seguir;
     }
 }

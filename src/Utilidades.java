@@ -69,13 +69,17 @@ public final class Utilidades {
         Solicitud aux;
         int longitud = listaOriginal.longitud(), posicion = 1;
 
-        while (posicion <= longitud) {
-            aux = (Solicitud) listaOriginal.recuperar(posicion);
+        // Mientras la lista original tenga elementos
+        if (!listaOriginal.esVacia()) {
 
-            if (aux.getIdCliente().equals(claveCliente) && aux.getCiudadDestino() == ciudad) {
-                listaFiltrada.insertar(aux, 1);
+            while (posicion <= longitud) {
+                aux = (Solicitud) listaOriginal.recuperar(posicion);
+
+                if (aux.getIdCliente().equals(claveCliente) && aux.getCiudadDestino() == ciudad) {
+                    listaFiltrada.insertar(aux, 1);
+                }
+                posicion++;
             }
-            posicion++;
         }
 
         return listaFiltrada;

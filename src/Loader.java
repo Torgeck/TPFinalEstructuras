@@ -14,7 +14,7 @@ public class Loader {
     // * Clase encargada de la carga de datos al sistema */
 
     static Path datos = Path.of("./src/cargaInicial/carga_ini.txt");
-    static Charset charset = Charset.forName("US-ASCII");
+    static Charset charset = Charset.forName("ISO-8859-1");
 
     public static void cargarDatos(MudanzasCompartidas sistema) {
         String line;
@@ -26,27 +26,28 @@ public class Loader {
                 token = new StringTokenizer(line, ";");
                 // La mando a un swith o un hashmap, creo que conviene switch ya que hay 3
                 // clases no mas
+                if (token.hasMoreTokens()) {
+                    switch (token.nextToken()) {
+                        case "C":
+                            // crear ciudad, aniadirla a las estructuras y logear
+                            cargarCiudad(token, sistema);
+                            break;
+                        case "S":
+                            // crear, aniadirla a las estructuras y logear la solicitud
+                            cargarSolicitud(token, sistema);
+                            break;
+                        case "P":
+                            // crear, aniadirl a las estructuras y logear el cliente
+                            cargarCliente(token, sistema);
+                            break;
+                        case "R":
+                            // crear aniadirla a las estructuras y logear la ruta
+                            cargarRuta(token, sistema);
+                            break;
 
-                switch (token.nextToken()) {
-                    case "C":
-                        // crear ciudad, aniadirla a las estructuras y logear
-                        cargarCiudad(token, sistema);
-                        break;
-                    case "S":
-                        // crear, aniadirla a las estructuras y logear la solicitud
-                        cargarSolicitud(token, sistema);
-                        break;
-                    case "P":
-                        // crear, aniadirl a las estructuras y logear el cliente
-                        cargarCliente(token, sistema);
-                        break;
-                    case "R":
-                        // crear aniadirla a las estructuras y logear la ruta
-                        cargarRuta(token, sistema);
-                        break;
-
-                    default:
-                        System.out.println("No es objeto valido o se rompio algo");
+                        default:
+                            System.out.println("No es objeto valido o se rompio algo");
+                    }
                 }
             }
             // Loggea el sistema despues de hacer la carga inicial (Lo podria hacer el mismo
@@ -68,11 +69,13 @@ public class Loader {
         nombre = token.nextToken();
         provincia = token.nextToken();
 
-        if (Verificador.esCodigoPostal(cp) && Verificador.esPalabra(nombre) && Verificador.esPalabra(provincia)) {
+        if (Verificador.esCodigoPostal(cp) && Verificador.sonPalabras(nombre)
+                && Verificador.sonPalabras(provincia)) {
             // Creo la ciudad y la agrego a las estructuras
             ciudad = new Ciudad(Integer.parseInt(cp), nombre, provincia);
             sistema.agregarCiudad(ciudad);
         } else {
+            System.out.println("ERROR Algo salio mal");
             // Error no se pudo loggear ciudad
         }
     }
@@ -91,6 +94,7 @@ public class Loader {
             // Agrego la solicitud a las estructuras
             sistema.agregarSolicitud(Integer.parseInt(arr[0]), solicitud);
         } else {
+            System.out.println("ERROR Algo salio mal");
             // Error en el sistema
         }
     }
@@ -102,7 +106,6 @@ public class Loader {
         while (i < longitud) {
             if (i == 3) {
                 arr[i] = token.nextToken() + token.nextToken();
-                i++;
             } else {
                 arr[i] = token.nextToken();
             }
@@ -117,18 +120,20 @@ public class Loader {
         llenarArray(arr, token);
 
         if (Verificador.verificarCliente(arr)) {
-            cliente = new Cliente(arr[0], Integer.parseInt(arr[1]), arr[2], arr[3], Integer.parseInt(arr[4]), arr[5]);
+            cliente = new Cliente(arr[0], Integer.parseInt(arr[1]), arr[2], arr[3], arr[4], arr[5]);
             sistema.agregarCliente(cliente);
         } else {
+            System.out.println("ERROR Algo salio mal");
             // error en el sistema
         }
     }
 
     private static void llenarArray(String[] arr, StringTokenizer token) {
-        int i = 0, longitud = arr.length;
+        int i = 0;
 
-        while (i < longitud) {
+        while (token.hasMoreTokens()) {
             arr[i] = token.nextToken();
+            i++;
         }
     }
 
@@ -140,6 +145,7 @@ public class Loader {
         if (Verificador.verificarRuta(arr)) {
             sistema.agregarRuta(Integer.parseInt(arr[0]), Integer.parseInt(arr[1]), Double.parseDouble(arr[2]));
         } else {
+            System.out.println("ERROR Algo salio mal");
             // error en el sistema
         }
     }
