@@ -274,7 +274,7 @@ public class Grafo {
         // existen los nodos en el grafo, utilizando el algoritmo de Dijkstra
 
         // Estructuras que usa el algoritmo
-        Map<NodoVert, Integer> distancia = new HashMap<>();
+        Map<NodoVert, Double> distancia = new HashMap<>();
         Map<NodoVert, NodoVert> padre = new HashMap<>();
         ColaPrioridad colaNodos = new ColaPrioridad();
         Lista visitados = new Lista();
@@ -285,7 +285,7 @@ public class Grafo {
                 nodoDestino = this.ubicarVertice(destino), vecino;
         NodoAdy arcoActual;
         boolean encontrado = false;
-        int distanciaTentativa;
+        double distanciaTentativa;
 
         // Si existen los nodos empiezo a buscar caminos caso contrario retorno un par
         // vacio
@@ -313,7 +313,7 @@ public class Grafo {
                         vecino = arcoActual.getVertice();
                         // Si el nodo no se visito
                         if (visitados.localizar(vecino) < 0) {
-                            distanciaTentativa = distancia.get(nodoActual) + (int) arcoActual.getEtiqueta();
+                            distanciaTentativa = distancia.get(nodoActual) + (double) arcoActual.getEtiqueta();
 
                             // Si la distancia tentativa es menor que la que tiene el vecino entonces la
                             // actualizo
@@ -336,25 +336,25 @@ public class Grafo {
         return distanciaYCamino;
     }
 
-    private void inicializarEstructuras(Map<NodoVert, Integer> distancia, Map<NodoVert, NodoVert> padre,
+    private void inicializarEstructuras(Map<NodoVert, Double> distancia, Map<NodoVert, NodoVert> padre,
             ColaPrioridad colaNodos,
             NodoVert nodoActual, NodoVert nodoOrigen) {
         // Metodo que inicializa las estructuras para que sea posible usar el algoritmo
         // de dijkstra
 
         while (nodoActual != null) {
-            distancia.put(nodoActual, Integer.MAX_VALUE);
+            distancia.put(nodoActual, Double.MAX_VALUE);
             padre.put(nodoActual, null);
             nodoActual = nodoActual.getSigVertice();
         }
 
         // Actualizo la distancia del nodo origen a 0 en el hashmap distancias y lo
         // agrego a la cola de prioridad
-        distancia.replace(nodoOrigen, 0);
+        distancia.replace(nodoOrigen, 0.0);
         colaNodos.poner(nodoOrigen, 0);
     }
 
-    private void setDistanciaYCamino(Map<NodoVert, Integer> distancia, Map<NodoVert, NodoVert> padre,
+    private void setDistanciaYCamino(Map<NodoVert, Double> distancia, Map<NodoVert, NodoVert> padre,
             Par distanciaYCamino,
             NodoVert nodoDestino) {
         // Metodo que setea el par distaciaYCamino con una lista de nodos vertices y la
@@ -485,7 +485,7 @@ public class Grafo {
 
                             // Si el nodo vecino no se visito lo analizo
                             if (visitados.localizar(vecino) < 0) {
-                                distanciaTentativa = distanciaNodo.get(nodoActual) + (int) arcoActual.getEtiqueta();
+                                distanciaTentativa = distanciaNodo.get(nodoActual) + (double) arcoActual.getEtiqueta();
 
                                 // Si la distanciaTentativa es menor que la distancia que ya tiene asignada el
                                 // vecino previamente

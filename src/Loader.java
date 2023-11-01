@@ -75,7 +75,7 @@ public class Loader {
             ciudad = new Ciudad(Integer.parseInt(cp), nombre, provincia);
             sistema.agregarCiudad(ciudad);
         } else {
-            System.out.println("ERROR Algo salio mal");
+            System.out.println("ERROR CIUDAD " + nombre + " Algo salio mal");
             // Error no se pudo loggear ciudad
         }
     }
@@ -94,7 +94,7 @@ public class Loader {
             // Agrego la solicitud a las estructuras
             sistema.agregarSolicitud(Integer.parseInt(arr[0]), solicitud);
         } else {
-            System.out.println("ERROR Algo salio mal");
+            System.out.println("ERROR SOLICITUD " + arr[0] + "|" + arr[1] + "|" + arr[3] + "Algo salio mal");
             // Error en el sistema
         }
     }
@@ -123,7 +123,7 @@ public class Loader {
             cliente = new Cliente(arr[0], Integer.parseInt(arr[1]), arr[2], arr[3], arr[4], arr[5]);
             sistema.agregarCliente(cliente);
         } else {
-            System.out.println("ERROR Algo salio mal");
+            System.out.println("ERROR CLIENTE Algo salio mal");
             // error en el sistema
         }
     }
@@ -145,7 +145,7 @@ public class Loader {
         if (Verificador.verificarRuta(arr)) {
             sistema.agregarRuta(Integer.parseInt(arr[0]), Integer.parseInt(arr[1]), Double.parseDouble(arr[2]));
         } else {
-            System.out.println("ERROR Algo salio mal");
+            System.out.println("ERROR RUTA " + arr[0] + "|" + arr[1] + "Algo salio mal");
             // error en el sistema
         }
     }

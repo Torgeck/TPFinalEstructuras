@@ -56,13 +56,8 @@ public class NodoVert {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
-        NodoVert nodoVert = (NodoVert) o;
-        return Objects.equals(elem, nodoVert.elem);
+    public boolean equals(Object objeto) {
+        return objeto.equals(this.elem);
     }
 
     @Override

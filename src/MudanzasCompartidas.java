@@ -3,6 +3,7 @@ import java.util.Scanner;
 
 import estructuras.arbolAVL.ArbolAVL;
 import estructuras.grafo.Grafo;
+import estructuras.grafo.NodoVert;
 import estructuras.lineales.Lista;
 import estructuras.lineales.Par;
 import objetos.Ciudad;
@@ -103,18 +104,20 @@ public class MudanzasCompartidas {
     public static void menuVerificarViajes() {
         System.out.println("""
                 ======== Dadas 2 ciudades X e Y ========
-                    1 - Mostrar todos los pedidos y calcular el espacio total faltante en el camion
-                    2 - Verificar si sobra espacio en el camion y listar posibles solicitudes a ciudades
-                        intermedias que se podrian aprovechar a cubrir (Considerando el camino mas corto en kms)
-                    ======= Dada una lista de ciudades =======
-                    3 - Verificar si es un camino perfecto
-                        """);
+                1 - Mostrar todos los pedidos y calcular el espacio total faltante en el camion
+                2 - Verificar si sobra espacio en el camion y listar posibles solicitudes a ciudades
+                    intermedias que se podrian aprovechar a cubrir (Considerando el camino mas corto en kms)
+                ======= Dada una lista de ciudades =======
+                3 - Verificar si es un camino perfecto
+                ==========
+                0 - Salir
+                """);
     }
 
     private static void menuModificacionCiudad() {
         System.out.println("""
-                    Que desea modificar?\n
-                1 - Nombre de la ciudad\n
+                ======== Que desea modificar? ========
+                1 - Nombre de la ciudad
                 2 - Provincia de la ciudad""");
     }
 
@@ -729,6 +732,9 @@ public class MudanzasCompartidas {
         }
     }
 
+    // TODO mostrar mas info sobre las ciudades (cantidad de rutas, cantidad de
+    // solicitudes que originan desde ella, cantidad de solicitudes que van hacia
+    // ella, etc)
     // * Consultas sobre ciudades
     public void consultaCiudad(Scanner inputUsuario) {
         // Muestra toda la info de una ciudad dada la clave
@@ -741,8 +747,8 @@ public class MudanzasCompartidas {
             codigoPostal = Verificador.verificarCodigoPostal(inputUsuario.nextLine(), inputUsuario);
             ciudadObtenida = (Ciudad) ciudades.obtenerElemento(codigoPostal);
 
-            System.out.println(((ciudadObtenida == null) ? "No se existe cliente con clave\n"
-                    : "El cliente es: \n" + ciudadObtenida.toString()));
+            System.out.println(((ciudadObtenida == null) ? "No se existe ciudad con codigo postal ingresado\n"
+                    : "La ciudad es: \n" + ciudadObtenida.toString()));
             seguir = !deseaSalir(inputUsuario);
         }
     }
@@ -838,8 +844,9 @@ public class MudanzasCompartidas {
             System.out.println("Ingrese los codigos postales de las 3 ciudades separadas por '-'. Ej XXXX-YYYY-ZZZZ");
             codigoPostalInt = Utilidades.toIntArray(inputUsuario.nextLine().split("-"), cantCiudades, inputUsuario);
 
-            System.out.println("Todos los caminos posibles "
-                    + mapaRutas.listarCaminosPosibles(codigoPostalInt[0], codigoPostalInt[1], codigoPostalInt[2]));
+            System.out.println("Todos los caminos posibles:\n"
+                    + mapaRutas.listarCaminosPosibles(codigoPostalInt[0], codigoPostalInt[1], codigoPostalInt[2])
+                            .enumerar());
 
             seguir = !deseaSalir(inputUsuario);
         }
@@ -865,7 +872,7 @@ public class MudanzasCompartidas {
             destino = (Ciudad) ciudades.obtenerElemento(codigoPostalInt[1]);
 
             if (origen != null && destino != null) {
-                System.out.format("Es posible viajar de %s a %s en %d kms : %b %n",
+                System.out.format("Es posible viajar de %s a %s en %.2f kms : %b %n",
                         origen.getNombre(),
                         destino.getNombre(),
                         kilometros,
@@ -892,8 +899,8 @@ public class MudanzasCompartidas {
             if (mapaRutas.existeCamino(codigoPostal[0], codigoPostal[1])) {
 
                 pedidosYEspacio = obtenerParListaEspacio(codigoPostal[0], codigoPostal[1], 0);
-                System.out.println("Todos los pedidos de: " + codigoPostal[0] + " a " + codigoPostal[1] + "son: "
-                        + pedidosYEspacio.getA().toString());
+                System.out.println("Todos los pedidos de: " + codigoPostal[0] + " a " + codigoPostal[1] + " son:\n"
+                        + ((Lista) pedidosYEspacio.getA()).enumerar());
 
                 System.out.println("El espacio faltante es de: " + pedidosYEspacio.getB() + " metros cubicos");
             } else {
@@ -949,13 +956,16 @@ public class MudanzasCompartidas {
     private double calcularEspacioFaltante(Lista lista, double espacioCamion) {
         // Metodo que retorna el espacio faltante(positivo) o sobrante(negativo) de un
         // camion
-        int i = 0, longitud = lista.longitud();
+        int i = 1, longitud = lista.longitud();
         double resultado = -espacioCamion;
         Solicitud aux;
 
-        while (i < longitud) {
+        while (i <= longitud) {
             aux = (Solicitud) lista.recuperar(i);
-            resultado += aux.getMetrosCubicos();
+            if (aux != null) {
+                resultado += aux.getMetrosCubicos();
+            }
+            i++;
         }
 
         return resultado;
@@ -982,15 +992,19 @@ public class MudanzasCompartidas {
                 // Obtengo un par con las solicitudes y el espacio del camion
                 solicitudesEspacio = obtenerParListaEspacio(codigoPostal[0], codigoPostal[1], espacioCamion);
                 // MENSAJE DE TEST
-                System.out.println(">>> Los pedidos son: " + solicitudesEspacio.getA().toString()
-                        + " el espacio del camion es de " + solicitudesEspacio.getB().toString());
+                System.out.println(">>> Los pedidos son:\n" + ((Lista) solicitudesEspacio.getA()).enumerar()
+                        + " el espacio del camion es de: " + Math.abs((double) solicitudesEspacio.getB()) + "\n");
 
                 if ((double) solicitudesEspacio.getB() < 0) {
                     // Hay espacio
                     posiblesSolicitudes = obtenerPosiblesSolicitudes(camino, codigoPostal[0],
                             Math.abs((double) solicitudesEspacio.getB()));
-                    System.out.println("Los pedidos que se pueden satisfacer a lo largo de todo el tramo son: "
-                            + posiblesSolicitudes);
+                    if (!posiblesSolicitudes.esVacia()) {
+                        System.out.println("Los pedidos que se pueden satisfacer a lo largo de todo el tramo son:\n"
+                                + posiblesSolicitudes.enumerar() + "\n");
+                    } else {
+                        System.out.println("No hay espacio por ende no se pueden listar posibles pedidos a satisfacer");
+                    }
                 } else {
                     // No hay espacio
                     System.out.println("No hay espacio por ende no se pueden listar posibles pedidos a satisfacer");
@@ -1008,12 +1022,12 @@ public class MudanzasCompartidas {
         int ciudadActual, destinoActual, longitud = camino.longitud();
         Lista solicitudesCiudadActual, posiblesSolicitudes = new Lista();
 
-        while (indiceActual < indiceDestino) {
-            ciudadActual = (int) camino.recuperar(indiceActual);
+        while (indiceActual <= longitud) {
+            ciudadActual = (int) ((NodoVert) camino.recuperar(indiceActual)).getElem();
             solicitudesCiudadActual = (Lista) solicitudesViajes.obtenerElemento(ciudadActual);
 
             while (indiceDestino <= longitud) {
-                destinoActual = (int) camino.recuperar(indiceDestino);
+                destinoActual = (int) ((NodoVert) camino.recuperar(indiceDestino)).getElem();
 
                 if (!(indiceActual == 1 && indiceDestino == longitud)) {
                     filtrarSolicitudesEspacio(crearYFiltrar(solicitudesCiudadActual, destinoActual),
@@ -1047,7 +1061,7 @@ public class MudanzasCompartidas {
     public void verificarCaminoPerfecto(Scanner inputUsuario) {
         // Metodo que verifica si existe un camino perfecto con una lista de ciudades,
         // dadas las ciudades y el espacio del camion por el usuario
-        boolean seguir = true, esPerfecto = true;
+        boolean seguir = true, esPerfecto;
         int cantCiudades = 2, caminoElegido;
         double espacioCamion;
         Lista caminoCiudades;
@@ -1064,23 +1078,20 @@ public class MudanzasCompartidas {
                 espacioCamion = Verificador.verificarDouble(inputUsuario.nextLine(), "cantidad de metros cubicos",
                         inputUsuario);
 
-                while (esPerfecto) {
-                    System.out.println("Los caminos posibles son: " + caminoCiudades.toString()
-                            + "\nIngrese un numero para elegir el camino a verificar");
-                    caminoElegido = Verificador.verificarInts(inputUsuario.nextLine(), "entero", inputUsuario);
+                System.out.println("Los caminos posibles son:\n" + caminoCiudades.enumerar()
+                        + "\nIngrese un numero para elegir el camino a verificar");
+                caminoElegido = Verificador.verificarInts(inputUsuario.nextLine(), "entero", inputUsuario);
 
-                    if (caminoElegido > 0 && caminoElegido <= caminoCiudades.longitud()) {
-                        // Se verifica si es perfecto
-                        esPerfecto = esCaminoPerfecto((Lista) caminoCiudades.recuperar(caminoElegido), espacioCamion);
-                        System.out.println("El camino " + caminoCiudades.recuperar(caminoElegido).toString()
-                                + " con un espacio de: " + espacioCamion + "metros cubicos\nEs perfecto? : "
-                                + esPerfecto);
-                    } else {
-                        System.out.println("Opcion ingresada invalida");
-                    }
-
-                    seguir = !deseaSalir(inputUsuario);
+                if (caminoElegido > 0 && caminoElegido <= caminoCiudades.longitud()) {
+                    // Se verifica si es perfecto
+                    esPerfecto = esCaminoPerfecto((Lista) caminoCiudades.recuperar(caminoElegido), espacioCamion);
+                    System.out.println("El camino " + caminoCiudades.recuperar(caminoElegido).toString()
+                            + " con un espacio de: " + espacioCamion + " metros cubicos\nEs perfecto? : "
+                            + esPerfecto);
+                } else {
+                    System.out.println("Opcion ingresada invalida");
                 }
+
             }
             seguir = !deseaSalir(inputUsuario);
         }
@@ -1099,13 +1110,13 @@ public class MudanzasCompartidas {
         Lista solicitudesCiudadActual;
         Solicitud solicitudMenorEspacio;
 
-        while (i < longitud || esPerfecto) {
-            ciudadActual = (int) camino.recuperar(i);
+        while (i < longitud && esPerfecto) {
+            ciudadActual = (int) ((NodoVert) camino.recuperar(i)).getElem();
 
             solicitudesCiudadActual = obtenerPosiblesSolicitudes(camino, ciudadActual, espacioActual);
             solicitudMenorEspacio = obtenerSolicitudMenorEspacio(solicitudesCiudadActual);
             // Podria obtener solo el espacio de la solicitud y no toda la solicitud
-            if (solicitudMenorEspacio.getMetrosCubicos() <= espacioActual) {
+            if (solicitudMenorEspacio != null && solicitudMenorEspacio.getMetrosCubicos() <= espacioActual) {
                 espacioActual -= solicitudMenorEspacio.getMetrosCubicos();
             } else {
                 esPerfecto = false;

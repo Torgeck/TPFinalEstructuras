@@ -12,14 +12,14 @@ public class Verificador {
     private static final Pattern FORMATO_EMAIL = Pattern.compile("(\\w+@\\w+)([.]\\w+)+");
     private static final Pattern FORMATO_TELEFONO = Pattern.compile("[1-9]\\d{1,2}-\\d{7}");
     private static final Pattern FORMATO_DOCUMENTO = Pattern.compile("[1-9]\\d{7}");
-    private static final Pattern FORMATO_PREFIJO = Pattern.compile("0*\\d{0,4}");
+    private static final Pattern FORMATO_PREFIJO = Pattern.compile("0*\\d{1,4}");
     private static final Pattern FORMATO_CLAVE_CLIENTE = Pattern.compile("[a-zA-Z]{2,4}[1-9]\\d{7}");
     private static final Pattern FORMATO_PALABRAS = Pattern.compile("[a-zA-Z]+(\s[a-zA-Z]+)*");
     private static final Pattern CODIGO_POSTAL = Pattern.compile("[1-9]\\d{3}");
     private static final Pattern DIRECCION = Pattern.compile("([a-zA-Z]+)(\s[a-zA-Z]*)*(\s[1-9]\\d*)");
     private static final Pattern SOLO_LETRAS = Pattern.compile("[a-zA-Z]+");
     private static final Pattern SOLO_NUMEROS = Pattern.compile("\\d+");
-    private static final Pattern NUMERO_REAL = Pattern.compile("\\d+(\\.\\d*)");
+    private static final Pattern NUMERO_REAL = Pattern.compile("\\d+(\\.\\d+)*|(\2)");
     private static final Pattern BOOLEAN = Pattern.compile("T|F");
 
     // * Mensajes de error

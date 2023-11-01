@@ -25,4 +25,8 @@ class Nodo {
     public void setEnlace(Nodo enlace) {
         this.enlace = enlace;
     }
+
+    public boolean equals(Object otro) {
+        return this.elemento.equals(otro);
+    }
 }
