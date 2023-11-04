@@ -49,8 +49,8 @@ public class MudanzasCompartidas {
     public String mostrarSistema() {
         // Metodo que retorna en un string las estructuras del sistema tal cual esta en
         // el momento de ser llamado
-        return "ArbolAVL con info de ciudades\n" + this.ciudades.toString()
-                + "\nArbolAVL con solicitudes originadas de una ciudad\n" + this.solicitudesViajes.toString()
+        return "\nArbolAVL con info de ciudades\n" + this.ciudades.toKeyValueString()
+                + "\nArbolAVL con solicitudes originadas de una ciudad\n" + this.solicitudesViajes.toKeyValueString()
                 + "\nGrafo, representando el mapa de rutas\n" + this.mapaRutas.toString()
                 + "\nHashMap con info de clientes\n" + this.clientes.toString();
     }
@@ -347,30 +347,8 @@ public class MudanzasCompartidas {
                 // un objeto se pase al switch
                 switch (opcion) {
                     case 1:
-                        datoModificado = cliente.getNombre();
-                        System.out.println("Ingrese nuevo nombre para el cliente");
-                        cliente.setNombre(Verificador.verificarLetras(inputUsuario.nextLine(), inputUsuario));
-                        Logger.log(
-                                "Se cambio el nombre del cliente de: " + datoModificado + " a: " + cliente.getNombre());
-                        break;
-                    case 2:
-                        datoModificado = cliente.getApellido();
-                        System.out.println("Ingrese nuevo apellido para el cliente");
-                        cliente.setApellido(Verificador.verificarLetras(inputUsuario.nextLine(), inputUsuario));
-                        Logger.log("Se cambio el apellido de: " + datoModificado + " a: " + cliente.getApellido());
-                        break;
-                    case 3:
-                        datoModificado = cliente.getTelefono();
-                        System.out.println("Ingrese nuevo telefono para el cliente");
-                        cliente.setTelefono(Verificador.verificarTelefono(inputUsuario.nextLine(), inputUsuario));
-                        Logger.log("Se cambio el telefono de: " + datoModificado + "a: " + cliente.getTelefono());
-                        break;
                     case 4:
-                        datoModificado = cliente.getEmail();
-                        System.out.println("Ingrese nuevo email para el cliente");
-                        cliente.setEmail(Verificador.verificarEmail(inputUsuario.nextLine(), inputUsuario));
-                        Logger.log("Se cambio el email" + datoModificado + " a: " + cliente.getEmail());
-                        break;
+                        modificaAtribCliente(datoModificado, cliente, inputUsuario);
                     default:
                         System.out.println("Opcion ingresada incorrecta");
                 }
@@ -380,6 +358,38 @@ public class MudanzasCompartidas {
 
             seguir = !deseaSalir(inputUsuario);
         }
+    }
+
+    private void modificaAtribCliente(String atributoModificar, Cliente cliente, Scanner inputUsuario) {
+        String atributoNuevo = "", atributoViejo = "";
+
+        System.out.println("Ingrese el nuevo " + atributoModificar + " para el cliente");
+
+        switch (atributoModificar) {
+            case "Nombre":
+                atributoViejo = cliente.getNombre();
+                atributoNuevo = Verificador.verificarLetras(inputUsuario.nextLine(), inputUsuario);
+                cliente.setNombre(atributoNuevo);
+                break;
+            case "Apellido":
+                atributoViejo = cliente.getApellido();
+                atributoNuevo = Verificador.verificarLetras(inputUsuario.nextLine(), inputUsuario);
+                cliente.setApellido(atributoNuevo);
+                break;
+            case "Telefono":
+                atributoViejo = cliente.getTelefono();
+                atributoNuevo = Verificador.verificarTelefono(inputUsuario.nextLine(), inputUsuario);
+                cliente.setTelefono(atributoNuevo);
+                break;
+            case "Email":
+                atributoViejo = cliente.getEmail();
+                atributoNuevo = Verificador.verificarEmail(inputUsuario.nextLine(), inputUsuario);
+                cliente.setEmail(atributoNuevo);
+                break;
+        }
+        Logger.log("Se cambio el " + atributoModificar + "de: " + atributoViejo + " a:" + atributoNuevo
+                + " del cliente con clave: " + cliente.getClave());
+
     }
 
     public void darBajaCliente(Scanner inputUsuario) {
@@ -1384,6 +1394,7 @@ public class MudanzasCompartidas {
             }
         } while (seguir);
         // loggea el estado final del sistema al terminar
+        inputUsuario.close();
         Logger.loggearSistema(this);
         return seguir;
     }

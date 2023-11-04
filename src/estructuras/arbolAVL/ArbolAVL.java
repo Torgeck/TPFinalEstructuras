@@ -531,28 +531,47 @@ public class ArbolAVL {
 
     public String toString() {
         // Metodo que retorna un string de la clase arbol
-        String arbol;
+        StringBuilder arbol = new StringBuilder();
 
-        arbol = toStringRecursivo(this.raiz, "\n");
+        toStringRecursivo(this.raiz, arbol);
 
-        return arbol;
+        return arbol.toString();
     }
 
-    private String toStringRecursivo(NodoAVL nodo, String cadena) {
+    private void toStringRecursivo(NodoAVL nodo, StringBuilder cadena) {
         // Metodo que concatena un arbol en preorden
 
         if (nodo != null) {
             // Armo una cadena con todos los datos del nodo
-            cadena += nodo.getKey() + "\t" +
+            cadena.append(nodo.getKey() + "\t" +
                     "HI:" + ((nodo.getIzquierdo() != null) ? nodo.getIzquierdo().getKey() : "-") + "\t" +
-                    "HD:" + ((nodo.getDerecho() != null) ? nodo.getDerecho().getKey() : "-") + "\n";
+                    "HD:" + ((nodo.getDerecho() != null) ? nodo.getDerecho().getKey() : "-") + "\n");
 
             // Llamado recursivo
-            cadena = toStringRecursivo(nodo.getIzquierdo(), cadena);
-            cadena = toStringRecursivo(nodo.getDerecho(), cadena);
+            toStringRecursivo(nodo.getIzquierdo(), cadena);
+            toStringRecursivo(nodo.getDerecho(), cadena);
         }
+    }
 
-        return cadena;
+    public String toKeyValueString() {
+        // Metodo que retorna un string con toda la info contenida en el arbol
+        StringBuilder arbol = new StringBuilder();
+
+        toKeyValueStringRecursivo(this.raiz, arbol);
+
+        return arbol.toString();
+    }
+
+    private void toKeyValueStringRecursivo(NodoAVL nodo, StringBuilder cadena) {
+
+        if (nodo != null) {
+            cadena.append("Key: " + nodo.getKey() + "\tValue: " + nodo.getValue() + "\n");
+            cadena.append("\t>> HI:" + ((nodo.getIzquierdo() != null) ? nodo.getIzquierdo().getKey() : "-") + "\n" +
+                    "\t>> HD:" + ((nodo.getDerecho() != null) ? nodo.getDerecho().getKey() : "-") + "\n");
+
+            toKeyValueStringRecursivo(nodo.getIzquierdo(), cadena);
+            toKeyValueStringRecursivo(nodo.getDerecho(), cadena);
+        }
     }
 
     public ArbolAVL clone() {

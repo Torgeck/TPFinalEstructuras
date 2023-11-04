@@ -116,17 +116,15 @@ public class Solicitud {
 
     @Override
     public String toString() {
-        return "{" +
-                " ciudadDestino:'" + this.ciudadDestino + "'" +
-                ", fechaSol:'" + this.fechaSol + "'" +
-                ", idCliente:'" + this.idCliente + "'" +
-                ", metrosCubicos:'" + this.metrosCubicos + "'" +
-                ", cantBultos:'" + this.cantBultos + "'" +
-                ", domicilioRetiro:'" + this.domicilioRetiro + "'" +
-                ", domicilioEntrega:'" + this.domicilioEntrega + "'" +
-                ", estaPago:'" + this.estaPago + "'" +
-                ", idSolicitud:'" + this.idSolicitud + "'" +
-                "}";
+        return " Ciudad Destino:'" + this.ciudadDestino + "'" +
+                "| Fecha:'" + this.fechaSol + "'" +
+                "| ID Cliente:'" + this.idCliente + "'" +
+                "| Cantidad metros cubicos:'" + this.metrosCubicos + "'" +
+                "| Cantidad de bultos:'" + this.cantBultos + "'" +
+                "| Dom. Retiro:'" + this.domicilioRetiro + "'" +
+                "| Dom. Entrega:'" + this.domicilioEntrega + "'" +
+                "| Pagado?:'" + this.estaPago + "'" +
+                "| ID Solicitud:'" + this.idSolicitud + "'";
     }
 
 }
