@@ -17,13 +17,13 @@ public final class Utilidades {
         while (i < cantElementos) {
 
             try {
+                System.out.println("Codigo postal de la ciudad numero: " + (i + 1));
                 arrInts[i] = Verificador.verificarCodigoPostal(arrString[i], input);
             } catch (ArrayIndexOutOfBoundsException e) {
                 arrInts[i] = Verificador.verificarCodigoPostal("", input);
             }
             i++;
         }
-
         return arrInts;
     }
 

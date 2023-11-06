@@ -16,7 +16,7 @@ public class Verificador {
     private static final Pattern FORMATO_CLAVE_CLIENTE = Pattern.compile("[a-zA-Z]{2,4}[1-9]\\d{7}");
     private static final Pattern FORMATO_PALABRAS = Pattern.compile("[a-zA-Z]+(\s[a-zA-Z]+)*");
     private static final Pattern CODIGO_POSTAL = Pattern.compile("[1-9]\\d{3}");
-    private static final Pattern DIRECCION = Pattern.compile("([a-zA-Z]+)(\s[a-zA-Z]*)*(\s[1-9]\\d*)");
+    private static final Pattern DIRECCION = Pattern.compile("([a-zA-Z]+)(\\h[a-zA-Z]*)*(\\h[1-9]\\d*)");
     private static final Pattern SOLO_LETRAS = Pattern.compile("[a-zA-Z]+");
     private static final Pattern SOLO_NUMEROS = Pattern.compile("\\d+");
     private static final Pattern NUMERO_REAL = Pattern.compile("\\d+(\\.\\d+)*|(\2)");
@@ -84,13 +84,14 @@ public class Verificador {
         int resultado;
 
         if (!esCodigoPostal(codigo)) {
-            System.out.println(ERROR_CODIGO_INVALIDO + "Ingrese codigo postal de la ciudad");
+            System.out.println(ERROR_CODIGO_INVALIDO + "\nIngrese codigo postal de la ciudad");
             while (!inputUsuario.hasNext(CODIGO_POSTAL)) {
                 System.out.println(
-                        ERROR_CODIGO_INVALIDO + "\n Ingrese nuevamente un codigo postal de 4 digitos numericos");
+                        ERROR_CODIGO_INVALIDO + "\nIngrese nuevamente un codigo postal de 4 digitos numericos");
                 inputUsuario.next();
             }
             resultado = inputUsuario.nextInt();
+            inputUsuario.nextLine();
         } else {
             resultado = Integer.parseInt(codigo);
         }
@@ -99,27 +100,26 @@ public class Verificador {
 
     public static String verificarTelefono(String telefono, Scanner inputUsuario) {
         // Metodo que verifica que el nro ingresado sea correcto
-        String tel;
+        String tel, ingresoTel = "Ingrese nuevamente numero de telefono con formato PREFIJO-NUM_TEL. Ej 123-4567890";
 
         if (!esTelefono(telefono)) {
-            System.out.println("Ingrese numero de telefono");
+            System.out.println(ingresoTel);
             while (!inputUsuario.hasNext(FORMATO_TELEFONO)) {
-                System.out.println("Error, numero de telefono incorrecto.\n Ingrese numero de telefono nuevamente");
+                System.out.println("Error, numero de telefono incorrecto.\n" + ingresoTel);
                 inputUsuario.next();
             }
-            tel = inputUsuario.nextLine();
+            tel = inputUsuario.next();
         } else {
             tel = telefono;
         }
-
         return tel;
     }
 
-    public static String verificarLetras(String letras, Scanner inputUsuario) {
+    public static String verificarLetras(String letras, String atributo, Scanner inputUsuario) {
         // Metodo que verifica que se hayan ingresado caracteres alfabeticos
 
         if (!esPalabra(letras)) {
-            System.out.println("Ingrese una cadena que contenga solamente letras");
+            System.out.println("Ingrese una cadena que contenga solamente letras: " + atributo);
             while (!inputUsuario.hasNext(SOLO_LETRAS)) {
                 System.out.println("Error, Ingrese nuevamente ");
                 inputUsuario.next();
@@ -132,15 +132,15 @@ public class Verificador {
 
     public static String verificarEmail(String email, Scanner inputUsuario) {
         // Metodo que verifica que se haya ingresado el email en el formato correcto
+        String solicitarIngreso = "Ingrese nuevamente un email con formato 'DIRECCION@MAIL.COM'. Ej: unaDireccion@email.com";
         if (!esEmail(email)) {
-            System.out.println("Ingrese un email");
+            System.out.println(solicitarIngreso);
             while (!inputUsuario.hasNext(FORMATO_EMAIL)) {
-                System.out.println("Error, Ingrese email nuevamente ");
+                System.out.println("Error. " + solicitarIngreso);
                 inputUsuario.next();
             }
             email = inputUsuario.next();
         }
-
         return email.toUpperCase();
     }
 
@@ -155,6 +155,7 @@ public class Verificador {
                 inputUsuario.next();
             }
             resultado = inputUsuario.nextInt();
+            inputUsuario.nextLine();
         } else {
             resultado = Integer.parseInt(numeros);
         }
@@ -171,10 +172,10 @@ public class Verificador {
                 inputUsuario.next();
             }
             resultado = inputUsuario.nextDouble();
+            inputUsuario.nextLine();
         } else {
             resultado = Double.parseDouble(numero);
         }
-
         return resultado;
     }
 
@@ -182,12 +183,13 @@ public class Verificador {
         // Metodo que verifica que se haya ingresado una fecha en el formato correcto
 
         if (!esFecha(fecha)) {
-            System.out.println("Ingrese fecha en formato dd/mm/aaaa");
+            System.out.println("Ingrese nuevament fecha en formato dd/mm/aaaa");
             while (!inputUsuario.hasNext(FORMATO_FECHA)) {
                 System.out.println("Error, Ingrese nuevamente la fecha en el formato dd/mm/aaaa");
                 inputUsuario.next();
             }
             fecha = inputUsuario.next();
+            inputUsuario.nextLine();
         }
         return fecha;
     }
@@ -204,6 +206,7 @@ public class Verificador {
                 inputUsuario.next();
             }
             direccion = inputUsuario.next();
+            inputUsuario.nextLine();
         }
         return direccion;
     }
@@ -218,8 +221,8 @@ public class Verificador {
                 System.out.println("Error, Ingrese nuevamente el estado, T/F");
                 inputUsuario.next();
             }
-            estado = inputUsuario.nextLine();
-
+            estado = inputUsuario.next();
+            inputUsuario.nextLine();
         }
         return estado.equals("T");
     }
@@ -236,6 +239,7 @@ public class Verificador {
                 inputUsuario.next();
             }
             resultado = inputUsuario.nextInt();
+            inputUsuario.nextLine();
         } else {
             resultado = Integer.parseInt(prefijo);
         }
@@ -252,7 +256,7 @@ public class Verificador {
             clave = inputUsuario.nextLine().split("-");
         }
 
-        parClave.setA(verificarLetras(clave[0], inputUsuario).toUpperCase());
+        parClave.setA(verificarLetras(clave[0], "tipo de documento", inputUsuario).toUpperCase());
         parClave.setB(verificarInts(clave[1], "numero de documento", inputUsuario));
 
         return parClave;
