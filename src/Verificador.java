@@ -167,6 +167,7 @@ public class Verificador {
         double resultado;
 
         if (!esNumeroReal(numero)) {
+            System.out.println("Ingrese nuevamente " + objeto + " valido");
             while (!inputUsuario.hasNextDouble()) {
                 System.out.println("Error, Ingrese nuevamente " + objeto + " valido");
                 inputUsuario.next();
@@ -183,7 +184,7 @@ public class Verificador {
         // Metodo que verifica que se haya ingresado una fecha en el formato correcto
 
         if (!esFecha(fecha)) {
-            System.out.println("Ingrese nuevament fecha en formato dd/mm/aaaa");
+            System.out.println("Ingrese nuevamente fecha en formato dd/mm/aaaa");
             while (!inputUsuario.hasNext(FORMATO_FECHA)) {
                 System.out.println("Error, Ingrese nuevamente la fecha en el formato dd/mm/aaaa");
                 inputUsuario.next();

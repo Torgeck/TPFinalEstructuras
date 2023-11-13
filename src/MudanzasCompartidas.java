@@ -360,13 +360,9 @@ public class MudanzasCompartidas {
 
             if (cliente != null) {
                 menuModificacionCliente();
+                opcion = Verificador.verificarCodigoPostal(inputUsuario.nextLine(), inputUsuario);
 
-                // TODO USAR EL VERIFICADOR
-                opcion = inputUsuario.nextInt();
-                inputUsuario.nextLine();
-
-                // TODO refactorizar codigo; Metodo que imprima por pantalla con objecto y dado
-                // un objeto se pase al switch
+                // TODO refactorizar codigo
                 switch (opcion) {
                     case 1:
                         datoModificado = cliente.getNombre();
@@ -728,7 +724,7 @@ public class MudanzasCompartidas {
         }
     }
 
-    // TODO mostrar mas info sobre las ciudades (cantidad de rutas, cantidad de
+    // TODO mostrar mas info sobre las ciudades?(cantidad de rutas, cantidad de
     // solicitudes que originan desde ella, cantidad de solicitudes que van hacia
     // ella, etc)
     // * Consultas sobre ciudades
@@ -1052,10 +1048,11 @@ public class MudanzasCompartidas {
         int[] codigoPostal;
 
         while (seguir) {
+            // Solicita los codigos postales al usuario y obtiene los caminos
             codigoPostal = solicitarCodigosPostales(inputUsuario);
+            caminoCiudades = mapaRutas.listarCaminosPosibles(codigoPostal[0], codigoPostal[1]);
 
-            // TODO HACER UN METODO QUE LISTE LOS CAMINOS POSIBLES ENTRE 2 CIUDADES
-            caminoCiudades = mapaRutas.listarCaminosPosibles(codigoPostal[0], codigoPostal[0], codigoPostal[1]);
+            // Si existen caminos entre las dos ciudades
             if (!caminoCiudades.esVacia()) {
                 System.out.println("Ingrese cantidad de espacio en el camion en metros cubicos");
                 espacioCamion = Verificador.verificarDouble(inputUsuario.nextLine(), "cantidad de metros cubicos",
@@ -1063,6 +1060,8 @@ public class MudanzasCompartidas {
 
                 System.out.println("Los caminos posibles son:\n" + caminoCiudades.enumerar()
                         + "\nIngrese un numero para elegir el camino a verificar");
+
+                // Solicita al usuario elegir uno de los caminos
                 caminoElegido = Verificador.verificarInts(inputUsuario.nextLine(), "entero", inputUsuario);
 
                 if (caminoElegido > 0 && caminoElegido <= caminoCiudades.longitud()) {

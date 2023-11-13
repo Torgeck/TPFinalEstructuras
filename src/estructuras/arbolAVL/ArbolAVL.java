@@ -422,7 +422,6 @@ public class ArbolAVL {
         this.raiz = null;
     }
 
-    // TODO Hacer un listar values y un listar keys
     public Lista listar() {
         // Metodo que lista en orden al arbol
         Lista lista = new Lista();

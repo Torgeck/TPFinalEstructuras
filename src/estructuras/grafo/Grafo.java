@@ -42,8 +42,6 @@ public class Grafo {
         return aux;
     }
 
-    // TODO Fijarse que tiene que ser un digrafo y que se pueden tener multiples
-    // arcos desde y hacia un nodo
     public boolean eliminarVertice(Object vertice) {
         // Metodo que elimina un vertice de la estructura y todos los arcos que lo
         // contengan como vertice
@@ -517,12 +515,68 @@ public class Grafo {
         this.inicio = null;
     }
 
+    public Lista listarCaminosPosibles(Object origen, Object destino) {
+        // Metodo que obtiene todos los caminos posibles de origen a destino
+        NodoVert nodoOrigen = ubicarVertice(origen), nodoDestino = ubicarVertice(destino), nodoActual = this.inicio;
+        Lista caminosPosibles = new Lista(), caminoActual = new Lista();
+        HashMap<NodoVert, Boolean> estaSiendoVisitado = new HashMap<>();
+
+        // Verifica si existen los nodos
+        if (nodoOrigen != null && nodoDestino != null) {
+
+            // Lleno el hashmap con todos los nodos del grafo en false
+            while (nodoActual != null) {
+                estaSiendoVisitado.put(nodoActual, false);
+                nodoActual = nodoActual.getSigVertice();
+            }
+
+            // Inserto el nodo origen en la primer posicion de la lista para empezar de el a
+            // recorrer el grafo
+            caminoActual.insertar(nodoOrigen, 1);
+            obtenerCaminosProfundidad(nodoOrigen, nodoDestino, caminoActual, estaSiendoVisitado, caminosPosibles);
+
+        }
+        return caminosPosibles;
+    }
+
+    private void obtenerCaminosProfundidad(NodoVert nodoActual, NodoVert nodoDestino, Lista caminoActual,
+            HashMap<NodoVert, Boolean> estaSiendoVisitado, Lista caminosPosibles) {
+        // Metodo que obtiene todos los caminos posibles hacia nodoDestino y los agrega
+        // a la lista de caminos posibles
+        NodoVert vecino;
+        NodoAdy arcoActual;
+        // Si el nodoActual es igual al destino entonces se guarda el camino actual en
+        // caminos
+        if (nodoActual.equals(nodoDestino)) {
+            caminosPosibles.insertar(caminoActual.clone(), caminosPosibles.longitud() + 1);
+        } else {
+            // Caso contrario se procede a recorrer a los vecinos
+            estaSiendoVisitado.put(nodoActual, true);
+            arcoActual = nodoActual.getPrimerAdy();
+
+            // Mientras tenga vecinos
+            while (arcoActual != null) {
+                vecino = arcoActual.getVertice();
+
+                // Si no esta siendo visitado
+                if (!estaSiendoVisitado.get(vecino)) {
+                    caminoActual.insertar(vecino, caminoActual.longitud() + 1);
+                    obtenerCaminosProfundidad(vecino, nodoDestino, caminoActual, estaSiendoVisitado, caminosPosibles);
+                    caminoActual.eliminar(caminoActual.localizar(vecino));
+                }
+                arcoActual = arcoActual.getSigAdyacente();
+            }
+            // Saco al nodo actual como visitado
+            estaSiendoVisitado.replace(nodoActual, false);
+        }
+    }
+
     public Lista listarCaminosPosibles(Object origen, Object intermedio, Object destino) {
         // Metodo que obtiene todos los caminos posibles de origen a destino que pasen
         // por intermedio, el HM estaSiendoVisitado sirve para no entrar en bucles
         NodoVert nodoOrigen = ubicarVertice(origen), nodoDestino = ubicarVertice(destino),
                 nodoIntermedio = ubicarVertice(intermedio), nodoActual = this.inicio;
-        Lista caminoActual = new Lista(), caminos = new Lista();
+        Lista caminoActual = new Lista(), caminosPosibles = new Lista();
         HashMap<NodoVert, Boolean> estaSiendoVisitado = new HashMap<>();
 
         // Verifica que todos los nodos por parametros existan en el grafo
@@ -535,25 +589,25 @@ public class Grafo {
 
             caminoActual.insertar(nodoOrigen, 1);
             obtenerCaminosProfundidad(nodoOrigen, nodoIntermedio, nodoDestino, caminoActual, estaSiendoVisitado,
-                    caminos);
+                    caminosPosibles);
         }
 
-        return caminos;
+        return caminosPosibles;
     }
 
     private void obtenerCaminosProfundidad(NodoVert nodoActual, NodoVert nodoIntermedio, NodoVert nodoDestino,
             Lista caminoActual, HashMap<NodoVert, Boolean> estaSiendoVisitado, Lista caminos) {
         // Metodo que obtiene un camino en entre dos nodos a traves del DFS [nodoActual
-        // - nodoIntermedio] sin pasar por el nodoDestino
-        NodoAdy arcoActual;
+        // nodoIntermedio] sin pasar por el nodoDestino
         NodoVert vecino;
+        NodoAdy arcoActual;
 
         // Si el nodoActual no es el nodoDestino
         if (!nodoActual.equals(nodoDestino)) {
             // Si el nodoActual es el nodoIntermedio entonces procedo a buscar el camino a
             // nodoDestino
             if (nodoActual.equals(nodoIntermedio)) {
-                obtenerUltimoTramo(nodoActual, nodoDestino, caminoActual, estaSiendoVisitado, caminos);
+                obtenerCaminosProfundidad(nodoActual, nodoDestino, caminoActual, estaSiendoVisitado, caminos);
             } else {
                 // Pongo el nodoActual como visitado
                 estaSiendoVisitado.put(nodoActual, true);
@@ -575,38 +629,6 @@ public class Grafo {
                 // Saco al nodoActual como visitado
                 estaSiendoVisitado.replace(nodoActual, false);
             }
-        }
-    }
-
-    private void obtenerUltimoTramo(NodoVert nodoActual, NodoVert nodoDestino, Lista caminoActual,
-            HashMap<NodoVert, Boolean> estaSiendoVisitado, Lista caminos) {
-        // Metodo que obtiene el ultimo tramo desde el nodoIntermedio hasta el
-        // nodoDestino y si existe lo agrega a la lista de caminos
-        NodoVert vecino;
-        NodoAdy arcoActual;
-
-        // Si el nodoActual es igual al destino entonces se guarda el camino actual en
-        // caminos
-        if (nodoActual.equals(nodoDestino)) {
-            caminos.insertar(caminoActual.clone(), caminos.longitud() + 1);
-        } else {
-            // Caso contrario se procede a recorrer a los vecinos
-            estaSiendoVisitado.put(nodoActual, true);
-            arcoActual = nodoActual.getPrimerAdy();
-
-            // Mientras tenga vecinos
-            while (arcoActual != null) {
-                vecino = arcoActual.getVertice();
-
-                // Si no esta siendo visitado
-                if (!estaSiendoVisitado.get(vecino)) {
-                    caminoActual.insertar(vecino, caminoActual.longitud() + 1);
-                    obtenerUltimoTramo(vecino, nodoDestino, caminoActual, estaSiendoVisitado, caminos);
-                    caminoActual.eliminar(caminoActual.localizar(vecino));
-                }
-                arcoActual = arcoActual.getSigAdyacente();
-            }
-            estaSiendoVisitado.replace(nodoActual, false);
         }
     }
 
