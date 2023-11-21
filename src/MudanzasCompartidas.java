@@ -13,7 +13,7 @@ import objetos.Solicitud;
 public class MudanzasCompartidas {
 
     private ArbolAVL ciudades;
-    private ArbolAVL solicitudesViajes;
+    private ArbolAVL solicitudesViajes; // Corregir
     private Grafo mapaRutas;
     private HashMap<String, Cliente> clientes;
 
@@ -204,7 +204,7 @@ public class MudanzasCompartidas {
         int codigoPostal = ciudadUsuario.getCodigoPostal();
 
         this.ciudades.insertar(codigoPostal, ciudadUsuario);
-        this.solicitudesViajes.insertar(codigoPostal, new Lista());
+        // this.solicitudesViajes.insertar(codigoPostal, new Lista());
         this.mapaRutas.insertarVertice(codigoPostal);
     }
 
@@ -529,7 +529,8 @@ public class MudanzasCompartidas {
                 // Podria tomar que exista el cliente o saltarlo y directamente agregar una
                 // solicitud sin que exista el cliente seria muy raro
                 if (clientes.get(clave.toConcatString()) != null) {
-                    agregarSolicitud(ciudad[0], crearSolicitud(ciudad[1], clave.toConcatString(), inputUsuario));
+                    agregarSolicitud(ciudad[0],
+                            crearSolicitud(ciudad[0], ciudad[1], clave.toConcatString(), inputUsuario));
                     System.out.println("Creacion exitosa");
                 } else {
                     System.out.println("ERROR no existe cliente");
@@ -542,7 +543,7 @@ public class MudanzasCompartidas {
         }
     }
 
-    public Solicitud crearSolicitud(int destino, String claveCliente, Scanner inputUsuario) {
+    public Solicitud crearSolicitud(int origen, int destino, String claveCliente, Scanner inputUsuario) {
         // Metodo que pide datos al usuario, crea y devuelve una solicitud
         String fecha, domRetiro, domEntrega;
         boolean estado;
@@ -562,7 +563,7 @@ public class MudanzasCompartidas {
         System.out.println("Ingrese si la solicitud esta paga o no, T/F");
         estado = Verificador.verificarEstadoPago(inputUsuario.nextLine(), inputUsuario);
 
-        return new Solicitud(destino, fecha, claveCliente, cantM, cantBultos, domRetiro, domEntrega, estado);
+        return new Solicitud(origen, destino, fecha, claveCliente, cantM, cantBultos, domRetiro, domEntrega, estado);
     }
 
     public void agregarSolicitud(int origen, Solicitud solicitud) {
@@ -724,9 +725,6 @@ public class MudanzasCompartidas {
         }
     }
 
-    // TODO mostrar mas info sobre las ciudades?(cantidad de rutas, cantidad de
-    // solicitudes que originan desde ella, cantidad de solicitudes que van hacia
-    // ella, etc)
     // * Consultas sobre ciudades
     public void consultaCiudad(Scanner inputUsuario) {
         // Muestra toda la info de una ciudad dada la clave
@@ -1115,8 +1113,7 @@ public class MudanzasCompartidas {
 
         do {
             operacionABM("ciudad");
-            opcion = inputUsuario.nextInt();
-            inputUsuario.nextLine();
+            opcion = Verificador.verificarInts(inputUsuario.nextLine(), "entero", inputUsuario);
 
             switch (opcion) {
                 case 0:
@@ -1144,8 +1141,7 @@ public class MudanzasCompartidas {
 
         do {
             operacionABM("ruta");
-            opcion = inputUsuario.nextInt();
-            inputUsuario.nextLine();
+            opcion = Verificador.verificarInts(inputUsuario.nextLine(), "entero", inputUsuario);
 
             switch (opcion) {
                 case 0:
@@ -1173,8 +1169,7 @@ public class MudanzasCompartidas {
 
         do {
             operacionABM("cliente");
-            opcion = inputUsuario.nextInt();
-            inputUsuario.nextLine();
+            opcion = Verificador.verificarInts(inputUsuario.nextLine(), "entero", inputUsuario);
 
             switch (opcion) {
                 case 0:
@@ -1202,8 +1197,7 @@ public class MudanzasCompartidas {
 
         do {
             operacionABM("pedidos");
-            opcion = inputUsuario.nextInt();
-            inputUsuario.nextLine();
+            opcion = Verificador.verificarInts(inputUsuario.nextLine(), "entero", inputUsuario);
 
             switch (opcion) {
                 case 0:
@@ -1230,8 +1224,7 @@ public class MudanzasCompartidas {
 
         do {
             menuABM();
-            opcion = inputUsuario.nextInt();
-            inputUsuario.nextLine();
+            opcion = Verificador.verificarInts(inputUsuario.nextLine(), "entero", inputUsuario);
 
             switch (opcion) {
                 case 0:
@@ -1264,8 +1257,7 @@ public class MudanzasCompartidas {
 
         do {
             menuConsultas();
-            opcion = inputUsuario.nextInt();
-            inputUsuario.nextLine();
+            opcion = Verificador.verificarInts(inputUsuario.nextLine(), "numero", inputUsuario);
 
             switch (opcion) {
                 case 0:
@@ -1306,8 +1298,7 @@ public class MudanzasCompartidas {
 
         do {
             menuVerificarViajes();
-            opcion = inputUsuario.nextInt();
-            inputUsuario.nextLine();
+            opcion = Verificador.verificarInts(inputUsuario.nextLine(), "numero", inputUsuario);
 
             switch (opcion) {
                 case 0:
@@ -1337,8 +1328,7 @@ public class MudanzasCompartidas {
         do {
             // Muestro las opciones
             menuPrincipal();
-            opcion = inputUsuario.nextInt();
-            inputUsuario.nextLine();
+            opcion = Verificador.verificarInts(inputUsuario.nextLine(), "numero", inputUsuario);
             // Lectura de la variable ingresada por usuario
             switch (opcion) {
                 case 0:

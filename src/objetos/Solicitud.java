@@ -2,6 +2,7 @@ package objetos;
 
 public class Solicitud {
 
+    private int ciudadOrigen;
     private int ciudadDestino;
     private String fechaSol;
     private String idCliente;
@@ -14,8 +15,10 @@ public class Solicitud {
     private static int ID = 0;
 
     // Contructores
-    public Solicitud(int ciudadDestino, String fechaSol, String idCliente, double metrosCubicos, int cantBultos,
+    public Solicitud(int ciudadOrigen, int ciudadDestino, String fechaSol, String idCliente, double metrosCubicos,
+            int cantBultos,
             String domicilioRetiro, String domicilioEntrega, boolean estaPago) {
+        this.ciudadOrigen = ciudadOrigen;
         this.ciudadDestino = ciudadDestino;
         this.fechaSol = fechaSol;
         this.idCliente = idCliente;
@@ -28,10 +31,17 @@ public class Solicitud {
     }
 
     public Solicitud() {
-        this(-1, null, "", -1, -1, "", "", false);
+        this(-1, -1, null, "", -1, -1, "", "", false);
     }
 
     // Getters/Setters
+    public int getCiudadOrigen() {
+        return this.ciudadOrigen;
+    }
+
+    public void setCiudadOrigen(int ciudadOrigen) {
+        this.ciudadOrigen = ciudadOrigen;
+    }
 
     public int getCiudadDestino() {
         return this.ciudadDestino;
@@ -116,7 +126,8 @@ public class Solicitud {
 
     @Override
     public String toString() {
-        return " Ciudad Destino:'" + this.ciudadDestino + "'" +
+        return "Ciudad Origen: " + this.ciudadOrigen +
+                "| Ciudad Destino:'" + this.ciudadDestino + "'" +
                 "| Fecha:'" + this.fechaSol + "'" +
                 "| ID Cliente:'" + this.idCliente + "'" +
                 "| Cantidad metros cubicos:'" + this.metrosCubicos + "'" +

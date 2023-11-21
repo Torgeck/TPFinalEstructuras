@@ -71,6 +71,7 @@ public class NodoAVL {
         int alturaIzquierdo, alturaDerecho;
         // Recorre sus hijos si no es nulo
         if (nodo != null) {
+            System.out.println("Obtener altura " + nodo.getKey());
             alturaIzquierdo = obtenerAltura(nodo.getIzquierdo(), altura);
             alturaDerecho = obtenerAltura(nodo.getDerecho(), altura);
 

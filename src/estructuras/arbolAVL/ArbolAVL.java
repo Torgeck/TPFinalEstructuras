@@ -471,18 +471,18 @@ public class ArbolAVL {
         if (nodo != null) {
             Comparable key = nodo.getKey();
 
-            // Si el elemento actual es mayor que el minimo bajo a la izquierda
-            if (key.compareTo(min) > 0)
-                listarRangoAux(min, max, lista, nodo.getIzquierdo());
+            // Si el elemento actual es menor que el maximo entonces bajo por derecha
+            if (key.compareTo(max) < 0)
+                listarRangoAux(min, max, lista, nodo.getDerecho());
 
             // Si el elemento actual se encuentra entremedio de los valores pedidos lo
             // agrego a la lista
             if (key.compareTo(min) >= 0 && key.compareTo(max) <= 0)
-                lista.insertar(key, lista.longitud() + 1);
+                lista.insertar(key, 1);
 
-            // Si el elemento actual es menor que el maximo entonces bajo por derecha
-            if (key.compareTo(max) < 0)
-                listarRangoAux(min, max, lista, nodo.getDerecho());
+            // Si el elemento actual es mayor que el minimo bajo a la izquierda
+            if (key.compareTo(min) > 0)
+                listarRangoAux(min, max, lista, nodo.getIzquierdo());
         }
     }
 
