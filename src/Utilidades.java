@@ -62,9 +62,9 @@ public final class Utilidades {
         return i;
     }
 
-    public static Lista filtrarConCiudadYCliente(Lista listaOriginal, int ciudad, String claveCliente) {
+    public static Lista filtrarConCliente(Lista listaOriginal, String claveCliente) {
         // Metodo que crea y retorna una lista nueva y agrega las apariciones que
-        // contengan ciudad y claveCliente pasadas por parametro
+        // contengan claveCliente pasada por parametro
         Lista listaFiltrada = new Lista();
         Solicitud aux;
         int longitud = listaOriginal.longitud(), posicion = 1;
@@ -75,7 +75,7 @@ public final class Utilidades {
             while (posicion <= longitud) {
                 aux = (Solicitud) listaOriginal.recuperar(posicion);
 
-                if (aux.getIdCliente().equals(claveCliente) && aux.getCiudadDestino() == ciudad) {
+                if (aux.getIdCliente().equals(claveCliente)) {
                     listaFiltrada.insertar(aux, 1);
                 }
                 posicion++;

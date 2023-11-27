@@ -89,10 +89,11 @@ public class Loader {
 
         if (Verificador.verificarSolicitud(arr)) {
             // Transformar los atributos que no son string
-            solicitud = new Solicitud(Integer.parseInt(arr[1]), arr[2], arr[3], Double.parseDouble(arr[4]),
+            solicitud = new Solicitud(Integer.parseInt(arr[0]), Integer.parseInt(arr[1]), arr[2], arr[3],
+                    Double.parseDouble(arr[4]),
                     Integer.parseInt(arr[5]), arr[6], arr[7], (arr[8].equals("T")));
             // Agrego la solicitud a las estructuras
-            sistema.agregarSolicitud(Integer.parseInt(arr[0]), solicitud);
+            sistema.agregarSolicitud(solicitud);
         } else {
             System.out.println("ERROR SOLICITUD " + arr[0] + "|" + arr[1] + "|" + arr[3] + "Algo salio mal");
             // Error en el sistema

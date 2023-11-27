@@ -267,7 +267,8 @@ public class Grafo {
         return exito;
     }
 
-    public Par caminoMasCorto(Object origen, Object destino) {
+    // * ====================== NO SE USAN ====================== */
+    public Par caminoMasCortoDijkstra(Object origen, Object destino) {
         // Metodo que devuelve un par con la distancia y el camino mas corto si es que
         // existen los nodos en el grafo, utilizando el algoritmo de Dijkstra
 
@@ -372,7 +373,7 @@ public class Grafo {
         distanciaYCamino.setB(camino);
     }
 
-    public Par menorCaminoCantidadNodos(Object origen, Object destino) {
+    public Par menorCaminoCantidadNodosAnchura(Object origen, Object destino) {
         // Metodo que devuelve una lista con el camino de origen a destino que pase por
         // la menor cantidad de nodos posibles utilizando BFS (Busqueda en anchura)
         HashMap<NodoVert, NodoVert> padre = new HashMap<>();
@@ -436,7 +437,7 @@ public class Grafo {
         return cantNodosYCamino;
     }
 
-    public boolean verificarCaminoMenorDistacia(Object origen, Object destino, double distancia) {
+    public boolean verificarCaminoMenorDistaciaDijsktra(Object origen, Object destino, double distancia) {
         // Metodo que verifica si se puede llegar de A - B en distancia o menos
         ColaPrioridad cola = new ColaPrioridad();
         Lista visitados = new Lista();
@@ -481,7 +482,7 @@ public class Grafo {
                         while (arcoActual != null) {
                             vecino = arcoActual.getVertice();
 
-                            // Si el nodo vecino no se visito lo analizo
+                            // Si el nodo vecino no se visito lo anthis.inicio, alizo
                             if (visitados.localizar(vecino) < 0) {
                                 distanciaTentativa = distanciaNodo.get(nodoActual) + (double) arcoActual.getEtiqueta();
 
@@ -505,6 +506,195 @@ public class Grafo {
         return exito;
     }
 
+    // * ====================================================================== */
+
+    public Lista caminoMasCorto(Object origen, Object destino) {
+        double distanciaActual = 0.0;
+        Lista caminoActual = new Lista(), caminoMasCorto = new Lista();
+        NodoVert nodoOrigen = this.ubicarVertice(origen), nodoDestino = this.ubicarVertice(destino);
+        HashMap<NodoVert, Boolean> estaSiendoVisitado = new HashMap<>();
+        Par menorCaminoDistacia;
+
+        // Si ambos nodos existen en el grafo
+        if (nodoOrigen != null && nodoDestino != null) {
+            // Inicializo el par con una lista vacia y una distancia minima
+            menorCaminoDistacia = new Par(caminoMasCorto, Double.MAX_VALUE);
+
+            // Lleno un HM con los Nodos y false como key,value
+            llenarHashVisitados(estaSiendoVisitado);
+
+            caminoActual.insertar(nodoOrigen, 1);
+            obtenerCaminoMenorDistancia(nodoOrigen, caminoActual, nodoDestino, distanciaActual, menorCaminoDistacia,
+                    estaSiendoVisitado);
+            caminoMasCorto = (Lista) menorCaminoDistacia.getA();
+        }
+
+        return caminoMasCorto;
+    }
+
+    private void obtenerCaminoMenorDistancia(NodoVert nodoActual, Lista caminoActual, NodoVert nodoDestino,
+            double distanciaActual, Par menorCaminoDistancia, HashMap<NodoVert, Boolean> estaSiedoVisitado) {
+        // Metodo que obtiene el camino con menor distancia del nodoOrigen al
+        // nodoDestino
+        NodoVert vecino;
+        NodoAdy arcoActual;
+        double distanciaArco;
+
+        if (distanciaActual < (double) menorCaminoDistancia.getB()) {
+            // Si se encuentra el nodo destino se setea la nueva menor distancia y el nuevo
+            // camino mas corto
+            if (nodoActual.equals(nodoDestino)) {
+                menorCaminoDistancia.setA(caminoActual.clone());
+                menorCaminoDistancia.setB(distanciaActual);
+            } else {
+                // Caso contratio se procede a recorrer a los vecinos
+                estaSiedoVisitado.put(nodoActual, true);
+                arcoActual = nodoActual.getPrimerAdy();
+
+                // Mientras tenga vecinos
+                while (arcoActual != null) {
+                    vecino = arcoActual.getVertice();
+                    distanciaArco = (double) ((Integer) arcoActual.getEtiqueta());
+                    distanciaActual += distanciaArco;
+
+                    // Si no esta siendo visitado
+                    if (!estaSiedoVisitado.get(vecino) && distanciaActual < (double) menorCaminoDistancia.getB()) {
+                        caminoActual.insertarFin(vecino);
+                        obtenerCaminoMenorDistancia(vecino, caminoActual, nodoDestino, distanciaActual,
+                                menorCaminoDistancia, estaSiedoVisitado);
+                        caminoActual.eliminar(caminoActual.localizar(vecino));
+                    }
+                    // Resto la cantidad de kms de arcoActual a distanciaActual
+                    distanciaActual -= distanciaArco;
+                    arcoActual = arcoActual.getSigAdyacente();
+                }
+                // Saco al nodo actual como visitado
+                estaSiedoVisitado.replace(nodoActual, false);
+            }
+        }
+    }
+
+    // Busqueda profundidad menor cantidad de nodos
+    public Lista menorCaminoCantidadNodos(Object origen, Object destino) {
+        // Metodo que busca por profundidad el camino que pasa por la menor cantidad de
+        // nodos
+        int cantNodos = 0;
+        Lista caminoActual = new Lista(), caminoMenosNodos = new Lista();
+        NodoVert nodoOrigen = this.ubicarVertice(origen), nodoDestino = this.ubicarVertice(destino);
+        HashMap<NodoVert, Boolean> estaSiendoVisitado = new HashMap<>();
+        Par caminoCantNodos;
+
+        // Si ambos nodos existen en el grafo
+        if (nodoOrigen != null && nodoDestino != null) {
+            // Inicializo el par con una lista vacia y una distancia minima
+            caminoCantNodos = new Par(caminoMenosNodos, Integer.MAX_VALUE);
+
+            // Lleno un HM con los Nodos y false como key,value
+            llenarHashVisitados(estaSiendoVisitado);
+
+            caminoActual.insertar(nodoOrigen, 1);
+            obtenerCaminoMenosNodos(nodoOrigen, nodoDestino, caminoActual, cantNodos, caminoCantNodos,
+                    estaSiendoVisitado);
+            caminoMenosNodos = (Lista) caminoCantNodos.getA();
+        }
+
+        return caminoMenosNodos;
+    }
+
+    private void obtenerCaminoMenosNodos(NodoVert nodoActual, NodoVert nodoDestino, Lista caminoActual,
+            int cantNodosActuales, Par caminoCantNodos, HashMap<NodoVert, Boolean> estaSiendoVisitado) {
+        NodoVert vecino;
+        NodoAdy arcoActual;
+        // Si la cantidad de nodos actual es menor a la seteada en el par
+        if (cantNodosActuales < (int) caminoCantNodos.getB()) {
+            // Si se encontro el nodo
+            if (nodoActual.equals(nodoDestino)) {
+                caminoCantNodos.setA(caminoActual.clone());
+                caminoCantNodos.setB(cantNodosActuales);
+            } else {
+                // Seteo el nodo actual como visitado
+                estaSiendoVisitado.put(nodoActual, true);
+                arcoActual = nodoActual.getPrimerAdy();
+
+                // Mientras tenga vecinos
+                while (arcoActual != null) {
+                    vecino = arcoActual.getVertice();
+                    cantNodosActuales++;
+
+                    if (!estaSiendoVisitado.get(vecino) && cantNodosActuales < (int) caminoCantNodos.getB()) {
+                        caminoActual.insertarFin(vecino);
+                        obtenerCaminoMenosNodos(vecino, nodoDestino, caminoActual, cantNodosActuales,
+                                caminoCantNodos, estaSiendoVisitado);
+                        caminoActual.eliminar(caminoActual.localizar(vecino));
+                    }
+
+                    cantNodosActuales--;
+                    arcoActual = arcoActual.getSigAdyacente();
+                }
+                // Pongo al nodo como no visitado
+                estaSiendoVisitado.replace(nodoActual, false);
+            }
+        }
+    }
+
+    public boolean verificarCaminoMenorDistacia(Object origen, Object destino, double distanciaLimite) {
+        // Metodo que verifica si es posible llegar de un nodo origen al nodo destino en
+        // menos de la distanciaLimite pasada por el usuario
+        double distanciaActual = 0;
+        boolean esPosible = false;
+        NodoVert nodoOrigen = this.ubicarVertice(origen), nodoDestino = this.ubicarVertice(destino);
+        HashMap<NodoVert, Boolean> estaSiendoVisitado = new HashMap<>();
+
+        // Si ambos nodos existen en el grafo
+        if (nodoOrigen != null && nodoDestino != null) {
+            // Lleno un HM con los Nodos y false como key,value
+            llenarHashVisitados(estaSiendoVisitado);
+
+            esPosible = esPosibleCaminoMenorDistacia(nodoOrigen, nodoDestino, distanciaLimite,
+                    distanciaActual,
+                    estaSiendoVisitado);
+        }
+
+        return esPosible;
+    }
+
+    private boolean esPosibleCaminoMenorDistacia(NodoVert nodoActual, NodoVert nodoDestino, double distanciaLimite,
+            double distanciaActual, HashMap<NodoVert, Boolean> estaSiendoVisitado) {
+        boolean esPosible = false;
+        double distanciaArco;
+        NodoVert vecino;
+        NodoAdy arcoActual;
+
+        if (distanciaActual <= distanciaLimite) {
+            if (nodoActual.equals(nodoDestino)) {
+                esPosible = true;
+            } else {
+                // Setea al nodo actual como visitado
+                estaSiendoVisitado.put(nodoActual, true);
+                arcoActual = nodoActual.getPrimerAdy();
+
+                // Mientras tenga vecinos
+                while (!esPosible && arcoActual != null) {
+                    distanciaArco = (double) ((Integer) arcoActual.getEtiqueta());
+                    distanciaActual += distanciaArco;
+                    vecino = arcoActual.getVertice();
+
+                    if (!estaSiendoVisitado.get(vecino) && distanciaActual <= distanciaLimite) {
+                        esPosible = esPosibleCaminoMenorDistacia(vecino, nodoDestino, distanciaLimite,
+                                distanciaActual, estaSiendoVisitado);
+                    }
+
+                    distanciaActual -= distanciaArco;
+                    arcoActual = arcoActual.getSigAdyacente();
+                }
+
+                // Marco al nodo actual como no visitado
+                estaSiendoVisitado.replace(nodoActual, false);
+            }
+        }
+        return esPosible;
+    }
+
     public boolean esVacio() {
         // Metodo que retorna true si el grafo esta vacio y false caso contrario
         return this.inicio == null;
@@ -517,18 +707,14 @@ public class Grafo {
 
     public Lista listarCaminosPosibles(Object origen, Object destino) {
         // Metodo que obtiene todos los caminos posibles de origen a destino
-        NodoVert nodoOrigen = ubicarVertice(origen), nodoDestino = ubicarVertice(destino), nodoActual = this.inicio;
+        NodoVert nodoOrigen = ubicarVertice(origen), nodoDestino = ubicarVertice(destino);
         Lista caminosPosibles = new Lista(), caminoActual = new Lista();
         HashMap<NodoVert, Boolean> estaSiendoVisitado = new HashMap<>();
 
         // Verifica si existen los nodos
         if (nodoOrigen != null && nodoDestino != null) {
 
-            // Lleno el hashmap con todos los nodos del grafo en false
-            while (nodoActual != null) {
-                estaSiendoVisitado.put(nodoActual, false);
-                nodoActual = nodoActual.getSigVertice();
-            }
+            llenarHashVisitados(estaSiendoVisitado);
 
             // Inserto el nodo origen en la primer posicion de la lista para empezar de el a
             // recorrer el grafo
@@ -537,6 +723,38 @@ public class Grafo {
 
         }
         return caminosPosibles;
+    }
+
+    public Lista listarCaminosPosibles(Object origen, Object intermedio, Object destino) {
+        // Metodo que obtiene todos los caminos posibles de origen a destino que pasen
+        // por intermedio, el HM estaSiendoVisitado sirve para no entrar en bucles
+        NodoVert nodoOrigen = ubicarVertice(origen), nodoDestino = ubicarVertice(destino),
+                nodoIntermedio = ubicarVertice(intermedio);
+        Lista caminoActual = new Lista(), caminosPosibles = new Lista();
+        HashMap<NodoVert, Boolean> estaSiendoVisitado = new HashMap<>();
+
+        // Verifica que todos los nodos por parametros existan en el grafo
+        if (nodoOrigen != null && nodoDestino != null && nodoIntermedio != null) {
+
+            llenarHashVisitados(estaSiendoVisitado);
+
+            caminoActual.insertarInicio(nodoOrigen);
+            obtenerCaminosProfundidad(nodoOrigen, nodoIntermedio, nodoDestino, caminoActual, estaSiendoVisitado,
+                    caminosPosibles);
+        }
+
+        return caminosPosibles;
+    }
+
+    private void llenarHashVisitados(HashMap<NodoVert, Boolean> estaSiendoVisitado) {
+        // Metodo que llena un HM con los nodos pertenecientes al grafo como keys, y el
+        // boolean false como values
+        NodoVert nodoActual = this.inicio;
+
+        while (nodoActual != null) {
+            estaSiendoVisitado.put(nodoActual, false);
+            nodoActual = nodoActual.getSigVertice();
+        }
     }
 
     private void obtenerCaminosProfundidad(NodoVert nodoActual, NodoVert nodoDestino, Lista caminoActual,
@@ -548,7 +766,7 @@ public class Grafo {
         // Si el nodoActual es igual al destino entonces se guarda el camino actual en
         // caminos
         if (nodoActual.equals(nodoDestino)) {
-            caminosPosibles.insertar(caminoActual.clone(), caminosPosibles.longitud() + 1);
+            caminosPosibles.insertar(caminoActual.clone(), 1);
         } else {
             // Caso contrario se procede a recorrer a los vecinos
             estaSiendoVisitado.put(nodoActual, true);
@@ -560,7 +778,7 @@ public class Grafo {
 
                 // Si no esta siendo visitado
                 if (!estaSiendoVisitado.get(vecino)) {
-                    caminoActual.insertar(vecino, caminoActual.longitud() + 1);
+                    caminoActual.insertarFin(vecino);
                     obtenerCaminosProfundidad(vecino, nodoDestino, caminoActual, estaSiendoVisitado, caminosPosibles);
                     caminoActual.eliminar(caminoActual.localizar(vecino));
                 }
@@ -569,30 +787,6 @@ public class Grafo {
             // Saco al nodo actual como visitado
             estaSiendoVisitado.replace(nodoActual, false);
         }
-    }
-
-    public Lista listarCaminosPosibles(Object origen, Object intermedio, Object destino) {
-        // Metodo que obtiene todos los caminos posibles de origen a destino que pasen
-        // por intermedio, el HM estaSiendoVisitado sirve para no entrar en bucles
-        NodoVert nodoOrigen = ubicarVertice(origen), nodoDestino = ubicarVertice(destino),
-                nodoIntermedio = ubicarVertice(intermedio), nodoActual = this.inicio;
-        Lista caminoActual = new Lista(), caminosPosibles = new Lista();
-        HashMap<NodoVert, Boolean> estaSiendoVisitado = new HashMap<>();
-
-        // Verifica que todos los nodos por parametros existan en el grafo
-        if (nodoOrigen != null && nodoDestino != null && nodoIntermedio != null) {
-
-            while (nodoActual != null) {
-                estaSiendoVisitado.put(nodoActual, false);
-                nodoActual = nodoActual.getSigVertice();
-            }
-
-            caminoActual.insertar(nodoOrigen, 1);
-            obtenerCaminosProfundidad(nodoOrigen, nodoIntermedio, nodoDestino, caminoActual, estaSiendoVisitado,
-                    caminosPosibles);
-        }
-
-        return caminosPosibles;
     }
 
     private void obtenerCaminosProfundidad(NodoVert nodoActual, NodoVert nodoIntermedio, NodoVert nodoDestino,
@@ -619,7 +813,7 @@ public class Grafo {
 
                     // Si no esta siendo visitado
                     if (!estaSiendoVisitado.get(vecino)) {
-                        caminoActual.insertar(vecino, caminoActual.longitud() + 1);
+                        caminoActual.insertarFin(vecino);
                         obtenerCaminosProfundidad(vecino, nodoIntermedio, nodoDestino, caminoActual, estaSiendoVisitado,
                                 caminos);
                         caminoActual.eliminar(caminoActual.localizar(vecino));
@@ -710,7 +904,6 @@ public class Grafo {
         }
     }
 
-    // TODO ARREGLAR/TERMINAR CLONE()
     public Grafo clone() {
         // Metodo que clona la estructura de grafo y la retorna
         Grafo clon = new Grafo();
