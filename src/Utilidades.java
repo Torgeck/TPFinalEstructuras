@@ -1,6 +1,4 @@
-import java.util.HashMap;
 import java.util.Scanner;
-import java.util.stream.Collectors;
 
 import estructuras.lineales.Lista;
 import estructuras.lineales.Par;
