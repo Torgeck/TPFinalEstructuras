@@ -98,12 +98,12 @@ public class ArbolAVL {
 
     private static int getBalanceNodo(NodoAVL nodo) {
         // Metodo que obtiene las alturas de los hijos y retorna la resta entre ellos
-        int alturaIzq = 0, alturaDer = 0;
+        int alturaIzq = -1, alturaDer = -1;
 
         if (nodo.getIzquierdo() != null)
-            alturaIzq = nodo.getIzquierdo().getAltura() + 1;
+            alturaIzq = nodo.getIzquierdo().getAltura();
         if (nodo.getDerecho() != null)
-            alturaDer = nodo.getDerecho().getAltura() + 1;
+            alturaDer = nodo.getDerecho().getAltura();
 
         return alturaIzq - alturaDer;
     }
@@ -150,7 +150,7 @@ public class ArbolAVL {
         nuevaRaiz.setIzquierdo(nodoCritico);
         nodoCritico.setDerecho(temp);
 
-        // Recalculo sus alturas
+        // Actualizo sus alturas
         nodoCritico.recalcularAltura();
         nuevaRaiz.recalcularAltura();
 
@@ -163,7 +163,7 @@ public class ArbolAVL {
         nuevaRaiz.setDerecho(nodoCritico);
         nodoCritico.setIzquierdo(temp);
 
-        // Recalculo sus alturas
+        // Actualizo sus alturas
         nodoCritico.recalcularAltura();
         nuevaRaiz.recalcularAltura();
 
@@ -451,14 +451,14 @@ public class ArbolAVL {
     public Lista listarRango(Comparable elemMinimo, Comparable elemMaximo) {
         /*
          * Recorre parte del arbol y devuelve una lista ordenada con los elementos que
-         * se encuentran en el intervalo de los parametros ingresados
+         * se encuentran en el intervalo de los parametros ingresados []
          */
         Lista lista = new Lista();
 
         // Checkeo si el arbol esta vacio
         if (this.raiz != null)
             // Checkeo que los parametros esten ingresados bien
-            if (elemMinimo.compareTo(elemMaximo) < 0)
+            if (elemMinimo.compareTo(elemMaximo) <= 0)
                 listarRangoAux(elemMinimo, elemMaximo, lista, this.raiz);
 
         return lista;
@@ -564,8 +564,8 @@ public class ArbolAVL {
     private void toKeyValueStringRecursivo(NodoAVL nodo, StringBuilder cadena) {
 
         if (nodo != null) {
-            cadena.append("Key: " + nodo.getKey() + "\tValue: " + nodo.getValue() + "\n");
-            cadena.append("\t>> HI:" + ((nodo.getIzquierdo() != null) ? nodo.getIzquierdo().getKey() : "-") + "\n" +
+            cadena.append("\nKey: " + nodo.getKey() + "\tValue: " + nodo.getValue() + "\tAltura: " + nodo.getAltura()
+                    + "\n\t>> HI:" + ((nodo.getIzquierdo() != null) ? nodo.getIzquierdo().getKey() : "-") + "\n" +
                     "\t>> HD:" + ((nodo.getDerecho() != null) ? nodo.getDerecho().getKey() : "-") + "\n");
 
             toKeyValueStringRecursivo(nodo.getIzquierdo(), cadena);

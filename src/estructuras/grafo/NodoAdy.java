@@ -2,17 +2,19 @@ package estructuras.grafo;
 
 public class NodoAdy {
 
-    private Object etiqueta;
+    // Se uso double y no Object por temas de evitar convercion y casteo a la hora
+    // de usar la etiqueta para operaciones relacionadas a buscar camino mas corto
+    private double etiqueta;
     private NodoVert vertice;
     private NodoAdy sigAdyacente;
 
-    public NodoAdy(NodoVert vertice, NodoAdy sigAdyacente, Object etiqueta) {
+    public NodoAdy(NodoVert vertice, NodoAdy sigAdyacente, double etiqueta) {
         this.vertice = vertice;
         this.sigAdyacente = sigAdyacente;
         this.etiqueta = etiqueta;
     }
 
-    public NodoAdy(NodoVert vertice, Object etiqueta) {
+    public NodoAdy(NodoVert vertice, double etiqueta) {
         this.vertice = vertice;
         this.etiqueta = etiqueta;
         this.sigAdyacente = null;
@@ -34,11 +36,11 @@ public class NodoAdy {
         this.sigAdyacente = sigAdyacente;
     }
 
-    public Object getEtiqueta() {
+    public double getEtiqueta() {
         return etiqueta;
     }
 
-    public void setEtiqueta(Object etiqueta) {
+    public void setEtiqueta(double etiqueta) {
         this.etiqueta = etiqueta;
     }
 }

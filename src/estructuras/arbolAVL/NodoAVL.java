@@ -62,23 +62,14 @@ public class NodoAVL {
     }
 
     public void recalcularAltura() {
-        // Metodo que obtiene y setea la altura actual de un nodo
-        this.altura = obtenerAltura(this, -1);
-    }
+        // Metodo que recalcula la altura del nodo
+        int alturaIzquierdo = -1, alturaDerecho = -1;
 
-    private int obtenerAltura(NodoAVL nodo, int altura) {
-        // Metodo recursivo que obtiene y retorna la altura de un nodo
-        int alturaIzquierdo, alturaDerecho;
-        // Recorre sus hijos si no es nulo
-        if (nodo != null) {
-            System.out.println("Obtener altura " + nodo.getKey());
-            alturaIzquierdo = obtenerAltura(nodo.getIzquierdo(), altura);
-            alturaDerecho = obtenerAltura(nodo.getDerecho(), altura);
+        if (this.izquierdo != null)
+            alturaIzquierdo = this.izquierdo.getAltura();
+        if (this.derecho != null)
+            alturaDerecho = this.derecho.getAltura();
 
-            // Me quedo con la altura maxima y la incremento en 1
-            altura = Math.max(alturaIzquierdo, alturaDerecho) + 1;
-        }
-
-        return altura;
+        this.altura = Math.max(alturaIzquierdo, alturaDerecho) + 1;
     }
 }

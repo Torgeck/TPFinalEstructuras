@@ -72,11 +72,11 @@ public class Cliente {
     @Override
     public String toString() {
         return "Tipo documento: " + this.tipoDoc +
-                ", Numero documento: " + this.numeroDoc +
-                ", Nombre: " + this.nombre +
-                ", Apellido:  " + this.apellido +
-                ", Telefono: " + this.telefono +
-                ", Email: " + this.email + "\n";
+                "; Numero documento: " + this.numeroDoc +
+                "; Nombre: " + this.nombre +
+                "; Apellido:  " + this.apellido +
+                "; Telefono: " + this.telefono +
+                "; Email: " + this.email;
     }
 
 }

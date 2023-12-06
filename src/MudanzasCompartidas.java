@@ -4,6 +4,7 @@ import java.util.Scanner;
 import estructuras.arbolAVL.ArbolAVL;
 import estructuras.grafo.Grafo;
 import estructuras.grafo.NodoVert;
+import estructuras.lineales.Cola;
 import estructuras.lineales.Lista;
 import estructuras.lineales.Par;
 import objetos.Ciudad;
@@ -13,7 +14,7 @@ import objetos.Solicitud;
 public class MudanzasCompartidas {
 
     private ArbolAVL ciudades;
-    private HashMap<String, Lista> solicitudesViajes; // Corregir
+    private HashMap<String, Lista> solicitudesViajes;
     private Grafo mapaRutas;
     private HashMap<String, Cliente> clientes;
 
@@ -50,9 +51,11 @@ public class MudanzasCompartidas {
         // Metodo que retorna en un string las estructuras del sistema tal cual esta en
         // el momento de ser llamado
         return "\nArbolAVL con info de ciudades\n" + this.ciudades.toKeyValueString()
-                + "\nHashMap con solicitudes de viajes\n" + this.solicitudesViajes.toString()
+                + "\nHashMap con solicitudes de viajes\n"
+                + Utilidades.mostrarElementosHashmap(this.solicitudesViajes.toString())
                 + "\nGrafo, representando el mapa de rutas\n" + this.mapaRutas.toString()
-                + "\nHashMap con info de clientes\n" + this.clientes.toString();
+                + "\nHashMap con info de clientes\n"
+                + Utilidades.mostrarElementosHashmap(this.clientes.toString() + "\n");
     }
 
     // * Se podria tener un HM con los strings para los menus
@@ -216,8 +219,8 @@ public class MudanzasCompartidas {
             datosCiudad = inputUsuario.nextLine().split("-");
         }
 
-        nombre = Verificador.verificarLetras(datosCiudad[0], "nombre", inputUsuario);
-        provincia = Verificador.verificarLetras(datosCiudad[1], "provincia", inputUsuario);
+        nombre = Verificador.verificarPalabras(datosCiudad[0], "nombre", inputUsuario);
+        provincia = Verificador.verificarPalabras(datosCiudad[1], "provincia", inputUsuario);
 
         return new Ciudad(codigoPostal, nombre, provincia);
     }
@@ -240,7 +243,9 @@ public class MudanzasCompartidas {
                 ciudades.eliminar(codigoPostal);
                 mapaRutas.eliminarVertice(codigoPostal);
                 // Si tiene solicitudes se eliminan del HM
-                eliminarSolicitudesConCP(Integer.toString(codigoPostal));
+                // Verifico que no queden solicitudes que no se puedan satisfacer debido a la
+                // inexistencia del camino
+                eliminarSolicitudesSinCamino();
 
                 System.out.println("Eliminacion exitosa");
                 Logger.log("Se elimino la ciudad: " + ciudadAEliminar);
@@ -249,18 +254,6 @@ public class MudanzasCompartidas {
             }
 
             seguir = !deseaSalir(inputUsuario);
-        }
-    }
-
-    private void eliminarSolicitudesConCP(String codigoPostal) {
-        // Metodo que recorre el HM de solicitudes buscando keys con el codigoPostal
-        // para eliminarlo
-        for (String key : this.solicitudesViajes.keySet()) {
-            if (key.contains(codigoPostal)) {
-                this.solicitudesViajes.remove(key);
-                // TODO sacar esto
-                System.out.println("Se elimino: " + key);
-            }
         }
     }
 
@@ -279,8 +272,7 @@ public class MudanzasCompartidas {
             if (ciudad != null) {
                 menuModificacionCiudad();
 
-                opcion = inputUsuario.nextInt();
-                inputUsuario.nextLine();
+                opcion = Verificador.verificarInts(inputUsuario.nextLine(), "opcion", inputUsuario);
                 switch (opcion) {
                     case 1:
                         datoModificado = ciudad.getNombre();
@@ -361,8 +353,7 @@ public class MudanzasCompartidas {
     public void modificarCliente(Scanner inputUsuario) {
         // Metodo que pide al usuario que quiere modificar del cliente y lo modifica
         Cliente cliente;
-        String datoModificado, claveCliente;
-        String[] arr = { "nombre", "apellido", "telefono", "email" };
+        String datoModificado, claveCliente, objeto = "cliente";
         int opcion;
         boolean seguir = true;
 
@@ -372,31 +363,33 @@ public class MudanzasCompartidas {
 
             if (cliente != null) {
                 menuModificacionCliente();
-                opcion = Verificador.verificarCodigoPostal(inputUsuario.nextLine(), inputUsuario);
+                opcion = Verificador.verificarInts(inputUsuario.nextLine(), "opcion", inputUsuario);
 
                 switch (opcion) {
                     case 1:
                         datoModificado = cliente.getNombre();
-                        System.out.println("Ingrese nuevo " + arr[0] + " para el cliente");
-                        cliente.setNombre(Verificador.verificarLetras(inputUsuario.nextLine(), arr[0], inputUsuario));
+                        solicitarInput("nombre", objeto);
+                        cliente.setNombre(
+                                Verificador.verificarPalabras(inputUsuario.nextLine(), "nombre", inputUsuario));
                         Logger.log(
                                 "Se cambio el nombre del cliente de: " + datoModificado + " a: " + cliente.getNombre());
                         break;
                     case 2:
                         datoModificado = cliente.getApellido();
-                        System.out.println("Ingrese nuevo apellido para el cliente");
-                        cliente.setApellido(Verificador.verificarLetras(inputUsuario.nextLine(), arr[1], inputUsuario));
+                        solicitarInput("apellido", objeto);
+                        cliente.setApellido(
+                                Verificador.verificarPalabras(inputUsuario.nextLine(), "apellido", inputUsuario));
                         Logger.log("Se cambio el apellido de: " + datoModificado + " a: " + cliente.getApellido());
                         break;
                     case 3:
                         datoModificado = cliente.getTelefono();
-                        System.out.println("Ingrese nuevo telefono para el cliente");
+                        solicitarInput("telefono", objeto);
                         cliente.setTelefono(Verificador.verificarTelefono(inputUsuario.nextLine(), inputUsuario));
                         Logger.log("Se cambio el telefono de: " + datoModificado + "a: " + cliente.getTelefono());
                         break;
                     case 4:
                         datoModificado = cliente.getEmail();
-                        System.out.println("Ingrese nuevo email para el cliente");
+                        solicitarInput("email", objeto);
                         cliente.setEmail(Verificador.verificarEmail(inputUsuario.nextLine(), inputUsuario));
                         Logger.log("Se cambio el email" + datoModificado + " a: " + cliente.getEmail());
                         break;
@@ -480,6 +473,10 @@ public class MudanzasCompartidas {
                 cantKms = Verificador.verificarDouble(inputUsuario.nextLine(), "cantidad de kms", inputUsuario);
 
                 if (mapaRutas.eliminarArco(ciudad[0], ciudad[1], cantKms)) {
+                    // Elimino Pedidos que vayan de origen a destino si es que no existe otro camino
+                    if (!mapaRutas.existeCamino(ciudad[0], ciudad[1])) {
+                        eliminarSolicitudesSinCamino();
+                    }
                     System.out.println("Eliminacion exitosa");
                     Logger.log("Se elimino la ruta que unia " + ciudad[0] + " y " + ciudad[1] + " con " + cantKms
                             + " kilometros");
@@ -492,6 +489,27 @@ public class MudanzasCompartidas {
             }
 
             seguir = !deseaSalir(inputUsuario);
+        }
+    }
+
+    private void eliminarSolicitudesSinCamino() {
+        // Metodo que recorre el HM de solicitudes buscando keys con el codigoPostal
+        // para eliminarlo
+        String ciudad[];
+        Cola keysABorrar = new Cola();
+
+        for (String key : this.solicitudesViajes.keySet()) {
+            ciudad = key.split("\\|");
+
+            if (!mapaRutas.existeCamino(Integer.parseInt(ciudad[0]), Integer.parseInt(ciudad[1]))) {
+                keysABorrar.poner(key);
+            }
+        }
+
+        while (!keysABorrar.esVacia()) {
+            this.solicitudesViajes.remove(keysABorrar.obtenerFrente());
+            Logger.log("Se eliminaron las solicitudes con origen|destino: " + keysABorrar.obtenerFrente());
+            keysABorrar.sacar();
         }
     }
 
@@ -537,8 +555,7 @@ public class MudanzasCompartidas {
             if (mapaRutas.existeCamino(ciudad[0], ciudad[1])) {
                 // Pedir clave del cliente, y verificar que exista en el sistema
                 clave = solicitarClaveCliente(inputUsuario);
-                // Podria tomar que exista el cliente o saltarlo y directamente agregar una
-                // solicitud sin que exista el cliente seria muy raro
+
                 if (clientes.get(clave.toConcatString()) != null) {
                     agregarSolicitud(crearSolicitud(ciudad[0], ciudad[1], clave.toConcatString(), inputUsuario));
                     System.out.println("Creacion exitosa");
@@ -579,16 +596,16 @@ public class MudanzasCompartidas {
     public void agregarSolicitud(Solicitud solicitud) {
         // Agrega solicitud al sistema y loggea la misma
         Lista solicitudes;
-        String origenDestino = Integer.toString(solicitud.getCiudadOrigen()) + solicitud.getCiudadDestino();
+        String claveSolicitud = solicitud.getCiudadOrigen() + "|" + solicitud.getCiudadDestino();
 
         // Si no existe en el HM se crea
-        if (!solicitudesViajes.containsKey(origenDestino)) {
-            solicitudesViajes.put(origenDestino, new Lista());
+        if (!solicitudesViajes.containsKey(claveSolicitud)) {
+            solicitudesViajes.put(claveSolicitud, new Lista());
         }
 
-        solicitudes = solicitudesViajes.get(origenDestino);
+        solicitudes = solicitudesViajes.get(claveSolicitud);
         solicitudes.insertar(solicitud, 1);
-        Logger.log("Se agrego solicitud: " + solicitud + " a ciudad: " + origenDestino);
+        Logger.log("Se agrego solicitud: " + solicitud + " a ciudad: " + claveSolicitud);
     }
 
     public void modificarPedido(Scanner inputUsuario) {
@@ -609,7 +626,7 @@ public class MudanzasCompartidas {
                 // Filtro las solicitudes para ver si existe alguna que el usuario quiera
                 // modificar
                 solicitudesFiltradas = Utilidades.filtrarConCliente(
-                        (Lista) solicitudesViajes.get(Integer.toString(ciudad[0]) + ciudad[1]), clave.toConcatString());
+                        (Lista) solicitudesViajes.get(ciudad[0] + "|" + ciudad[1]), clave.toConcatString());
 
                 if (!solicitudesFiltradas.esVacia()) {
                     mostrarOpcionesSolicitudes(ciudad, clave, solicitudesFiltradas);
@@ -688,7 +705,7 @@ public class MudanzasCompartidas {
             if (mapaRutas.existeCamino(ciudad[0], ciudad[1])) {
                 claveCliente = solicitarClaveCliente(inputUsuario);
 
-                solicitudesCiudad = (Lista) solicitudesViajes.get(Integer.toString(ciudad[0]) + ciudad[1]);
+                solicitudesCiudad = (Lista) solicitudesViajes.get(ciudad[0] + "|" + ciudad[1]);
                 solicitudesFiltradas = Utilidades.filtrarConCliente(solicitudesCiudad, claveCliente.toConcatString());
 
                 if (!solicitudesFiltradas.esVacia()) {
@@ -862,13 +879,13 @@ public class MudanzasCompartidas {
         while (seguir) {
             codigoPostal = solicitarCodigosPostales(inputUsuario);
 
-            System.out.println("Ingrese la cantidad de kilometros");
-            kilometros = Verificador.verificarDouble(inputUsuario.nextLine(), "cantidad de kms", inputUsuario);
-
             origen = (Ciudad) ciudades.obtenerElemento(codigoPostal[0]);
             destino = (Ciudad) ciudades.obtenerElemento(codigoPostal[1]);
 
             if (origen != null && destino != null) {
+                System.out.println("Ingrese la cantidad de kilometros");
+                kilometros = Verificador.verificarDouble(inputUsuario.nextLine(), "cantidad de kms", inputUsuario);
+
                 System.out.format("Es posible viajar de %s a %s en %.2f kms : %b %n",
                         origen.getNombre(),
                         destino.getNombre(),
@@ -894,7 +911,7 @@ public class MudanzasCompartidas {
 
             if (mapaRutas.existeCamino(codigoPostal[0], codigoPostal[1])) {
 
-                pedidosYEspacio = obtenerParListaEspacio(Integer.toString(codigoPostal[0]) + codigoPostal[1], 0);
+                pedidosYEspacio = obtenerParListaEspacio(codigoPostal[0] + "|" + codigoPostal[1], 0);
                 System.out.println("Todos los pedidos de: " + codigoPostal[0] + " a " + codigoPostal[1] + " son:\n"
                         + ((Lista) pedidosYEspacio.getA()).enumerar());
 
@@ -913,6 +930,10 @@ public class MudanzasCompartidas {
         Par resultado = new Par();
         Lista solicitudes = (Lista) solicitudesViajes.get(origenDestino);
 
+        // Si no existen solicitudes en el HM
+        if (solicitudes == null) {
+            solicitudes = new Lista();
+        }
         // Filtro las solicitudes con destino
         resultado.setA(solicitudes);
         resultado.setB(calcularEspacioFaltante((Lista) resultado.getA(), espacioCamion));
@@ -937,16 +958,20 @@ public class MudanzasCompartidas {
     private double calcularEspacioFaltante(Lista lista, double espacioCamion) {
         // Metodo que retorna el espacio faltante(positivo) o sobrante(negativo) de un
         // camion
-        int i = 1, longitud = lista.longitud();
+        int i = 1, longitud;
         double resultado = -espacioCamion;
         Solicitud aux;
 
-        while (i <= longitud) {
-            aux = (Solicitud) lista.recuperar(i);
-            if (aux != null) {
-                resultado += aux.getMetrosCubicos();
+        if (lista != null) {
+            longitud = lista.longitud();
+
+            while (i <= longitud) {
+                aux = (Solicitud) lista.recuperar(i);
+                if (aux != null) {
+                    resultado += aux.getMetrosCubicos();
+                }
+                i++;
             }
-            i++;
         }
 
         return resultado;
@@ -968,11 +993,12 @@ public class MudanzasCompartidas {
                 espacioCamion = Verificador.verificarDouble(inputUsuario.nextLine(), "cantidad de metros cubicos",
                         inputUsuario);
                 // Obtengo un par con las solicitudes y el espacio del camion
-                solicitudesEspacio = obtenerParListaEspacio(Integer.toString(codigoPostal[0]) + codigoPostal[1],
+                solicitudesEspacio = obtenerParListaEspacio(codigoPostal[0] + "|" + codigoPostal[1],
                         espacioCamion);
                 // TODO MENSAJE DE TEST
                 System.out.println(">>> Los pedidos son:\n" + ((Lista) solicitudesEspacio.getA()).enumerar()
-                        + " el espacio del camion es de: " + Math.abs((double) solicitudesEspacio.getB()) + "\n");
+                        + " el espacio del camion es de: " + Math.abs((double) solicitudesEspacio.getB())
+                        + "\nEl camino es : " + camino);
 
                 if ((double) solicitudesEspacio.getB() < 0) {
                     // Hay espacio
@@ -982,7 +1008,7 @@ public class MudanzasCompartidas {
                         System.out.println("Los pedidos que se pueden satisfacer a lo largo de todo el tramo son:\n"
                                 + posiblesSolicitudes.enumerar() + "\n");
                     } else {
-                        System.out.println("No hay espacio por ende no se pueden listar posibles pedidos a satisfacer");
+                        System.out.println("No existen pedidos a satisfacer");
                     }
                 } else {
                     // No hay espacio
@@ -1009,12 +1035,14 @@ public class MudanzasCompartidas {
             while (indiceDestino <= longitud) {
                 // Obtengo CP de ciudad destino
                 destinoActual = (int) ((NodoVert) camino.recuperar(indiceDestino)).getElem();
-                origenDestino = Integer.toString(ciudadActual) + destinoActual;
+                origenDestino = ciudadActual + "|" + destinoActual;
 
                 // No tiene en cuenta origen inicial y el destino final del camino
                 if (!(indiceActual == 1 && indiceDestino == longitud)) {
                     solicitudesOrigenDestino = this.solicitudesViajes.get(origenDestino);
-                    filtrarSolicitudesEspacio(solicitudesOrigenDestino, posiblesSolicitudes, espacioDisponible);
+                    // Si existen solicitudes en el hashmap filtro
+                    if (solicitudesOrigenDestino != null)
+                        filtrarSolicitudesEspacio(solicitudesOrigenDestino, posiblesSolicitudes, espacioDisponible);
                 }
                 indiceDestino++;
             }

@@ -1,4 +1,6 @@
+import java.util.HashMap;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 import estructuras.lineales.Lista;
 import estructuras.lineales.Par;
@@ -81,8 +83,13 @@ public final class Utilidades {
                 posicion++;
             }
         }
-
         return listaFiltrada;
+    }
+
+    public static String mostrarElementosHashmap(String stringHash) {
+        // Metodo que convierte el string del hashmap para que sea mas legible
+
+        return stringHash.replace(",", ";\n");
     }
 
 }

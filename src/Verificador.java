@@ -130,6 +130,21 @@ public class Verificador {
         return letras.toUpperCase();
     }
 
+    public static String verificarPalabras(String palabras, String atributo, Scanner inputUsuario) {
+        // Metodo que verifica que se hayan ingresado palabra/s
+
+        if (!sonPalabras(palabras)) {
+            System.out.println("Ingrese cadena/s que contenga/n solamente letras: " + atributo);
+            while (!inputUsuario.hasNext(FORMATO_PALABRAS)) {
+                System.out.println("Error, Ingrese nuevamente ");
+                inputUsuario.next();
+            }
+            palabras = inputUsuario.next();
+        }
+
+        return palabras.toUpperCase();
+    }
+
     public static String verificarEmail(String email, Scanner inputUsuario) {
         // Metodo que verifica que se haya ingresado el email en el formato correcto
         String solicitarIngreso = "Ingrese nuevamente un email con formato 'DIRECCION@MAIL.COM'. Ej: unaDireccion@email.com";

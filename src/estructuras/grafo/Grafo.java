@@ -125,7 +125,7 @@ public class Grafo {
         return exito;
     }
 
-    public boolean insertarArco(Object origen, Object destino, Object etiqueta) {
+    public boolean insertarArco(Object origen, Object destino, double etiqueta) {
         // Metodo que agrega un arco en la estructura solo si ambos nodos existen en la
         // misma
         boolean exito = false;
@@ -145,7 +145,7 @@ public class Grafo {
         return exito;
     }
 
-    public boolean eliminarArco(Object origen, Object destino, Object etiqueta) {
+    public boolean eliminarArco(Object origen, Object destino, double etiqueta) {
         // Metodo que elimina solo si este existe entre origen y destino pasados por
         // parametros
         boolean exito = false;
@@ -164,7 +164,7 @@ public class Grafo {
         return exito;
     }
 
-    private boolean eliminarArcoConEtiqueta(NodoVert origen, NodoVert destino, Object etiqueta) {
+    private boolean eliminarArcoConEtiqueta(NodoVert origen, NodoVert destino, double etiqueta) {
         // Metodo que analiza los diferentes casos de eliminar un arco y devuelve un
         // boolean
         boolean exito = false;
@@ -173,21 +173,21 @@ public class Grafo {
         // Si el no posee arcos
         if (arcoBuscado != null) {
             // Si el arco es el primero se setea al siguiente como primero
-            if (arcoBuscado.getVertice() == destino && arcoBuscado.getEtiqueta().equals(etiqueta)) {
+            if (arcoBuscado.getVertice() == destino && arcoBuscado.getEtiqueta() == etiqueta) {
                 origen.setPrimerAdy(arcoBuscado.getSigAdyacente());
                 exito = true;
             } else {
                 anterior = null;
                 // Caso contrario recorro todos los arcos de origen hasta encontrarlo
                 while (arcoBuscado != null && arcoBuscado.getVertice() != destino
-                        && !arcoBuscado.getEtiqueta().equals(etiqueta)) {
+                        && !(arcoBuscado.getEtiqueta() == etiqueta)) {
                     anterior = arcoBuscado;
                     arcoBuscado = arcoBuscado.getSigAdyacente();
                 }
 
                 // Si es encontrado seteo al nodoAdy anterior con el posterior del nodoAdy a
                 // eliminar
-                if (arcoBuscado.getEtiqueta().equals(etiqueta)) {
+                if (arcoBuscado.getEtiqueta() == etiqueta) {
                     if (anterior != null) {
                         anterior.setSigAdyacente(arcoBuscado.getSigAdyacente());
                     } else {
@@ -554,7 +554,7 @@ public class Grafo {
                 // Mientras tenga vecinos
                 while (arcoActual != null) {
                     vecino = arcoActual.getVertice();
-                    distanciaArco = (double) ((Integer) arcoActual.getEtiqueta());
+                    distanciaArco = (double) (arcoActual.getEtiqueta());
                     distanciaActual += distanciaArco;
 
                     // Si no esta siendo visitado
@@ -675,7 +675,7 @@ public class Grafo {
 
                 // Mientras tenga vecinos
                 while (!esPosible && arcoActual != null) {
-                    distanciaArco = (double) ((Integer) arcoActual.getEtiqueta());
+                    distanciaArco = arcoActual.getEtiqueta();
                     distanciaActual += distanciaArco;
                     vecino = arcoActual.getVertice();
 
@@ -954,7 +954,7 @@ public class Grafo {
             // Mientras tenga arcos
             while (arc != null) {
                 salida.append(
-                        " ( " + arc.getEtiqueta().toString() + " : " + arc.getVertice().getElem().toString() + " )");
+                        " ( " + arc.getEtiqueta() + " : " + arc.getVertice().getElem().toString() + " )");
                 arc = arc.getSigAdyacente();
             }
 
