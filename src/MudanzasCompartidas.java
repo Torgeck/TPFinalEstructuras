@@ -18,10 +18,11 @@ public class MudanzasCompartidas {
     private Grafo mapaRutas;
     private HashMap<String, Cliente> clientes;
 
-    // Mensajes de error
+    // Mensajes de error y exito
     private static String ERROR_INPUT = "ERROR clave ingresada erronea o no existente";
     private static String ERROR_EXISTENCIA = "ERROR ya existe en el sistema";
     private static String ERROR_OPCION = "ERROR opcion ingresada inexistente";
+    private static String EXITO_MOD = "Modificacion exitosa";
 
     public MudanzasCompartidas() {
         this.ciudades = new ArbolAVL();
@@ -126,7 +127,7 @@ public class MudanzasCompartidas {
 
     private static void menuModificacionCliente() {
         System.out.println("""
-                    Ingrese la opcion correspondiente al atributo a modificar
+                Ingrese la opcion correspondiente al atributo a modificar
                     1 - Nombre
                     2 - Apellido
                     3 - Telefono
@@ -194,7 +195,6 @@ public class MudanzasCompartidas {
 
                 agregarCiudad(ciudadUsuario);
                 System.out.println("Creacion exitosa");
-                Logger.log("Se creo ciudad: " + ciudadUsuario);
             } else {
                 System.out.println(ERROR_EXISTENCIA);
             }
@@ -208,6 +208,7 @@ public class MudanzasCompartidas {
 
         this.ciudades.insertar(codigoPostal, ciudadUsuario);
         this.mapaRutas.insertarVertice(codigoPostal);
+        Logger.log("Se creo ciudad: " + ciudadUsuario);
     }
 
     public Ciudad crearCiudad(String[] datosCiudad, int codigoPostal, Scanner inputUsuario) {
@@ -318,7 +319,6 @@ public class MudanzasCompartidas {
 
                 // Lo agrego al sistema
                 agregarCliente(cliente);
-                Logger.log("Se creo el cliente: " + cliente);
                 System.out.println("Creacion exitosa");
             } else {
                 System.out.println(ERROR_EXISTENCIA);
@@ -329,7 +329,9 @@ public class MudanzasCompartidas {
     }
 
     public void agregarCliente(Cliente cliente) {
+        // Metodo que agrega un cliente al sistema
         clientes.put(cliente.getClave(), cliente);
+        Logger.log("Se creo cliente: " + cliente);
     }
 
     public Cliente crearCliente(String[] datosCliente, Par clave, Scanner inputUsuario) {
@@ -371,6 +373,7 @@ public class MudanzasCompartidas {
                         solicitarInput("nombre", objeto);
                         cliente.setNombre(
                                 Verificador.verificarPalabras(inputUsuario.nextLine(), "nombre", inputUsuario));
+                        System.out.println(EXITO_MOD);
                         Logger.log(
                                 "Se cambio el nombre del cliente de: " + datoModificado + " a: " + cliente.getNombre());
                         break;
@@ -379,18 +382,21 @@ public class MudanzasCompartidas {
                         solicitarInput("apellido", objeto);
                         cliente.setApellido(
                                 Verificador.verificarPalabras(inputUsuario.nextLine(), "apellido", inputUsuario));
+                        System.out.println(EXITO_MOD);
                         Logger.log("Se cambio el apellido de: " + datoModificado + " a: " + cliente.getApellido());
                         break;
                     case 3:
                         datoModificado = cliente.getTelefono();
                         solicitarInput("telefono", objeto);
                         cliente.setTelefono(Verificador.verificarTelefono(inputUsuario.nextLine(), inputUsuario));
+                        System.out.println(EXITO_MOD);
                         Logger.log("Se cambio el telefono de: " + datoModificado + "a: " + cliente.getTelefono());
                         break;
                     case 4:
                         datoModificado = cliente.getEmail();
                         solicitarInput("email", objeto);
                         cliente.setEmail(Verificador.verificarEmail(inputUsuario.nextLine(), inputUsuario));
+                        System.out.println(EXITO_MOD);
                         Logger.log("Se cambio el email" + datoModificado + " a: " + cliente.getEmail());
                         break;
                     default:
@@ -445,8 +451,7 @@ public class MudanzasCompartidas {
                 agregarRuta(ciudad[0], ciudad[1], cantKms);
 
                 System.out.println("Creacion exitosa");
-                Logger.log("Se dio de alta la ruta que une " + ciudad[0] + " y " + ciudad[1] + " con " + cantKms
-                        + " kilometros");
+
             } else {
                 System.out.println(ERROR_EXISTENCIA);
             }
@@ -455,7 +460,10 @@ public class MudanzasCompartidas {
     }
 
     public void agregarRuta(int origen, int destino, double cantKms) {
+        // Metodoq que agrega una ruta al sistema
         mapaRutas.insertarArco(origen, destino, cantKms);
+        Logger.log("Se creo ruta que une " + origen + " y " + destino + " con " + cantKms
+                + " kilometros");
     }
 
     public void darBajaRuta(Scanner inputUsuario) {
@@ -605,7 +613,7 @@ public class MudanzasCompartidas {
 
         solicitudes = solicitudesViajes.get(claveSolicitud);
         solicitudes.insertar(solicitud, 1);
-        Logger.log("Se agrego solicitud: " + solicitud + " a ciudad: " + claveSolicitud);
+        Logger.log("Se creo solicitud: " + solicitud + " a ciudad: " + claveSolicitud);
     }
 
     public void modificarPedido(Scanner inputUsuario) {
@@ -672,6 +680,7 @@ public class MudanzasCompartidas {
                             default:
                                 System.out.println("ERROR");
                         }
+                        System.out.println("Modificacion exitosa");
                         Logger.log("Se modifico la solicitud: " + solicitudElegida);
 
                     } else {
@@ -726,6 +735,8 @@ public class MudanzasCompartidas {
                 } else {
                     System.out.println("ERROR no hay solicitudes con las ciudades y clave ingresada");
                 }
+            } else {
+                System.out.println("No existe camino o ciudades ingresadas");
             }
             seguir = !deseaSalir(inputUsuario);
         }

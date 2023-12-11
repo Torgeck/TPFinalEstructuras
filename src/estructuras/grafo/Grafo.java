@@ -954,7 +954,7 @@ public class Grafo {
             // Mientras tenga arcos
             while (arc != null) {
                 salida.append(
-                        " ( " + arc.getEtiqueta() + " : " + arc.getVertice().getElem().toString() + " )");
+                        " ( " + arc.getVertice().getElem().toString() + " : " + arc.getEtiqueta() + " )");
                 arc = arc.getSigAdyacente();
             }
 
