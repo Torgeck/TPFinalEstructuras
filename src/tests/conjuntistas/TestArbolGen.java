@@ -7,7 +7,7 @@ public class TestArbolGen {
 
     public static void main(String[] args) {
         ArbolGen a = new ArbolGen(), b = new ArbolGen(), clon;
-        Lista patron1 = new Lista(), patron2 = new Lista();
+        Lista patron1 = new Lista(), patron2 = new Lista(), patron3 = new Lista();
         patron1.insertarFin("A");
         patron1.insertarFin("B");
         patron1.insertarFin("E");
@@ -19,14 +19,23 @@ public class TestArbolGen {
         patron2.insertarFin("K");
         patron2.insertarFin("M");
 
+        patron3.insertarFin("A");
+        patron3.insertarFin("C");
+        patron3.insertarFin("X");
+        patron3.insertarFin("Y");
         // Se prueban las operaciones con el arbol vacio
-        pruebaTotal(a, b, patron1, patron2);
+        pruebaTotal(a, b, patron1, patron2, patron3);
 
         // Lleno el arbol con un patron dado
         llenarArbolA(a);
 
         // Se prueban las operaciones con arbol lleno
-        pruebaTotal(a, b, patron1, patron2);
+        pruebaTotal(a, b, patron1, patron2, patron3);
+
+        a.vaciar();
+        // Lleno el arbol con posiciones
+        llenarArbolAPos(a);
+        pruebaTotal(a, b, patron1, patron2, patron3);
 
         // Vacio los arboles
         a.vaciar();
@@ -34,11 +43,11 @@ public class TestArbolGen {
 
         llenarArbolB(b);
 
-        pruebaTotal(b, a, patron1, patron2);
+        pruebaTotal(b, a, patron1, patron2, patron3);
 
     }
 
-    private static void pruebaTotal(ArbolGen a, ArbolGen b, Lista p1, Lista p2) {
+    private static void pruebaTotal(ArbolGen a, ArbolGen b, Lista p1, Lista p2, Lista p3) {
         ArbolGen clon;
         System.out.println("Muestro el arbol A: " + a.toString() + "\nEs vacio?: " + a.esVacio());
         System.out.println("Muestro el arbol b: " + b.toString() + "\nEs vacio?: " + b.esVacio());
@@ -58,6 +67,7 @@ public class TestArbolGen {
         System.out.println("La frontera del arbol es: " + a.frontera());
         System.out.println("Verifica si existe el patron " + p1.toString() + ": " + a.verificarPatron(p1));
         System.out.println("Verifica si existe el patron " + p2.toString() + ": " + a.verificarPatron(p2));
+        System.out.println("Verifica si existe el patron " + p3.toString() + ": " + a.verificarPatron(p3));
         System.out.println("Lista que justifica altura: " + a.listaQueJustificaLaAltura());
         // Clono y luego vacio el arbol
         clon = a.clone();
@@ -77,6 +87,23 @@ public class TestArbolGen {
         a.insertar("H", "D");
         a.insertar("I", "H");
         a.insertar("J", "H");
+    }
+
+    public static void llenarArbolAPos(ArbolGen a) {
+        a.insertarPosPadre("A", 0);
+        a.insertarPosPadre("B", 1);
+        a.insertarPosPadre("C", 1);
+        a.insertarPosPadre("D", 1);
+        a.insertarPosPadre("E", 2);
+        a.insertarPosPadre("F", 2);
+        a.insertarPosPadre("G", 6);
+        a.insertarPosPadre("C", 1);
+        a.insertarPosPadre("X", 8);
+        a.insertarPosPadre("X", 5);
+        a.insertarPosPadre("Y", 10);
+        a.insertarPosPadre("H", 7);
+        a.insertarPosPadre("I", 9);
+        a.insertarPosPadre("J", 9);
     }
 
     public static void llenarArbolB(ArbolGen b) {

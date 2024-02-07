@@ -27,25 +27,75 @@ public class ArbolGen {
 
             // Si el nodo padre es encontrado
             if (nodoPadre != null) {
-                NodoGen nodoHijo = nodoPadre.getHijoIzquierdo();
-
-                // Si nodo no tiene hijo izquierdo creo y seteo un nuevo nodo con elemento nuevo
-                if (nodoHijo == null)
-                    nodoPadre.setHijoIzquierdo(new NodoGen(elementoNuevo));
-
-                // Caso contrario busco al ultimo hermano derecho para crear y setear el nuevo
-                // nodo
-                else {
-                    // Recorro sus hermanos derechos hasta encontrar el que no tiene hermano derecho
-                    while (nodoHijo.getHermanoDerecho() != null) {
-                        nodoHijo = nodoHijo.getHermanoDerecho();
-                    }
-                    nodoHijo.setHermanoDerecho(new NodoGen(elementoNuevo));
-                }
+                insertarElemento(elementoNuevo, nodoPadre);
             } else
                 respuesta = false;
         }
         return respuesta;
+    }
+
+    private void insertarElemento(Object elementoNuevo, NodoGen nodoPadre) {
+        // Metodo que inserta elemento con el nodo padre pasado por parametro
+        NodoGen nodoHijo = nodoPadre.getHijoIzquierdo();
+
+        // Si nodo no tiene hijo izquierdo creo y seteo un nuevo nodo con elemento nuevo
+        if (nodoHijo == null)
+            nodoPadre.setHijoIzquierdo(new NodoGen(elementoNuevo));
+
+        // Caso contrario busco al ultimo hermano derecho para crear y setear el nuevo
+        // nodo
+        else {
+            // Recorro sus hermanos derechos hasta encontrar el que no tiene hermano derecho
+            while (nodoHijo.getHermanoDerecho() != null) {
+                nodoHijo = nodoHijo.getHermanoDerecho();
+            }
+            nodoHijo.setHermanoDerecho(new NodoGen(elementoNuevo));
+        }
+    }
+
+    // Metodo alternativo para insertar
+    public boolean insertarPosPadre(Object elemento, int posicionPadre) {
+        // Metodo que inserta el elemento pasado por parametro segun la posicion del
+        // padre en preorden
+        boolean exito = true;
+
+        if (this.esVacio() && posicionPadre == 0) {
+            this.raiz = new NodoGen(elemento);
+
+        } else {
+            int posicionActual = 0;
+            posicionActual = insertarPosPadreAux(this.raiz, elemento, posicionPadre, ++posicionActual);
+
+            // Comparo si las posiciones son iguales entonces se inserto
+            exito = posicionActual == -1;
+        }
+
+        return exito;
+    }
+
+    private int insertarPosPadreAux(NodoGen nodo, Object elemento, int posicionPadre, int posicionActual) {
+        // Metodo auxiliar que inserta un elemento segun la posiicon del padre en
+        // preoden
+
+        // Si se encuentra al padre
+        if (posicionActual == posicionPadre) {
+            // Inserto el elemento y seteo posicion actual como -1
+            insertarElemento(elemento, nodo);
+            posicionActual = -1;
+        } else {
+            // Caso contrario busco en su hijo izquierdo
+            if (nodo.getHijoIzquierdo() != null) {
+                posicionActual = insertarPosPadreAux(nodo.getHijoIzquierdo(), elemento, posicionPadre,
+                        ++posicionActual);
+            }
+            // Busco en su hijo derecho si todavia no se encontro
+            if (nodo.getHermanoDerecho() != null && posicionActual > 0) {
+                posicionActual = insertarPosPadreAux(nodo.getHermanoDerecho(), elemento, posicionPadre,
+                        ++posicionActual);
+            }
+        }
+
+        return posicionActual;
     }
 
     private NodoGen obtenerNodo(NodoGen nodoActual, Object elemento) {
@@ -419,14 +469,15 @@ public class ArbolGen {
     public boolean verificarPatron(Lista lisPatron) {
         // Metodo que retorna un t/f si se encuentra potron en el AG
         boolean encontrado = false;
+        int pos = 1;
 
         if (!this.esVacio()) {
-            Object elemento = lisPatron.recuperar(1);
+            Object elemento = lisPatron.recuperar(pos);
             NodoGen nodoAux = obtenerNodo(this.raiz, elemento);
 
             // Veo si existe el primer nodo de la lista caso contrario retorna false
             if (nodoAux != null)
-                encontrado = verificarPatronAux(nodoAux.getHijoIzquierdo(), lisPatron, 2);
+                encontrado = verificarPatronAux(nodoAux.getHijoIzquierdo(), lisPatron, pos + 1);
         }
         return encontrado;
     }
@@ -447,8 +498,9 @@ public class ArbolGen {
                     encontrado = verificarPatronAux(nodoActual.getHijoIzquierdo(), lista, pos + 1);
                 }
             }
-            // Sino busco en los hermanos del nodoActual
-            else
+
+            // Si no se encontro busco en los hermanos del nodoActual
+            if (encontrado == false)
                 encontrado = verificarPatronAux(nodoActual.getHermanoDerecho(), lista, pos);
         }
         return encontrado;
@@ -496,7 +548,6 @@ public class ArbolGen {
         return listaAltura;
     }
 
-    // TODO arreglar
     private Lista listaQueJustificaLaAlturaAux(Lista listaAltura, Lista caminoActual, NodoGen nodoActual) {
         NodoGen hijo, hermano;
         if (nodoActual != null) {
